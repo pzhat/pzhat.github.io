@@ -586,7 +586,7 @@ Mục tiêu ban đầu là dùng EXTRACTVALUE để gây lỗi
 
 EXTRACTVALUE(xml_frag, xpath_expr) là gì?
 - Đây là một hàm xử lý XML trong MySQL, với:
-- xml_frag: Một đoạn XML hợp lệ (ví dụ: '<a><b>value</b></a>')
+- xml_frag: Một đoạn XML hợp lệ (ví dụ: '<b>value</b>')
 - xpath_expr: Một biểu thức XPath dùng để lấy dữ liệu từ đoạn XML
 Ví dụ:
 SELECT EXTRACTVALUE(1, 'abc');
