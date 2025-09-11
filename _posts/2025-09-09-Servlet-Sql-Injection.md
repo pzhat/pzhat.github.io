@@ -7,7 +7,7 @@ title: Java Servlet Sql Injection Vulnerability by @Phatmh
 
 ### Tổng quan cấu trúc file java
   
-```tree    
+```  
 +---.idea
    +---dataSources
 +---.mvn
@@ -48,7 +48,9 @@ title: Java Servlet Sql Injection Vulnerability by @Phatmh
                     +---model
                     +---util
 ```
+
 ![image](https://hackmd.io/_uploads/S16Q8BvYxx.png)    
+
     Cấu trúc của project được viết bằng mô hình MVC với UserDAO là nơi xử lý logic chính. Tại đây mình tạo ra 11 level tương ứng với các độ khó khác nhau. Ở đây basic sẽ là 1-5 và 6-11 sẽ là hard.
 
 ### Source Code (Github)
@@ -149,15 +151,24 @@ Thành công login vào user admin.
 ```
     
 Đến với lv3 ở đây có lẽ vẫn không có sự khac biệt mấy so với lv1 lv2 có thể thấy sự khác biệt duy nhất là `username=LOWER('" + username + "')` ở đây dev sử dụng LOWER để lowercase hết username trong sql nhưng hàm này ngoài tác dụng đó ra thì nó không hề làm gì thêm để phòng thủ.
+
 ![image](https://hackmd.io/_uploads/SJAfdrHPex.png)
+
 Tiến hành thử lại payload cũ.
+
 ![image](https://hackmd.io/_uploads/HkJNuBrDxg.png)
+
 Dính liền phải lỗi `Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1` dựa theo lỗi này thì có vẻ gần dấu `'` có vấn đề.
 Ta có thể nhìn thấy ngay rằng hàm LOWER() khi ta dùng payload cũ nó chỉ cắt được chuỗi đoạn `LOWER(''` chứ ta chưa hề đóng lại hàm để nó nhận rằng là một hàm hoàn chỉnh nên ta sẽ tiến hành sửa lại payload.
+
 ![image](https://hackmd.io/_uploads/SkCUKBHDll.png)
+
 Sử dụng payload này sẽ giúp ta đi qua đc LOWER và sau đó là toán tử OR cùng với -- để comment hết tất cả đoạn truy vấn ở sau.
+
 ![image](https://hackmd.io/_uploads/B16cKBSwle.png)
+
 ![image](https://hackmd.io/_uploads/B14CYHBwxl.png)
+
 Thành công đăng nhập vào.
 
 #### Level 4
