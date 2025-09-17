@@ -108,7 +108,7 @@ $RULES   = '/var/app/rules/i_dont_like_webshell.yar';
  Khai báo:
 - Thư mục lưu file tạm.
 - Thư mục lưu file hợp lệ.
-- Đường dẫn tới YARA và tập luật .yar.
+- Đường dẫn tới YARA và tập rule .yar.
 
 ```php
 function four_digits(): string {
