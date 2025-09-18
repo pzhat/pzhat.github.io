@@ -241,7 +241,15 @@ usleep(800 * 1000); // 800ms
 
 Ở đây theo tôi hiểu thì trước khi yara tiến hành scan thì sẽ có 1 khoảng thời gian sleep là vào khoảng 800ms hay 0.8 giây, vậy liệu ta có thể lợi dụng khoảng thời ngắn này để làm được việc gì không?
 
-Sau khi tìm hiểu thì có phương pháp TOCTOU (time of check - time of use) một hướng khai thác trong race condition TOCTOU là một dạng trong số các mâu thuẫn đấy và xảy ra khi chương trình check một điều kiện nào đó trước khi thực hiện công việc bất kỳ nhưng khi thực hiện context switch thì điều kiện đấy sẽ không còn đúng nữa và sẽ cho phép dẫn tới privilege escalation hoặc đọc ghi file ngoài ý muốn.
+Sau khi tìm hiểu thì có phương pháp TOCTOU (Time-of-check to Time-of-use) là một loại lỗi phổ biến trong các tình huống race condition, nơi có sự không đồng bộ giữa quá trình kiểm tra và sử dụng tài nguyên (hoặc dữ liệu) trong một hệ thống.
+
+Giải thích TOCTOU:
+
+TOCTOU xảy ra khi có một sự khác biệt giữa thời điểm khi một điều kiện được kiểm tra và thời điểm khi điều kiện đó thực sự được sử dụng. Trong một hệ thống nhiều tiến trình (multi-threaded) hoặc có sự truy cập đồng thời (concurrent access), một tiến trình có thể kiểm tra một điều kiện (ví dụ: một file có tồn tại hay không) nhưng trong khoảng thời gian giữa lúc kiểm tra và lúc sử dụng tài nguyên đó, tài nguyên có thể đã thay đổi bởi một tiến trình khác.
+
+Ví dụ về TOCTOU:
+
+Giả sử bạn có một đoạn mã kiểm tra nếu một file tồn tại, sau đó tiến hành sử dụng file đó (ví dụ, đọc nội dung). Nếu trong khoảng thời gian giữa việc kiểm tra sự tồn tại của file và việc sử dụng nó, một tiến trình khác đã thay đổi trạng thái của file (ví dụ: xóa file, thay đổi quyền truy cập file, hoặc ghi đè lên file), thì có thể dẫn đến kết quả không mong muốn hoặc hành vi không xác định.
 
 Vậy bây giờ kịch bản đưa ra sẽ là ta sẽ cố gắng lợi dụng thời gian 800ms đó để có thể thực thi cat flag ra và in nó ra vì như ở trên ta đã thử debug web server hoàn toàn có thể tự thực thi `php` và ta sẽ cố định tên file sẽ là `0089.php` vì như đoạn code đã được phân tích trên tên file khi nó di chuyển vào /tmp sẽ được random nên ta sẽ cố định nó lại và chạy nhiều cặp request nhưng trước hết ta sẽ thử debug.
 
