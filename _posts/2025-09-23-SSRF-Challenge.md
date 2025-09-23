@@ -125,11 +125,12 @@ private void previewHandler(String urlParam, HttpServletRequest req, HttpServlet
 
 2.Endpoint /ssrf/openStream
 Cách hoạt động:
-Nhận urlParam.
 
-Sử dụng u.openStream() để mở một luồng đọc trực tiếp từ URL.
+- Nhận urlParam.
 
-Stream nội dung này về cho người dùng dưới dạng một file tải về (Content-Disposition: attachment).
+- Sử dụng u.openStream() để mở một luồng đọc trực tiếp từ URL.
+
+- Stream nội dung này về cho người dùng dưới dạng một file tải về (Content-Disposition: attachment).
 
 ```java 
 private void openStreamHandler(String urlParam, HttpServletResponse resp) {
@@ -162,11 +163,12 @@ private void openStreamHandler(String urlParam, HttpServletResponse resp) {
 
 3.Endpoint /ssrf/httpurlconn
 Cách hoạt động:
-Nhận urlParam.
 
-Sử dụng HttpURLConnection để thực hiện yêu cầu GET đến URL.
+- Nhận urlParam.
 
-Trả về nội dung phản hồi dưới dạng text/plain.
+- Sử dụng HttpURLConnection để thực hiện yêu cầu GET đến URL.
+
+- Trả về nội dung phản hồi dưới dạng text/plain.
 
 ```java 
 private void httpUrlConnHandler(String urlParam, HttpServletResponse resp) throws IOException {
