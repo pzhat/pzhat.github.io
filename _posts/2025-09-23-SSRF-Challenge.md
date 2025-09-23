@@ -6,7 +6,8 @@ title: Java Code Server Side Request Forgery
 # Java Code Server Side Request Forgery
 
 ### Source Code
-[Github](/yJjUpe9URCiE0Dqd5HGLZw): https://github.com/pzhat/SSRF_vuln_demo"
+
+[Github] https://github.com/pzhat/SSRF_vuln_demo 
 
 ### Overview 
 
