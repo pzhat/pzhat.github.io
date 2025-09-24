@@ -1,228 +1,312 @@
 ---
-title: Java Code Server Side Request Forgery
+title: Server Side Request Forgery (Java)
 
 ---
 
-# Java Code Server Side Request Forgery
+# Server Side Request Forgery (Java) 
 
 ### Source Code
 
-https://github.com/pzhat/SSRF_vuln_demo
+Github: https://github.com/pzhat/SSRF_vuln_demo
 
-### Overview 
+### What is SSRF
 
-![image](https://hackmd.io/_uploads/Sya3cd13gl.png)
+Giới thiệu về Server-Side Request Forgery :
 
-Đây là lab mô phỏng lại lỗi SSRF với chức năng chính là fetch url cùng với đó là fetch file và preview lên.
+ Chúng ta có xu hướng lơ là, mất cảnh giác khi đang trong vùng an toàn
 
-### Tổng quan về lỗ hổng SSRF
+ → Developer nghĩ rằng hacker sẽ không truy cập được các ứng dụng nội bộ do đó việc bị hack gần như là không thể
+ 
+→ Pentester cũng không đủ thời gian để security test hết tất cả dịch vụ nội bộ
 
-SSRF (Server-Side Request Forgery) là một lỗ hổng bảo mật cho phép kẻ tấn công buộc server của một ứng dụng web phải gửi một yêu cầu mạng (request) đến một địa chỉ tùy ý do kẻ tấn công cung cấp.
+→ Khả năng tìm ra lỗi trên các dịch vụ nội bộ sẽ rất cao nếu ”lẻn” vào được bên trong
 
-Trong đoạn mã này, cốt lõi của vấn đề nằm ở chỗ:
+Và chủng lỗi SSRF này đáp ứng chúng ta cách để lẻn vào dịch vụ nội bộ đó.
 
-- Ứng dụng nhận một tham số url từ người dùng.
+Đối với các tính năng xử lý URL (như fetch image / video, preview link, …) thì loại lỗi thường gặp là Server-Side Request Forgery.
 
-- Ứng dụng sử dụng tham số url này để tạo một đối tượng java.net.URL.
+### Overview Lab
 
-- Server sau đó thực hiện một kết nối mạng đến URL đó mà không có bất kỳ sự kiểm tra hay ràng buộc nào.
+Luồng xử lý tổng quát: 
 
-=> Điều này cực kỳ nguy hiểm vì server thường có những đặc quyền mà người dùng bên ngoài không có, chẳng hạn như quyền truy cập vào mạng nội bộ (internal network), các dịch vụ trên localhost, hoặc các tài nguyên trên chính server.
+- doGet() lấy path và param url + level.
 
-![image](https://hackmd.io/_uploads/Hy6ypuyhxg.png)
+Với mỗi endpoint:
 
-![image](https://hackmd.io/_uploads/B1LcTdJ2xe.png)
+- /ssrf/preview — gọi previewHandler(url, req, resp, level); preview hiển thị form và chạy FilterManager.check(...) trước khi fetch. Nếu pass → thực hiện chính xác phần fetch nguyên bản bạn muốn (dùng new URL(urlParam) + url.openStream() đọc dòng rồi out.println(content) — không escape).
 
-### Phân tích chi tiết từng endpoint
+- /ssrf/openStream và /ssrf/httpurlconn — đều gọi FilterManager.check(...) trước rồi thực hiện fetch/downloading theo hành vi gốc của bạn (openStream / HttpURLConnection).
 
-1.Endpoint /ssrf/preview
+- FilterManager là một bộ kiểm tra theo switch(level) gọi các lớp con Level2..Level5 (inner static classes). Mặc định DEFAULT_LEVEL = 1 → tức không filter nếu không truyền level.
 
-Đây là endpoint nguy hiểm nhất vì nó có nhiều tính năng và cung cấp nhiều thông tin phản hồi cho attacker.
+![image](https://hackmd.io/_uploads/B16CcBxhxe.png)
 
-Cách hoạt động:
-Nhận urlParam.
+Đây là một lab ssrf với chức năng chính là fetch url cùng với file nói chung nó còn xử lý cả protocols.
 
-Trường hợp đặc biệt: Nếu URL có giao thức là `file (file://...)`, nó sẽ đọc nội dung của file đó trên hệ thống tập tin của server và hiển thị ra cho người dùng. Đây thực chất là một lỗ hổng `Local File Inclusion (LFI)`.
+![image](https://hackmd.io/_uploads/rklMsHxhlx.png)
 
-Đối với các giao thức khác (như http, https), nó thực hiện một yêu cầu HttpURLConnection, lấy nội dung phản hồi, và hiển thị nó dưới dạng ảnh (nếu là image/*) hoặc dạng văn bản.
+Ta thử fetch url của một trang web nó sẽ nhảy ra hết giao diện của trang đó cho ta thấy được.
+
+![image](https://hackmd.io/_uploads/SyL10Bx2ex.png)
+
+Thử với protocol là file và đọc được trong máy.
+
+Ở đây tôi sẽ chia Lab thành 4 levels khác nhau với mỗi level là một lớp filter với độ khó tăng dần lên.
+
+### Phân tích và khai thác từng level
 
 ```java
-private void previewHandler(String urlParam, HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-        resp.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = resp.getWriter();
+   URL url = new URL(urlParam);
 
-        // Header HTML + CSS inline
-        out.println("<!doctype html><html><head><meta charset='utf-8'>");
-        out.println("<style>body{font-family:Segoe UI,Arial,sans-serif;"
-                + "background:#fff;color:#000;padding:12px;font-size:14px}"
-                + "h1{color:#007bff;font-size:20px;margin:0 0 12px 0}"
-                + "pre{white-space:pre-wrap;word-break:break-word;"
-                + "color:#000;background:#f8f8f8;padding:10px;border-radius:6px;"
-                + "border:1px solid #ccc;font-size:13px;}"
-                + "</style></head><body>");
-
-        out.println("<h1>Preview Service</h1>");
-        out.println("<form method='get' action='" + req.getContextPath()
-                + "/ssrf/preview'><input name='url' value='" + escapeHtml(urlParam)
-                + "' style='width:70%;padding:6px;font-size:14px'><button>Fetch</button></form>");
-
-        if (urlParam == null || urlParam.isEmpty()) {
-            out.println("<p style='color:gray'>No URL provided.</p></body></html>");
-            return;
-        }
-
-        out.println("<p style='color:gray'>Requested URL: " + escapeHtml(urlParam) + "</p>");
-
-        try {
-            URL u = new URL(urlParam);
-
-            if ("file".equalsIgnoreCase(u.getProtocol())) {
-                // đọc file local
-                File f = new File(u.getPath());
-                if (!f.exists()) throw new FileNotFoundException(u.getPath());
-                byte[] data = java.nio.file.Files.readAllBytes(f.toPath());
-                String text = new String(data, StandardCharsets.UTF_8);
-                out.println("<pre>" + escapeHtml(text) + "</pre>");
-            } else {
-                HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-                conn.setConnectTimeout(CONNECT_TIMEOUT);
-                conn.setReadTimeout(READ_TIMEOUT);
-                conn.setInstanceFollowRedirects(true);
-                conn.setRequestProperty("User-Agent", "SSRF-Lab/1.0");
-
-                int code = conn.getResponseCode();
-                out.println("<p style='color:gray'>HTTP response code: " + code + "</p>");
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                try (InputStream is = conn.getInputStream()) {
-                    byte[] buf = new byte[4096];
-                    int n;
-                    while ((n = is.read(buf)) != -1) baos.write(buf, 0, n);
-                }
-
-                byte[] content = baos.toByteArray();
-                String contentType = conn.getContentType();
-                if (contentType != null && contentType.startsWith("image/")) {
-                    String b64 = Base64.getEncoder().encodeToString(content);
-                    out.println("<img src='data:" + escapeHtml(contentType)
-                            + ";base64," + b64
-                            + "' style='max-width:100%;border:1px solid #ccc;border-radius:4px'/>");
-                } else {
-                    // hiển thị source code dạng text
-                    String text = new String(content, StandardCharsets.UTF_8);
-                    out.println("<pre>" + escapeHtml(text) + "</pre>");
-                }
+            // Open a connection and read the content
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(url.openStream())
+            );
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
             }
-        } catch (Exception ex) {
-            out.println("<pre style='color:red'>Fetch error: "
-                    + escapeHtml(ex.toString()) + "</pre>");
-        }
-
-        out.println("</body></html>");
-    }
+            reader.close();
+            // Output the content to the response
+            out.println(content.toString());
 ```
 
-2.Endpoint /ssrf/openStream
-Cách hoạt động:
+Đây là logic xử lý url chính của bài.
 
-Nhận urlParam.
+#### Level 1:
 
-Sử dụng u.openStream() để mở một luồng đọc trực tiếp từ URL.
+Đến với level 1 thì sẽ không có 1 lớp filter nào cả nó mặc định sẽ chỉ có các chức năng như trên.
 
-Stream nội dung này về cho người dùng dưới dạng một file tải về (Content-Disposition: attachment).
+Vậy ở đây ta sẽ lợi dụng chức năng fetch này như thế nào. Bản chất SSRF nó là lợi dụng để có thể tấn công vào nội bộ nên ta sẽ thử tấn công vào `ip loopback` là `127.0.0.1`.
+
+![image](https://hackmd.io/_uploads/Syd5HAgnex.png)
+
+Có vẻ trong trường hợp này có vẻ port 8080 không mở nên ta sẽ thử brute force port xem kết quả trả về ra sao.
+
+![image](https://hackmd.io/_uploads/H1H1hJbhge.png)
+
+Sau khi tiến hành brute ta thấy có 2 port đáng nghi là `8081` và `8000`.
+
+![image](https://hackmd.io/_uploads/ryKEnyW2el.png)
+
+Kiểm tra port 8081 thì ta có thể thấy trang burp hiện lên vậy đây là proxy của burp không phải thứ ta đang tìm kiếm.
+
+![image](https://hackmd.io/_uploads/HyUPnkWngl.png)
+
+Tới với port 8000 thì ta có thể thấy ở đây có vẻ là nơi cất giấu thư mục bí mật nằm trong loopback hay là trong mạng nội bộ.
+
+![image](https://hackmd.io/_uploads/HyVih1Z3xe.png)
+
+Thành công đọc được file bí mật nằm trong nội bộ.
+
+Ngoài ra thì nếu ta bằng cách nào biết được cấu trúc thư mục trong máy nội bộ thì hoàn toàn ta có thể sử dụng protocol như `file` để đọc thẳng luôn.
+
+![image](https://hackmd.io/_uploads/BygXa1-2el.png)
+
+Thành công với protocol `file`.
+
+#### Level 2:
 
 ```java 
-private void openStreamHandler(String urlParam, HttpServletResponse resp) {
-        if (urlParam == null) {
-            resp.setStatus(400);
-            try { resp.getWriter().println("Missing url"); } catch (IOException ignored) {}
-            return;
-        }
-        InputStream is = null;
-        OutputStream os = null;
-        try {
-            URL u = new URL(urlParam);
-            String name = new File(u.getPath()).getName();
-            if (name == null || name.isEmpty()) name = "download.bin";
-            resp.setHeader("Content-Disposition", "attachment; filename=\"" + name + "\"");
-            is = u.openStream();
-            os = resp.getOutputStream();
-            byte[] buf = new byte[4096];
-            int n;
-            while ((n = is.read(buf)) != -1) os.write(buf, 0, n);
-            os.flush();
-        } catch (Exception e) {
-            resp.setStatus(500);
-            try { resp.getWriter().println("Error: " + e.toString()); } catch (IOException ignored) {}
-        } finally {
-            try { if (is != null) is.close(); } catch (IOException ignored) {}
+ private static class Level2 {
+        static boolean check(String scheme, String lowerUrl, HttpServletResponse resp) throws IOException {
+            if ("file".equals(scheme) || "gopher".equals(scheme) || "jar".equals(scheme) || "ftp".equals(scheme)) {
+                resp.sendError(400, "Protocol not allowed (level2)");
+                return false;
+            }
+            if (lowerUrl.contains("127.0.0.1") || lowerUrl.contains("localhost") || lowerUrl.contains("0.0.0.0")) {
+                resp.sendError(403, "Access to loopback blocked (naive) (level2)");
+                return false;
+            }
+            return true;
         }
     }
 ```
 
-3.Endpoint /ssrf/httpurlconn
-Cách hoạt động:
+Ở đây có thể thấy đã có lớp filter nó sẽ chặn lại các từ như `file`, `gopher`, `jar`, `ftp`, `127.0.0.1`, `localhost`, `0.0.0.0` điều này khiến cho cách ở level đầu có vẻ không còn hoạt động nữa.
 
-Nhận urlParam.
+![image](https://hackmd.io/_uploads/HJKEQlb2lx.png)
 
-Sử dụng HttpURLConnection để thực hiện yêu cầu GET đến URL.
+Có thể thấy khi mình payload dạng `http://127.0.0.1:8000/Secret.txt` trong đó có chứa `127.0.0.1` nằm trong black list nên đã dính 403 Forbidden. 
 
-Trả về nội dung phản hồi dưới dạng text/plain.
+Vậy liệu có cách nào để có thể bypass qua được lớp filter này không? Ở đây ta để ý rằng nó sẽ chặn một chuỗi cụ thể là `127.0.0.1` nhưng ở đây ta hoàn toàn có thể rút ngắn ip lại thành `127.0.1` để có thể bypass bây giờ ta sẽ test thử.
+
+![image](https://hackmd.io/_uploads/SySh9Xb2ge.png)
+
+![image](https://hackmd.io/_uploads/SyvpcQZhxl.png)
+
+Thành công đọc được file bí mật qua IPv4 loopback. Ngoài ra ta hoàn toàn có thể sử dụng IPv6 loopback để bypass qua lớp filter này.
+
+![image](https://hackmd.io/_uploads/H1L4sQb3lg.png)
+
+![image](https://hackmd.io/_uploads/rkVHjQZhxe.png)
+
+Thành công sử dụng IPv6 để bypass.
+
+#### Level 3:
 
 ```java 
-private void httpUrlConnHandler(String urlParam, HttpServletResponse resp) throws IOException {
-        resp.setContentType("text/plain;charset=UTF-8");
-        if (urlParam == null) {
-            resp.getWriter().println("Missing url");
-            return;
-        }
-        try {
-            URL u = new URL(urlParam);
-            HttpURLConnection conn = (HttpURLConnection) u.openConnection();
-            conn.setConnectTimeout(CONNECT_TIMEOUT);
-            conn.setReadTimeout(READ_TIMEOUT);
-            conn.setInstanceFollowRedirects(true);
-            try (InputStream is = conn.getInputStream();
-                 BufferedReader br = new BufferedReader(
-                         new InputStreamReader(is, StandardCharsets.UTF_8))) {
-                String line;
-                PrintWriter out = resp.getWriter();
-                while ((line = br.readLine()) != null) out.println(line);
+  private static class Level3 {
+        static boolean check(String host, HttpServletResponse resp) throws IOException {
+            if (host == null) return true; // cannot check
+            String h = host.toLowerCase();
+            if ("127.0.0.1".equals(h) || "localhost".equals(h) || "127.0.1".equals(h) || "[::1]".equals(h)) {
+                resp.sendError(403, "Access to loopback denied (level3)");
+                return false;
             }
-        } catch (Exception e) {
-            resp.getWriter().println("Error: " + e.toString());
+            return true;
+        }
+    }
+```
+
+Ở đây bị đã bị filter thêm `127.0.1` và IPv6 cũng đã bị filter.
+
+![image](https://hackmd.io/_uploads/BkfMBNbhge.png)
+
+
+Nhưng với lớp filter này thì bypass vẫn khá là dễ vì loopback IPv4 còn có dạng rút ngắn hơn đó là `127.1` nên ta có thể sử dụng nó xem thử kết quả trả về như thế nào.
+
+![image](https://hackmd.io/_uploads/HJn1HN-neg.png)
+
+![image](https://hackmd.io/_uploads/ByIeHVW2ge.png)
+
+Ngoài ra nếu như trong trường hợp `127.1` cũng ăn filter thì ta còn có 1 cách nữa đó là sử dụng encode chẳng hạn như viết `127.0.0.1` dưới dạng thập phân là `2130706433` nếu nó có parse thì ta sẽ thành công bypass được.
+
+![image](https://hackmd.io/_uploads/S18CWLbnge.png)
+
+![image](https://hackmd.io/_uploads/ryrJzIWhex.png)
+
+Thành công sử dụng số thập phân để bypass.
+
+#### Level 4:
+
+```java 
+private static class Level4 {
+        static boolean check(String host, HttpServletResponse resp) throws IOException {
+            String toResolve = host;
+            if (toResolve == null) {
+                resp.sendError(400, "Host missing for resolution (level4)");
+                return false;
+            }
+            try {
+                InetAddress[] addrs = InetAddress.getAllByName(toResolve);
+                for (InetAddress a : addrs) {
+                    if (a.isAnyLocalAddress() || a.isLoopbackAddress() || a.isSiteLocalAddress()) {
+                        resp.sendError(403, "Access to internal network denied (resolved: " + a.getHostAddress() + ") (level4)");
+                        return false;
+                    }
+                }
+            } catch (UnknownHostException uhe) {
+                resp.sendError(400, "Host resolution failed (level4)");
+                return false;
+            } catch (Exception e) {
+                resp.sendError(400, "Host resolution error (level4)");
+                return false;
+            }
+            return true;
+        }
+    }
+```
+
+Bây giờ đến với level 4 thì mọi payload ta sử dụng từ 3 levels trước đã không còn có thể hoạt động được nữa.
+
+Nếu địa chỉ là:
+
+- isAnyLocalAddress() → ví dụ: 0.0.0.0
+
+- isLoopbackAddress() → ví dụ: 127.0.0.1, ::1
+
+- isSiteLocalAddress() → ví dụ: 192.168.x.x, 10.x.x.x, 172.16.x.x đến 172.31.x.x
+
+Thì sẽ bị chặn với mã lỗi 403 (Forbidden), vì đây là các địa chỉ nội bộ.
+
+Ngoài ra nó còn phân giải tên miền nên kiểu payload encode cũng không còn có hiệu lực lên nữa.
+
+Sau một lúc tìm hiểu thì ta có một kịch bản tấn công khả thi cao là `Open Redirect` ta sẽ trỏ `127.0.0.1` vào bằng proxy sau đó thì đưa nó ra mạng bên ngoài bằng tunnels và tiến hành fetch link do tunnel tạo ra là nằm ngoài mạng nội bộ nên khả năng bypass được rất cao.
+
+```python 
+# redirect.py
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class R(BaseHTTPRequestHandler):
+    def do_GET(self):
+        # target nội bộ của server mục tiêu (ví dụ Tomcat chạy trên cùng máy với SSRF)
+        target = "http://127.0.0.1:8000/Secret.txt"
+        self.send_response(302)
+        self.send_header('Location', target)
+        self.end_headers()
+
+if __name__ == '__main__':
+    HTTPServer(('0.0.0.0', 9001), R).serve_forever()
+```
+
+Tiến hành redirect `http://127.0.0.1:8000/Secret.txt` vào `localhost 9001`.
+
+![image](https://hackmd.io/_uploads/BJzWaUZnlx.png)
+
+![image](https://hackmd.io/_uploads/r1TNpU-hex.png)
+
+Sau đó tôi sử dụng pinggy để tunnel từ `localhost:9001` ra bên ngoài vì nếu mình dùng local thì sẽ dính mạng nội bộ.
+
+![image](https://hackmd.io/_uploads/ryaSTUb2gg.png)
+
+Tiến hành fetch và đã thành công khai thác được file Secret.txt trong mạng nội bộ.
+
+#### Level 5:
+
+```java 
+  private static class Level5 {
+        static boolean check(String host, HttpServletResponse resp) throws IOException {
+            String[] allow = {
+                    "example.com",
+                    "static.example.net"
+            };
+            // chỉnh theo lab nếu cần
+            if (host == null) {
+                resp.sendError(403, "Host missing (level5)");
+                return false;
+            }
+            for (String a : allow) {
+                if (a.equalsIgnoreCase(host)) return true;
+            }
+            resp.sendError(403, "Host not in allowlist (level5)");
+            return false;
         }
     }
 
 ```
 
-### POC và hướng khai thác
+Có thể thấy ở đây nó tạo một `whitelist` chỉ cho phép các domain giới hạn như là `example.com` và `static.example.net` và đoạn : 
 
-Đối với các chức năng như fetch URL hoặc fetch file thì thường dễ dính SSRF và với func kiểu này hướng khai thác sẽ là fetch ngược lại về mạng nội bộ của máy chủ.
+```java 
+for (String a : allow) {
+    if (a.equalsIgnoreCase(host)) return true;
+}
+```
 
-Ở đây bình thường sẽ cố fetch vào `127.0.0.1` hay còn gọi là ip loopback để đưa ngược về máy host hay là server.
+Chỉ khi chuỗi host khớp chính xác với một trong các tên miền được cho phép, thì mới được truy cập. Không có phân giải DNS, không có kiểm tra IP — chỉ là so sánh chuỗi.
 
-Với trường hợp này ta sẽ ví dụ là mình không biết liệu ip loopback sẽ được chạy ở port nào thì cách đầu tiên nghĩ đến sẽ là bruteforce vào port và xem request trả về.
+Well với kiểu whitelist như này thì ý tưởng tấn công vẫn sẽ là kịch bản trỏ tới loopback và đưa ra tunnel hoặc ra domain mà mình sở hữu nhưng nằm trong whitelist ở trong trường hợp này thì mình sẽ làm theo hướng tunnel vì không có domain :v.
 
-Sau khi brute sẽ có thông tin port ở đây mình host bằng python 1 cái local port 8000 với file `secret.txt` bên trong
+![image](https://hackmd.io/_uploads/HJQ4-dZnle.png)
 
-![image](https://hackmd.io/_uploads/ByYNXYk3ex.png)
+Ta chạy python cho nó trỏ tới file trong mạng nội bộ bằng ip loopback.
 
-Sau khi fetch đến mạng nội bộ với port 8000 thì ta có thông tin bên trong là có 1 file `Secret.txt` bây giờ chỉ cần thử truy cập bằng cách fetch luôn tên file vào trong đường link trỏ đến mạng loopback nội bộ.
+![image](https://hackmd.io/_uploads/BJ4IbdWngg.png)
 
-![image](https://hackmd.io/_uploads/SJhBNKy3xl.png)
+Đưa ra tunnel nhưng có vẻ như là ở đây nó không cho đổi tên nếu muốn dùng thì phải trả tiền nên mình sẽ mod một chút vào source.
 
-![image](https://hackmd.io/_uploads/BJ1CdKynel.png)
+```java 
+  String[] allow = {
+                    "hwykb-42-117-87-232.a.free.pinggy.link",
+                    "static.example.net"
+            };
+```
 
+Đưa link của pinggy vào whitelist và ta sẽ tiến hành fetch thử.
 
-Thành công lôi ra được thông tin của file bí mật.
+![image](https://hackmd.io/_uploads/B1tnZuZnge.png)
 
-Tiếp đến là đến với chức năng fetch file bằng cách gọi protocol là `file` để trỏ đến file content trong server nếu server có chức năng này.
+Thành công fetch được file bí mật.
 
-Ở đây bình thường nếu host trên linux thì payload sẽ là `file:///etc/passwd với
-file://\/\/etc/passwd` nó sẽ trỏ đến file quan trọng là `/etc/passwd` trong linux còn đây mình host bằng windows nên sẽ thử trỏ đến file `Secret.txt` đã được chuẩn bị sẵn.
-
-![image](https://hackmd.io/_uploads/Sk5sHtyhle.png)
-
-Thành công trỏ đến được file bí mật với `file` protocol và đọc được file.
