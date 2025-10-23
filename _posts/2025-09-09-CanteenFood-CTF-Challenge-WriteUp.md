@@ -1,7 +1,5 @@
-```yaml
 ---
-title: "CanteenFood CTF Challenge"
-date: 2025-09-09
+title: CanteenFood CTF Challenge WriteUp
 categories: [pentesting, Web-Exploitation, CTF]
 ---
 
