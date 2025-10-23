@@ -331,6 +331,7 @@ Có 3 role chính là `ADMIN` `USER` `VIEWER` .
 
 Bây giờ dựa vào POC ở bên trên đã cho ta thấy rằng SpEL Injection sử dụng CVE-2025-41243 và thành công đọc được `/etc/passwd` bây giờ ta sẽ sẽ khai thác service NewsMan.
 
+{% raw %}
 ```python 
 import base64
 import hashlib
@@ -412,6 +413,7 @@ resp_flag = requests.get(f'{base_url}/news/1/view', headers=auth_header)
 print("\nFlag output:")
 print(resp_flag.text)
 ```
+{% endraw %}
 
 **Luồng hoạt động tổng quan**
 **1. Tạo JWT Token:**
