@@ -1,6 +1,6 @@
 ---
 title: CyberCon 2025 SafeUpload Web Challenge
-
+categories: [pentesting, Web-Exploitation, CTF]
 ---
 
 # CyberCon 2025 SafeUpload Web Challenge 

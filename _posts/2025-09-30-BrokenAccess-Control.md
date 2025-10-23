@@ -1,6 +1,6 @@
 ---
 title: Broken Access Control Vulnerability Lab
-
+categories: [pentesting, Web-Exploitation]
 ---
 
 # Broken Access Control Vulnerability Lab

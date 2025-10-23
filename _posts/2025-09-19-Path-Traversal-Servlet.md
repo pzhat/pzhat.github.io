@@ -1,6 +1,6 @@
 ---
 title: Java Servlet Path Traversal vulnerability
-
+categories: [pentesting, Web-Exploitation]
 ---
 
 # Java Servlet Path Traversal vulnerability

@@ -1,6 +1,6 @@
 ---
 title: TryHackme Pickle Rick Challenge WriteUp by Phatmh.
-
+categories: [pentesting, RedTeam]
 ---
 
 # TryHackme Pickle Rick Challenge WriteUp by Phatmh.

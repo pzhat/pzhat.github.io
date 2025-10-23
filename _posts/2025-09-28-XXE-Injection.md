@@ -1,6 +1,6 @@
 ---
 title: XXE Injection Vulnerability Lab
-
+categories: [pentesting, Web-Exploitation]
 ---
 
 # XXE Injection Vulnerability Lab

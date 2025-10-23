@@ -1,5 +1,6 @@
 ---
 title: Java Servlet FileUpload Vulnerability
+categories: [pentesting, Web-Exploitation]
 ---
 
 # Java Servlet FileUpload Vulnerability by @Phatmh

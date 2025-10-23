@@ -1,5 +1,6 @@
 ---
 title: Java Servlet Command Injection Vulnerability Challenges
+categories: [pentesting, Web-Exploitation]
 ---
 
 # Java Servlet Command Injection Vulnerability Challenges
