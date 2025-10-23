@@ -223,7 +223,7 @@ Vậy là bước đầu ta đã biết được vì sao có thể chạy SpEL v
 - Lỗ hổng xảy ra trong Apache Commons BeanUtils, nơi declaredClass property của các enum Java có thể bị truy cập thông qua một cơ chế không được bảo vệ.
 - Điều này cho phép kẻ tấn công truy cập ClassLoader của ứng dụng, dẫn đến khả năng thao tác với các tài nguyên thông qua Reflection hoặc các API của Java.
 
-{%preview https://github.com/advisories/GHSA-wxr5-93ph-8wr9 %}
+[CVE-2025-48734](https://github.com/advisories/GHSA-wxr5-93ph-8wr9)
 
 ![image](https://hackmd.io/_uploads/rJ8s_iv0xg.png)
 
@@ -232,7 +232,8 @@ Với case sử dụng SpEL như này và trong trường hợp này ta phải c
 ![image](https://hackmd.io/_uploads/HyUtWnv0ge.png)
 
 
-Ở đây nó đã cấp cho ta secret jwt nên ta sẽ tham khảo cách mà `CVE-2025-41243` hoạt động ở bài viết này : {%preview https://psytester.github.io/CVE-2025-41243_Spring_SpEL_property_modification/ %}
+Ở đây nó đã cấp cho ta secret jwt nên ta sẽ tham khảo cách mà `CVE-2025-41243` hoạt động ở bài viết này : 
+[CVE-2025-41243](https://psytester.github.io/CVE-2025-41243_Spring_SpEL_property_modification/)
 
 Với case này ta hoàn toàn có thể tận dụng để thực thi SpEL Injection cùng với đó là lợi dụng SSRF ở trên để đọc system path bên trong thay vì trỏ đến resources vì ở đây nó không hề giới hạn quyền access đến các gateway của Spring-cloud nên ta có thể lợi dụng 2 CVE đó ở đây SpEL được dùng để thực thi cách lệnh hệ thống như là `ls` hoặc `cat` thông qua java reflection api cùng với đó là tận dụng cầu nối từ SSRF để truy cập nội bộ nên ta có một cái sink hoàn chỉnh.
 
