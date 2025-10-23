@@ -1,6 +1,8 @@
+```yaml
 ---
-title: CanteenFood CTF Challenge WriteUp
-
+title: "CanteenFood CTF Challenge"
+date: 2025-09-09
+categories: [pentesting, Web-Exploitation, CTF]
 ---
 
 # CanteenFood CTF Challenge WriteUp by @Phatmh
