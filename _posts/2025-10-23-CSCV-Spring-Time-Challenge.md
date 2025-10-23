@@ -411,8 +411,6 @@ requests.put(f'{base_url}/news/1', headers={**headers, **auth_header}, json=payl
 resp_flag = requests.get(f'{base_url}/news/1/view', headers=auth_header)
 print("\nFlag output:")
 print(resp_flag.text)
-
-// Tham khảo từ script của bksec
 ```
 
 **Luồng hoạt động tổng quan**
