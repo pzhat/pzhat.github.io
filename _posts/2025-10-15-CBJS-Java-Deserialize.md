@@ -1,6 +1,7 @@
 ---
 title: Java Deserialize CBJS Lab
 categories: [pentesting, Web-Exploitation, CTF]
+tags: [CTF, Web]
 ---
 
 # Java Deserialize CBJS Lab 

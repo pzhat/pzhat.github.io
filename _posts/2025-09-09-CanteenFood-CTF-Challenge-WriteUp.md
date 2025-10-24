@@ -1,6 +1,7 @@
 ---
 title: CanteenFood CTF Challenge WriteUp
 categories: [pentesting, Web-Exploitation, CTF]
+tags: [CTF, Web]
 ---
 
 # CanteenFood CTF Challenge WriteUp by @Phatmh

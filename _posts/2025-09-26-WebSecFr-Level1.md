@@ -1,6 +1,7 @@
 ---
 title: WebSec.fr level 1 CTF challenge
 categories: [pentesting, Web-Exploitation, CTF]
+tags: [CTF, Web]
 ---
 
 # WebSec.fr level 1 CTF challenge

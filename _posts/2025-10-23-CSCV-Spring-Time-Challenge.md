@@ -1,6 +1,7 @@
 ---
 title: Spring Time CTF challenge WriteUp
 categories: [pentesting, Web-Exploitation, CTF]
+tags: [CTF, Web]
 ---
 
 # Spring Time CTF challenge WriteUp

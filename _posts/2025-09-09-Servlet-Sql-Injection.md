@@ -1,6 +1,7 @@
 ---
 title: Java Servlet Sql Injection Vulnerability by @Phatmh
 categories: [pentesting, Web-Exploitation]
+tags: [Web]
 ---
 
 # Java Servlet Sql Injection Vulnerability by @Phatmh

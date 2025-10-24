@@ -1,6 +1,7 @@
 ---
 title: Tryhackme EvilGPT challenge WriteUp by @phatmh
 categories: [pentesting, RedTeam]
+tags: [RedTeam, Pentest]
 ---
 
 # Tryhackme EvilGPT challenge WriteUp by @phatmh

@@ -1,6 +1,7 @@
 ---
 title: Web Cache Deception Demo Lab
 categories: [pentesting, Web-Exploitation]
+tags: [Web]
 ---
 
 # Web Cache Deception Demo Lab

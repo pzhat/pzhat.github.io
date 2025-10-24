@@ -1,6 +1,7 @@
 ---
 title: NoSQL Injection Vulnerability Challenge Java
 categories: [pentesting, Web-Exploitation]
+tags: [Web]
 ---
 
 # NoSQL Injection Vulnerability Challenge Java

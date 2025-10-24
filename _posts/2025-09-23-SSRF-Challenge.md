@@ -1,6 +1,7 @@
 ---
 title: Server Side Request Forgery (Java)
 categories: [pentesting, Web-Exploitation]
+tags: [Web]
 ---
 
 # Server Side Request Forgery (Java) 

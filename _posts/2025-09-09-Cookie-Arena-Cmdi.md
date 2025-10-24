@@ -1,6 +1,7 @@
 ---
 title: "Cookie Arena Challenges WU (@Phatmh)"
 categories: [pentesting, Web-Exploitation, CTF]
+tags: [CTF, Web]
 ---
 
 # Cookie Arena Web Challenges WriteUp by (@Phatmh)
