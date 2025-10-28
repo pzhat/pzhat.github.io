@@ -1,6 +1,7 @@
 ---
 title: Java Deserialze - URLDNS Chain analysis (ysoserial)
-
+categories: [pentesting, Web-Exploitation]
+tags: [CTF, Web]
 ---
 
 # Java Deserialze - URLDNS Chain analysis (ysoserial)
