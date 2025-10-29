@@ -46,7 +46,7 @@ Truy cập vào Project sau đó truy cập đến thẳng `/src/main/java/ysose
 
 Tiến vào trong payload ta thấy rằng có rất nhiều dòng comment để giải thích luồng hoạt động của payload cho ta dễ hiểu được cách mà payload đó hoạt động ở đây có dòng : 
 
-```comment
+```text
  *   Gadget Chain:
  *     HashMap.readObject()
  *       HashMap.putVal()
