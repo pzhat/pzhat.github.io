@@ -22,7 +22,7 @@ tags: [Web, ysoserial]
 
 ![image](https://hackmd.io/_uploads/S1UCyu2Clg.png)
 
-Tiến hành truy cập Respository của ysoserial tại : <https://github.com/frohoff/ysoserial>
+Tiến hành truy cập Respository của ysoserial tại : https://github.com/frohoff/ysoserial
 
 Bây giờ tiến hành tải toàn bộ project về phân tích.
 
@@ -324,8 +324,9 @@ public class URLDNSPayloadGenerator {
         }
     }
 }
-
 ```
+
+![image](https://hackmd.io/_uploads/SkZ9xxeJZl.png)
 
 
 
