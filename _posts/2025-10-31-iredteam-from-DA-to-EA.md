@@ -1,7 +1,7 @@
 ---
 title: Ired.Team From Domain Admin to Enterprise Admin
-categories: [RedTeam, Windows]
-tags: [RedTeam]
+categories: [RedTeam, pentesting]
+tags: [RedTeam, Pentest]
 ---
 
 # Ired.Team From Domain Admin to Enterprise Admin 
