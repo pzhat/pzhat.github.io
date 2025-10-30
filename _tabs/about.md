@@ -18,7 +18,7 @@ When I'm not hunting for vulnerabilities, you'll find me writing technical blog 
 ---
 
 ## 💼 What I Do
-Intern Penetration Testing At VNPT Cyber Immunity
+Intern Penetration Tester At VNPT Cyber Immunity
 
 ### 🔍 Penetration Testing
 Comprehensive security assessments across web applications, networks, and infrastructure. I identify vulnerabilities before attackers do.
