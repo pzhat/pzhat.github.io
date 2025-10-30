@@ -48,7 +48,7 @@ Gán ip sau đó set DNS trỏ đến ip của máy `parent.local`.
 
 Ở đây ta sử dụng lệnh ở cả 2 domain để kiểm tra :
 
-```bash 
+```powershell 
 Get-ADTrust -Filter *
 ```
 
@@ -68,7 +68,7 @@ Sử dụng lệnh `nltest /domain_trusts`.Thông tin tương tự nhưng rất 
 
 Tương tự ta sử dụng lệnh dưới đây để lấy được thông tin tương tự như bên trên : 
 
-```bash
+```powershell
 ([System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()).GetAllTrustRelationships()
 ```
 
@@ -82,7 +82,7 @@ Tương tự ta sử dụng lệnh dưới đây để lấy được thông tin
 
 ![image](https://hackmd.io/_uploads/HyLrlOJ1-x.png)
 
-### Forest
+### Forest Trust
 
 ![image](https://hackmd.io/_uploads/HJ38edy1bl.png)
 
@@ -108,7 +108,7 @@ Giờ ta hoàn toàn có thể truy cập dữ liệu của máy `defense.local`
 
 Bây giờ ta sẽ đi đến với kỹ thuật biến từ `Domain Admin` thành `Enterprise Admin` dựa theo kỹ thuật có sẵn.
 
-```bash 
+```powershell 
 # Tạo user
 New-ADUser -Name "spotless" -SamAccountName "spotless" -Enabled $true -AccountPassword (ConvertTo-SecureString "Password123!" -AsPlainText -Force)
 
@@ -152,7 +152,7 @@ Sau đó ta lấy SID của `krbtgt` là `S-1-5-21-1522518357-539094533-31369757
 
 #### Bước 7: 
 
-Sau khi nạo ticket tôi spawn ra cmd mới và kiểm tra user.
+Sau khi tạo ticket tôi spawn ra cmd mới và kiểm tra user.
 
 ![image](https://hackmd.io/_uploads/B1VCs-WJbe.png)
 
