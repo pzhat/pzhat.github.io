@@ -1,0 +1,270 @@
+<!DOCTYPE html><html lang="[&quot;en&quot;,&quot;vi&quot;,&quot;default&quot;]" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Server Side Request Forgery (Java) | Phat Mai Blog</title><meta name="author" content="Phat Mai"><meta name="copyright" content="Phat Mai"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Server Side Request Forgery (Java)Source CodeGithub: https:&#x2F;&#x2F;github.com&#x2F;pzhat&#x2F;SSRF_vuln_demo What is SSRFGiới thiệu về Server-Side Request Forgery :  Chúng ta có xu hướng lơ là, mất cảnh giác khi đang">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Server Side Request Forgery (Java)">
+<meta property="og:url" content="https://pzhat.github.io/2025/11/15/2025-09-23-SSRF-Challenge/index.html">
+<meta property="og:site_name" content="Phat Mai Blog">
+<meta property="og:description" content="Server Side Request Forgery (Java)Source CodeGithub: https:&#x2F;&#x2F;github.com&#x2F;pzhat&#x2F;SSRF_vuln_demo What is SSRFGiới thiệu về Server-Side Request Forgery :  Chúng ta có xu hướng lơ là, mất cảnh giác khi đang">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pzhat.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-11-14T19:34:38.226Z">
+<meta property="article:modified_time" content="2025-10-24T05:38:35.000Z">
+<meta property="article:author" content="Phat Mai">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pzhat.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Server Side Request Forgery (Java)",
+  "url": "https://pzhat.github.io/2025/11/15/2025-09-23-SSRF-Challenge/",
+  "image": "https://pzhat.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-11-14T19:34:38.226Z",
+  "dateModified": "2025-10-24T05:38:35.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Phat Mai",
+      "url": "https://pzhat.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://pzhat.github.io/2025/11/15/2025-09-23-SSRF-Challenge/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Server Side Request Forgery (Java)',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Phat Mai Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Server Side Request Forgery (Java)</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Server Side Request Forgery (Java)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-14T19:34:38.226Z" title="Created 2025-11-15 02:34:38">2025-11-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-10-24T05:38:35.000Z" title="Updated 2025-10-24 12:38:35">2025-10-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/">pentesting</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/Web-Exploitation/">Web-Exploitation</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Server-Side-Request-Forgery-Java"><a href="#Server-Side-Request-Forgery-Java" class="headerlink" title="Server Side Request Forgery (Java)"></a>Server Side Request Forgery (Java)</h1><h3 id="Source-Code"><a href="#Source-Code" class="headerlink" title="Source Code"></a>Source Code</h3><p>Github: <a target="_blank" rel="noopener" href="https://github.com/pzhat/SSRF_vuln_demo">https://github.com/pzhat/SSRF_vuln_demo</a></p>
+<h3 id="What-is-SSRF"><a href="#What-is-SSRF" class="headerlink" title="What is SSRF"></a>What is SSRF</h3><p>Giới thiệu về Server-Side Request Forgery :</p>
+<p> Chúng ta có xu hướng lơ là, mất cảnh giác khi đang trong vùng an toàn</p>
+<p> → Developer nghĩ rằng hacker sẽ không truy cập được các ứng dụng nội bộ do đó việc bị hack gần như là không thể</p>
+<p>→ Pentester cũng không đủ thời gian để security test hết tất cả dịch vụ nội bộ</p>
+<p>→ Khả năng tìm ra lỗi trên các dịch vụ nội bộ sẽ rất cao nếu ”lẻn” vào được bên trong</p>
+<p>Và chủng lỗi SSRF này đáp ứng chúng ta cách để lẻn vào dịch vụ nội bộ đó.</p>
+<p>Đối với các tính năng xử lý URL (như fetch image &#x2F; video, preview link, …) thì loại lỗi thường gặp là Server-Side Request Forgery.</p>
+<h3 id="Overview-Lab"><a href="#Overview-Lab" class="headerlink" title="Overview Lab"></a>Overview Lab</h3><p>Luồng xử lý tổng quát: </p>
+<ul>
+<li>doGet() lấy path và param url + level.</li>
+</ul>
+<p>Với mỗi endpoint:</p>
+<ul>
+<li><p>&#x2F;ssrf&#x2F;preview — gọi previewHandler(url, req, resp, level); preview hiển thị form và chạy FilterManager.check(…) trước khi fetch. Nếu pass → thực hiện chính xác phần fetch nguyên bản bạn muốn (dùng new URL(urlParam) + url.openStream() đọc dòng rồi out.println(content) — không escape).</p>
+</li>
+<li><p>&#x2F;ssrf&#x2F;openStream và &#x2F;ssrf&#x2F;httpurlconn — đều gọi FilterManager.check(…) trước rồi thực hiện fetch&#x2F;downloading theo hành vi gốc của bạn (openStream &#x2F; HttpURLConnection).</p>
+</li>
+<li><p>FilterManager là một bộ kiểm tra theo switch(level) gọi các lớp con Level2..Level5 (inner static classes). Mặc định DEFAULT_LEVEL &#x3D; 1 → tức không filter nếu không truyền level.</p>
+</li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/B16CcBxhxe.png" alt="image"></p>
+<p>Đây là một lab ssrf với chức năng chính là fetch url cùng với file nói chung nó còn xử lý cả protocols.</p>
+<p><img src="https://hackmd.io/_uploads/rklMsHxhlx.png" alt="image"></p>
+<p>Ta thử fetch url của một trang web nó sẽ nhảy ra hết giao diện của trang đó cho ta thấy được.</p>
+<p><img src="https://hackmd.io/_uploads/SyL10Bx2ex.png" alt="image"></p>
+<p>Thử với protocol là file và đọc được trong máy.</p>
+<p>Ở đây tôi sẽ chia Lab thành 4 levels khác nhau với mỗi level là một lớp filter với độ khó tăng dần lên.</p>
+<h3 id="Phan-tich-va-khai-thac-tung-level"><a href="#Phan-tich-va-khai-thac-tung-level" class="headerlink" title="Phân tích và khai thác từng level"></a>Phân tích và khai thác từng level</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">URL</span> <span class="variable">url</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URL</span>(urlParam);</span><br><span class="line"></span><br><span class="line">         <span class="comment">// Open a connection and read the content</span></span><br><span class="line">         <span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(</span><br><span class="line">                 <span class="keyword">new</span> <span class="title class_">InputStreamReader</span>(url.openStream())</span><br><span class="line">         );</span><br><span class="line">         <span class="type">StringBuilder</span> <span class="variable">content</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">         String line;</span><br><span class="line">         <span class="keyword">while</span> ((line = reader.readLine()) != <span class="literal">null</span>) &#123;</span><br><span class="line">             content.append(line).append(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">         &#125;</span><br><span class="line">         reader.close();</span><br><span class="line">         <span class="comment">// Output the content to the response</span></span><br><span class="line">         out.println(content.toString());</span><br></pre></td></tr></table></figure>
+
+<p>Đây là logic xử lý url chính của bài.</p>
+<h4 id="Level-1"><a href="#Level-1" class="headerlink" title="Level 1:"></a>Level 1:</h4><p>Đến với level 1 thì sẽ không có 1 lớp filter nào cả nó mặc định sẽ chỉ có các chức năng như trên.</p>
+<p>Vậy ở đây ta sẽ lợi dụng chức năng fetch này như thế nào. Bản chất SSRF nó là lợi dụng để có thể tấn công vào nội bộ nên ta sẽ thử tấn công vào <code>ip loopback</code> là <code>127.0.0.1</code>.</p>
+<p><img src="https://hackmd.io/_uploads/Syd5HAgnex.png" alt="image"></p>
+<p>Có vẻ trong trường hợp này có vẻ port 8080 không mở nên ta sẽ thử brute force port xem kết quả trả về ra sao.</p>
+<p><img src="https://hackmd.io/_uploads/H1H1hJbhge.png" alt="image"></p>
+<p>Sau khi tiến hành brute ta thấy có 2 port đáng nghi là <code>8081</code> và <code>8000</code>.</p>
+<p><img src="https://hackmd.io/_uploads/ryKEnyW2el.png" alt="image"></p>
+<p>Kiểm tra port 8081 thì ta có thể thấy trang burp hiện lên vậy đây là proxy của burp không phải thứ ta đang tìm kiếm.</p>
+<p><img src="https://hackmd.io/_uploads/HyUPnkWngl.png" alt="image"></p>
+<p>Tới với port 8000 thì ta có thể thấy ở đây có vẻ là nơi cất giấu thư mục bí mật nằm trong loopback hay là trong mạng nội bộ.</p>
+<p><img src="https://hackmd.io/_uploads/HyVih1Z3xe.png" alt="image"></p>
+<p>Thành công đọc được file bí mật nằm trong nội bộ.</p>
+<p>Ngoài ra thì nếu ta bằng cách nào biết được cấu trúc thư mục trong máy nội bộ thì hoàn toàn ta có thể sử dụng protocol như <code>file</code> để đọc thẳng luôn.</p>
+<p><img src="https://hackmd.io/_uploads/BygXa1-2el.png" alt="image"></p>
+<p>Thành công với protocol <code>file</code>.</p>
+<h4 id="Level-2"><a href="#Level-2" class="headerlink" title="Level 2:"></a>Level 2:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Level2</span> &#123;</span><br><span class="line">       <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">check</span><span class="params">(String scheme, String lowerUrl, HttpServletResponse resp)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">           <span class="keyword">if</span> (<span class="string">&quot;file&quot;</span>.equals(scheme) || <span class="string">&quot;gopher&quot;</span>.equals(scheme) || <span class="string">&quot;jar&quot;</span>.equals(scheme) || <span class="string">&quot;ftp&quot;</span>.equals(scheme)) &#123;</span><br><span class="line">               resp.sendError(<span class="number">400</span>, <span class="string">&quot;Protocol not allowed (level2)&quot;</span>);</span><br><span class="line">               <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">if</span> (lowerUrl.contains(<span class="string">&quot;127.0.0.1&quot;</span>) || lowerUrl.contains(<span class="string">&quot;localhost&quot;</span>) || lowerUrl.contains(<span class="string">&quot;0.0.0.0&quot;</span>)) &#123;</span><br><span class="line">               resp.sendError(<span class="number">403</span>, <span class="string">&quot;Access to loopback blocked (naive) (level2)&quot;</span>);</span><br><span class="line">               <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Ở đây có thể thấy đã có lớp filter nó sẽ chặn lại các từ như <code>file</code>, <code>gopher</code>, <code>jar</code>, <code>ftp</code>, <code>127.0.0.1</code>, <code>localhost</code>, <code>0.0.0.0</code> điều này khiến cho cách ở level đầu có vẻ không còn hoạt động nữa.</p>
+<p><img src="https://hackmd.io/_uploads/HJKEQlb2lx.png" alt="image"></p>
+<p>Có thể thấy khi mình payload dạng <code>http://127.0.0.1:8000/Secret.txt</code> trong đó có chứa <code>127.0.0.1</code> nằm trong black list nên đã dính 403 Forbidden. </p>
+<p>Vậy liệu có cách nào để có thể bypass qua được lớp filter này không? Ở đây ta để ý rằng nó sẽ chặn một chuỗi cụ thể là <code>127.0.0.1</code> nhưng ở đây ta hoàn toàn có thể rút ngắn ip lại thành <code>127.0.1</code> để có thể bypass bây giờ ta sẽ test thử.</p>
+<p><img src="https://hackmd.io/_uploads/SySh9Xb2ge.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/SyvpcQZhxl.png" alt="image"></p>
+<p>Thành công đọc được file bí mật qua IPv4 loopback. Ngoài ra ta hoàn toàn có thể sử dụng IPv6 loopback để bypass qua lớp filter này.</p>
+<p><img src="https://hackmd.io/_uploads/H1L4sQb3lg.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/rkVHjQZhxe.png" alt="image"></p>
+<p>Thành công sử dụng IPv6 để bypass.</p>
+<h4 id="Level-3"><a href="#Level-3" class="headerlink" title="Level 3:"></a>Level 3:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Level3</span> &#123;</span><br><span class="line">      <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">check</span><span class="params">(String host, HttpServletResponse resp)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">          <span class="keyword">if</span> (host == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">// cannot check</span></span><br><span class="line">          <span class="type">String</span> <span class="variable">h</span> <span class="operator">=</span> host.toLowerCase();</span><br><span class="line">          <span class="keyword">if</span> (<span class="string">&quot;127.0.0.1&quot;</span>.equals(h) || <span class="string">&quot;localhost&quot;</span>.equals(h) || <span class="string">&quot;127.0.1&quot;</span>.equals(h) || <span class="string">&quot;[::1]&quot;</span>.equals(h)) &#123;</span><br><span class="line">              resp.sendError(<span class="number">403</span>, <span class="string">&quot;Access to loopback denied (level3)&quot;</span>);</span><br><span class="line">              <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Ở đây bị đã bị filter thêm <code>127.0.1</code> và IPv6 cũng đã bị filter.</p>
+<p><img src="https://hackmd.io/_uploads/BkfMBNbhge.png" alt="image"></p>
+<p>Nhưng với lớp filter này thì bypass vẫn khá là dễ vì loopback IPv4 còn có dạng rút ngắn hơn đó là <code>127.1</code> nên ta có thể sử dụng nó xem thử kết quả trả về như thế nào.</p>
+<p><img src="https://hackmd.io/_uploads/HJn1HN-neg.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/ByIeHVW2ge.png" alt="image"></p>
+<p>Ngoài ra nếu như trong trường hợp <code>127.1</code> cũng ăn filter thì ta còn có 1 cách nữa đó là sử dụng encode chẳng hạn như viết <code>127.0.0.1</code> dưới dạng thập phân là <code>2130706433</code> nếu nó có parse thì ta sẽ thành công bypass được.</p>
+<p><img src="https://hackmd.io/_uploads/S18CWLbnge.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/ryrJzIWhex.png" alt="image"></p>
+<p>Thành công sử dụng số thập phân để bypass.</p>
+<h4 id="Level-4"><a href="#Level-4" class="headerlink" title="Level 4:"></a>Level 4:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Level4</span> &#123;</span><br><span class="line">        <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">check</span><span class="params">(String host, HttpServletResponse resp)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">toResolve</span> <span class="operator">=</span> host;</span><br><span class="line">            <span class="keyword">if</span> (toResolve == <span class="literal">null</span>) &#123;</span><br><span class="line">                resp.sendError(<span class="number">400</span>, <span class="string">&quot;Host missing for resolution (level4)&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                InetAddress[] addrs = InetAddress.getAllByName(toResolve);</span><br><span class="line">                <span class="keyword">for</span> (InetAddress a : addrs) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (a.isAnyLocalAddress() || a.isLoopbackAddress() || a.isSiteLocalAddress()) &#123;</span><br><span class="line">                        resp.sendError(<span class="number">403</span>, <span class="string">&quot;Access to internal network denied (resolved: &quot;</span> + a.getHostAddress() + <span class="string">&quot;) (level4)&quot;</span>);</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (UnknownHostException uhe) &#123;</span><br><span class="line">                resp.sendError(<span class="number">400</span>, <span class="string">&quot;Host resolution failed (level4)&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                resp.sendError(<span class="number">400</span>, <span class="string">&quot;Host resolution error (level4)&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Bây giờ đến với level 4 thì mọi payload ta sử dụng từ 3 levels trước đã không còn có thể hoạt động được nữa.</p>
+<p>Nếu địa chỉ là:</p>
+<ul>
+<li><p>isAnyLocalAddress() → ví dụ: 0.0.0.0</p>
+</li>
+<li><p>isLoopbackAddress() → ví dụ: 127.0.0.1, ::1</p>
+</li>
+<li><p>isSiteLocalAddress() → ví dụ: 192.168.x.x, 10.x.x.x, 172.16.x.x đến 172.31.x.x</p>
+</li>
+</ul>
+<p>Thì sẽ bị chặn với mã lỗi 403 (Forbidden), vì đây là các địa chỉ nội bộ.</p>
+<p>Ngoài ra nó còn phân giải tên miền nên kiểu payload encode cũng không còn có hiệu lực lên nữa.</p>
+<p>Sau một lúc tìm hiểu thì ta có một kịch bản tấn công khả thi cao là <code>Open Redirect</code> ta sẽ trỏ <code>127.0.0.1</code> vào bằng proxy sau đó thì đưa nó ra mạng bên ngoài bằng tunnels và tiến hành fetch link do tunnel tạo ra là nằm ngoài mạng nội bộ nên khả năng bypass được rất cao.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># redirect.py</span></span><br><span class="line"><span class="keyword">from</span> http.server <span class="keyword">import</span> BaseHTTPRequestHandler, HTTPServer</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">R</span>(<span class="title class_ inherited__">BaseHTTPRequestHandler</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">do_GET</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># target nội bộ của server mục tiêu (ví dụ Tomcat chạy trên cùng máy với SSRF)</span></span><br><span class="line">        target = <span class="string">&quot;http://127.0.0.1:8000/Secret.txt&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.send_response(<span class="number">302</span>)</span><br><span class="line">        <span class="variable language_">self</span>.send_header(<span class="string">&#x27;Location&#x27;</span>, target)</span><br><span class="line">        <span class="variable language_">self</span>.end_headers()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    HTTPServer((<span class="string">&#x27;0.0.0.0&#x27;</span>, <span class="number">9001</span>), R).serve_forever()</span><br></pre></td></tr></table></figure>
+
+<p>Tiến hành redirect <code>http://127.0.0.1:8000/Secret.txt</code> vào <code>localhost 9001</code>.</p>
+<p><img src="https://hackmd.io/_uploads/BJzWaUZnlx.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/r1TNpU-hex.png" alt="image"></p>
+<p>Sau đó tôi sử dụng pinggy để tunnel từ <code>localhost:9001</code> ra bên ngoài vì nếu mình dùng local thì sẽ dính mạng nội bộ.</p>
+<p><img src="https://hackmd.io/_uploads/ryaSTUb2gg.png" alt="image"></p>
+<p>Tiến hành fetch và đã thành công khai thác được file Secret.txt trong mạng nội bộ.</p>
+<h4 id="Level-5"><a href="#Level-5" class="headerlink" title="Level 5:"></a>Level 5:</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Level5</span> &#123;</span><br><span class="line">      <span class="keyword">static</span> <span class="type">boolean</span> <span class="title function_">check</span><span class="params">(String host, HttpServletResponse resp)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">          String[] allow = &#123;</span><br><span class="line">                  <span class="string">&quot;example.com&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;static.example.net&quot;</span></span><br><span class="line">          &#125;;</span><br><span class="line">          <span class="comment">// chỉnh theo lab nếu cần</span></span><br><span class="line">          <span class="keyword">if</span> (host == <span class="literal">null</span>) &#123;</span><br><span class="line">              resp.sendError(<span class="number">403</span>, <span class="string">&quot;Host missing (level5)&quot;</span>);</span><br><span class="line">              <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">for</span> (String a : allow) &#123;</span><br><span class="line">              <span class="keyword">if</span> (a.equalsIgnoreCase(host)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          resp.sendError(<span class="number">403</span>, <span class="string">&quot;Host not in allowlist (level5)&quot;</span>);</span><br><span class="line">          <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Có thể thấy ở đây nó tạo một <code>whitelist</code> chỉ cho phép các domain giới hạn như là <code>example.com</code> và <code>static.example.net</code> và đoạn : </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (String a : allow) &#123;</span><br><span class="line">    <span class="keyword">if</span> (a.equalsIgnoreCase(host)) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Chỉ khi chuỗi host khớp chính xác với một trong các tên miền được cho phép, thì mới được truy cập. Không có phân giải DNS, không có kiểm tra IP — chỉ là so sánh chuỗi.</p>
+<p>Well với kiểu whitelist như này thì ý tưởng tấn công vẫn sẽ là kịch bản trỏ tới loopback và đưa ra tunnel hoặc ra domain mà mình sở hữu nhưng nằm trong whitelist ở trong trường hợp này thì mình sẽ làm theo hướng tunnel vì không có domain :v.</p>
+<p><img src="https://hackmd.io/_uploads/HJQ4-dZnle.png" alt="image"></p>
+<p>Ta chạy python cho nó trỏ tới file trong mạng nội bộ bằng ip loopback.</p>
+<p><img src="https://hackmd.io/_uploads/BJ4IbdWngg.png" alt="image"></p>
+<p>Đưa ra tunnel nhưng có vẻ như là ở đây nó không cho đổi tên nếu muốn dùng thì phải trả tiền nên mình sẽ mod một chút vào source.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String[] allow = &#123;</span><br><span class="line">                  <span class="string">&quot;hwykb-42-117-87-232.a.free.pinggy.link&quot;</span>,</span><br><span class="line">                  <span class="string">&quot;static.example.net&quot;</span></span><br><span class="line">          &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Đưa link của pinggy vào whitelist và ta sẽ tiến hành fetch thử.</p>
+<p><img src="https://hackmd.io/_uploads/B1tnZuZnge.png" alt="image"></p>
+<p>Thành công fetch được file bí mật.</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://pzhat.github.io">Phat Mai</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://pzhat.github.io/2025/11/15/2025-09-23-SSRF-Challenge/">https://pzhat.github.io/2025/11/15/2025-09-23-SSRF-Challenge/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web/">Web</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/15/2025-10-06-NoSQL-Injection-Lab/" title="NoSQL Injection Vulnerability Challenge Java"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">NoSQL Injection Vulnerability Challenge Java</div></div><div class="info-2"><div class="info-item-1">NoSQL Injection Vulnerability Challenge JavaTổng quan về NoSQL Injection Tấn công NoSQL injection là một lỗ hổng bảo mật trong các ứng dụng web sử dụng cơ sở dữ liệu NoSQL. NoSQL (viết tắt của “Not Only SQL”) là các hệ thống cơ sở dữ liệu không sử dụng ngôn ngữ truy vấn có cấu trúc SQL, mà thay vào đó dùng các định dạng dữ liệu linh hoạt hơn như cặp khóa-giá trị, tài liệu (document), hoặc đồ thị dữ liệu.  Tương tự như SQL injection, NoSQL injection cho phép kẻ tấn công vượt qua xác thực, đánh...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-26-WebSecFr-Level1/" title="WebSec.fr level 1 CTF challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">WebSec.fr level 1 CTF challenge</div></div><div class="info-2"><div class="info-item-1">WebSec.fr level 1 CTF challengeOverview Giao diện chức năng của level này ta có thể thấy nó là một web app có chức năng hiển thị username bằng cách nhập vào userID nên bước đầu ta có thể nghi ngờ nó dính Sql Injection. Phân tích source code123456789101112131415161718192021222324252627282930313233&lt;?phpsession_start ();ini_set(&#x27;display_errors&#x27;, &#x27;on&#x27;);ini_set(&#x27;error_reporting&#x27;, E_ALL);include &#x27;anti_csrf.php&#x27;;init_token ();class LevelOne &#123;    public...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/15/2025-09-09-CanteenFood-CTF-Challenge-WriteUp/" title="CanteenFood CTF Challenge WriteUp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CanteenFood CTF Challenge WriteUp</div></div><div class="info-2"><div class="info-item-1">CanteenFood CTF Challenge WriteUp by @PhatmhTiến hành phân tích chức năng theo kiểu BlackBox Đây là một trang Web có chức năng cho User tìm kiếm được món ăn phù hợp với túi tiền của mình nhất bằng cách nhập số tiền mình mong muốn nó sẽ trả về món mà mình đủ tiền trả.  Ở đây sau khi viết ra số 300 và tiến hành bấm chức năng thì nó trả về được list các món dưới 300.  Ở ngay bên trên mình phát hiện được một nơi đáng ngờ là chữ admin có thể dẫn ta đi đâu đó vì thể click thử vào.  Nó trả về cho ta...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-FileUpload-Servlet/" title="Java Servlet FileUpload Vulnerability"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet FileUpload Vulnerability</div></div><div class="info-2"><div class="info-item-1">Java Servlet FileUpload Vulnerability by @PhatmhLỗ hổng File UploadBản chất của File Upload: File Upload đối với tôi nó đơn giản chỉ là lợidụng Unsafe Method để truyền một Untrusted Data vào nhằm thay đổi hànhvi của hệ thống trong trường hợp này là Web App, với FileUpload những gìUser Upload lên sẽ chính là Untrusted Data và với Feature Upload Filenhư này sẽ thế nào nếu nó không được Validate một cách cẩn thận ta sẽđến với DEMO bằng Java Servlet. Web App OverviewĐây là một Web App được dựng v...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Cmdi/" title="Java Servlet Command Injection Vulnerability Challenges"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet Command Injection Vulnerability Challenges</div></div><div class="info-2"><div class="info-item-1">Java Servlet Command Injection Vulnerability ChallengesCấu trúc Project Cấu trúc Project   1234567891011121314151617181920212223242526272829303132333435+---.idea+---.mvnª   +---wrapper+---srcª   +---mainª   ª   +---javaª   ª   ª   +---ciª   ª   ª       +---controllerª   ª   ª       +---serviceª   ª   ª       +---utilª   ª   +---resourcesª   ª   ª   +---META-INFª   ª   +---webappª   ª       +---WEB-INFª   +---testª       +---javaª       +---resources+---target    +---classes    ª   +---ci    ª...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Sql-Injection/" title="Java Servlet Sql Injection Vulnerability by @Phatmh"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet Sql Injection Vulnerability by @Phatmh</div></div><div class="info-2"><div class="info-item-1">Java Servlet Sql Injection Vulnerability by @PhatmhTổng quan cấu trúc file java123456789101112131415161718192021222324252627282930313233343536373839+---.idea   +---dataSources+---.mvn   +---wrapper+---src   +---main      +---java         +---sql_injection             +---controller             +---dao             +---model             +---util      +---resources         +---META-INF      +---webapp          +---WEB-INF   +---test       +---java       +---resources+---target    +---classes    ...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-16-WebSec.fr-level28/" title="WebSec.fr Level 28 CTF challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">WebSec.fr Level 28 CTF challenge</div></div><div class="info-2"><div class="info-item-1">WebSec.fr Level 28 CTF challengeTổng quan: 1234567891011121314151617181920212223&lt;?phpif(isset($_POST[&#x27;submit&#x27;])) &#123;  if ($_FILES[&#x27;flag_file&#x27;][&#x27;size&#x27;] &gt; 4096) &#123;    die(&#x27;Your file is too heavy.&#x27;);  &#125;  $filename = &#x27;./tmp/&#x27; . md5($_SERVER[&#x27;REMOTE_ADDR&#x27;]) . &#x27;.php&#x27;;  $fp = fopen($_FILES[&#x27;flag_file&#x27;][&#x27;tmp_name&#x27;], &#x27;r&#x27;);  $flagfilecontent = fread($fp, filesize($_FILES[&#x27;flag_file...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-17-SecCon-SafeUpload-Web-Challenge/" title="CyberCon 2025 SafeUpload Web Challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CyberCon 2025 SafeUpload Web Challenge</div></div><div class="info-2"><div class="info-item-1">CyberCon 2025 SafeUpload Web ChallengeTổng quan challenge Mở challenge lên thì ta thấy nó cấp cho ta một giao diện dùng để upload file nên nghi ngờ ban đầu sẽ là web này dính lỗ hổng file upload. Tiến hành thử upload lên file php với nội dung: 123&lt;?phpecho &quot;test&quot;;?&gt;   Có vẻ như đã dính filter của bài có thể thấy nó đã xoá đi file mình upload lên, bây giờ ta thử upload 1 file php nhưng không có nội dung.  Vẫn là file đó nhưng không có nội dung thì hoàn toàn có thể upload bình t...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Phat Mai</div><div class="author-info-description">A blog about cybersecurity, hacking, pentesting, red teaming and more.</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Server-Side-Request-Forgery-Java"><span class="toc-number">1.</span> <span class="toc-text">Server Side Request Forgery (Java)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Source-Code"><span class="toc-number">1.1.</span> <span class="toc-text">Source Code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#What-is-SSRF"><span class="toc-number">1.2.</span> <span class="toc-text">What is SSRF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Overview-Lab"><span class="toc-number">1.3.</span> <span class="toc-text">Overview Lab</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Phan-tich-va-khai-thac-tung-level"><span class="toc-number">1.4.</span> <span class="toc-text">Phân tích và khai thác từng level</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">Level 1:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-2"><span class="toc-number">1.4.2.</span> <span class="toc-text">Level 2:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-3"><span class="toc-number">1.4.3.</span> <span class="toc-text">Level 3:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-4"><span class="toc-number">1.4.4.</span> <span class="toc-text">Level 4:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Level-5"><span class="toc-number">1.4.5.</span> <span class="toc-text">Level 5:</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-03-I.redteam-Kerberoasting/" title="Ired.Team Kerberoasting (Credential Access)">Ired.Team Kerberoasting (Credential Access)</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-I.redteam-Kerberos-Golden-Ticket/" title="Ired.Team Kerberos Golden Tickets Lab">Ired.Team Kerberos Golden Tickets Lab</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-04-THM-Basic-Pentesting/" title="Tryhackme Basic Pentesting Challenge">Tryhackme Basic Pentesting Challenge</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-Ysoserial-CC5/" title="Ysoserial Commons Collections 5 Analyst">Ysoserial Commons Collections 5 Analyst</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-14-CSRF-PortSwigger-Challenge/" title="PortSwigger CSRF Challenge WriteUps">PortSwigger CSRF Challenge WriteUps</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Phat Mai</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="/"></script></div></body></html>

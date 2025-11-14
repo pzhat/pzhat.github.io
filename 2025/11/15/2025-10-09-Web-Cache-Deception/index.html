@@ -1,0 +1,190 @@
+<!DOCTYPE html><html lang="[&quot;en&quot;,&quot;vi&quot;,&quot;default&quot;]" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Web Cache Deception Demo Lab | Phat Mai Blog</title><meta name="author" content="Phat Mai"><meta name="copyright" content="Phat Mai"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Web Cache Deception Demo LabTổng quan Web Cache DeceptionLỗ hổng “web cache deception” (đánh lừa bộ nhớ đệm web) là một dạng lỗ hổng bảo mật web, cho phép kẻ tấn công lừa hệ thống cache (bộ nhớ đệm we">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web Cache Deception Demo Lab">
+<meta property="og:url" content="https://pzhat.github.io/2025/11/15/2025-10-09-Web-Cache-Deception/index.html">
+<meta property="og:site_name" content="Phat Mai Blog">
+<meta property="og:description" content="Web Cache Deception Demo LabTổng quan Web Cache DeceptionLỗ hổng “web cache deception” (đánh lừa bộ nhớ đệm web) là một dạng lỗ hổng bảo mật web, cho phép kẻ tấn công lừa hệ thống cache (bộ nhớ đệm we">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pzhat.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-11-14T19:34:38.234Z">
+<meta property="article:modified_time" content="2025-10-24T05:38:35.000Z">
+<meta property="article:author" content="Phat Mai">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pzhat.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Web Cache Deception Demo Lab",
+  "url": "https://pzhat.github.io/2025/11/15/2025-10-09-Web-Cache-Deception/",
+  "image": "https://pzhat.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-11-14T19:34:38.234Z",
+  "dateModified": "2025-10-24T05:38:35.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Phat Mai",
+      "url": "https://pzhat.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://pzhat.github.io/2025/11/15/2025-10-09-Web-Cache-Deception/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Web Cache Deception Demo Lab',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Phat Mai Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Web Cache Deception Demo Lab</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Web Cache Deception Demo Lab</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-11-14T19:34:38.234Z" title="Created 2025-11-15 02:34:38">2025-11-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-10-24T05:38:35.000Z" title="Updated 2025-10-24 12:38:35">2025-10-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/">pentesting</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/Web-Exploitation/">Web-Exploitation</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="Web-Cache-Deception-Demo-Lab"><a href="#Web-Cache-Deception-Demo-Lab" class="headerlink" title="Web Cache Deception Demo Lab"></a>Web Cache Deception Demo Lab</h1><h3 id="Tong-quan-Web-Cache-Deception"><a href="#Tong-quan-Web-Cache-Deception" class="headerlink" title="Tổng quan Web Cache Deception"></a>Tổng quan Web Cache Deception</h3><p><em>Lỗ hổng “web cache deception” (đánh lừa bộ nhớ đệm web) là một dạng lỗ hổng bảo mật web, cho phép kẻ tấn công lừa hệ thống cache (bộ nhớ đệm web) lưu trữ và phục vụ lại những nội dung nhạy cảm hoặc riêng tư cho các bên không được ủy quyền. Đây là một hình thức khai thác sự khác biệt trong cách các server cache và server gốc xử lý các request—đặc biệt là về quy tắc lưu cache cho các tài nguyên động (như trang tài khoản người dùng, trang admin, v.v.).</em></p>
+<p><strong>Cách hoạt động của Web Cache Deception:</strong></p>
+<ul>
+<li>Hệ thống cache thường chỉ lưu trữ các tài nguyên tĩnh (file .css, .js, hình ảnh, v.v.) nhằm tăng tốc độ truy cập và giảm tải cho server.</li>
+<li>Với web cache deception, kẻ tấn công có thể gửi request với các phần mở rộng tên file (vd: &#x2F;profile.js) hoặc thêm tham số giả mạo tới các URL vốn dĩ là nội dung động (ví dụ trang profile người dùng) có thể nói đây là fall back routing.</li>
+<li>Nếu ứng dụng web hoặc cache server xử lý sai, nó sẽ trả về nội dung động (ví dụ thông tin tài khoản) nhưng lưu nhầm vào cache. Những người dùng khác khi truy cập tới URL đó sẽ thấy được nội dung nhạy cảm đã bị cache, dù không có quyền truy cập.</li>
+</ul>
+<h3 id="Source-code"><a href="#Source-code" class="headerlink" title="Source code"></a>Source code</h3><p><a target="_blank" rel="noopener" href="https://github.com/pzhat/WebCacheDeception">Github</a></p>
+<h3 id="Phan-tich-va-POC"><a href="#Phan-tich-va-POC" class="headerlink" title="Phân tích và POC"></a>Phân tích và POC</h3><p><img src="https://hackmd.io/_uploads/HkQdbVHpex.png" alt="image"></p>
+<p>Ở đây chỉ là demo cho lỗ hổng deception nên ta chỉ làm một cái func đăng nhập đơn giản sau đó dùng file static là <code>/account.css</code> để lấy được thông tin của user qua đó.</p>
+<p>Đầu tiên ta sẽ đăng nhập với user là alice trước.</p>
+<p><img src="https://hackmd.io/_uploads/H1W5QNrTxl.png" alt="image"></p>
+<p>Sau khi đăng nhập thì ta có session token của user vừa đăng nhập ở đây là alice <code>6324a18d</code>.</p>
+<p>Tới bước này thì có thể thấy user alice đã được đăng nhập, bước tiếp theo nếu là trong thực tế thì attacker sẽ làm sao để cho user bấm vào đường dẫn để dẫn đến static file nhằm đánh lừa web cache.</p>
+<p><img src="https://hackmd.io/_uploads/S1meSEBaxx.png" alt="image"></p>
+<p>Với session của alice ta tiến hành truy cập <code>/account.css</code> ở đây ta có thể thấy rằng trường <code>X-Cache-Status</code> trả về giá trị là <code>MISS</code>.</p>
+<p>Với trường cache như vậy thì bước đầu ta đã thành công trong việc đánh lừa web cache server bây giờ ta sẽ thử với trình duyệt khác không có session thử truy cập đến <code>/account.css</code> xem nó sẽ có gì.</p>
+<p><img src="https://hackmd.io/_uploads/SkZDkSBaex.png" alt="image"></p>
+<p>Ta sẽ tạo một tab mới và để chắc chắn thì mình sẽ xoá session đi cho chắc.</p>
+<p><img src="https://hackmd.io/_uploads/B1EjyBSagl.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/H1VhJHrpgg.png" alt="image"></p>
+<p>Truy cập vào <code>/account.css</code> ở đây ta có thể thấy rằng web cache deception đã thành công vì ở đây ta đã lấy ra được CSRF token của user alice ra sau khi user đó truy cập đến file static thì phần config lỗi của web cache đã lưu lại session của alice và từ đó tạo cơ hội cho attacker truy cập lại vào đó và lấy cắp thông tin user.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">location ~* \.(?:css|js|png|jpg|gif|ico)$ &#123;</span><br><span class="line">      proxy_pass http://app:8080;</span><br><span class="line">      proxy_set_header Host $host;</span><br><span class="line">      proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line"></span><br><span class="line">      add_header Cache-Control &quot;public, max-age=600&quot; always;</span><br><span class="line">      add_header X-Cache-Status $upstream_cache_status always;</span><br><span class="line">      add_header X-Cache-Key $scheme$host$request_uri always;</span><br><span class="line"></span><br><span class="line">      proxy_cache mycache;</span><br><span class="line">      proxy_cache_key $scheme$host$request_uri;</span><br><span class="line">      proxy_cache_valid 200 10m;</span><br><span class="line"></span><br><span class="line">      proxy_no_cache off;</span><br><span class="line">      proxy_cache_bypass 0;</span><br></pre></td></tr></table></figure>
+
+<p>Đoạn config gây ra lỗi nó nằm ở đây ở đây nginx được config để cache tất cả các đuôi tĩnh và điều đó dẫn đến khi người dùng truy cập đến file có đuôi tĩnh thì nó gây hiểu lầm cho server từ đó gây nên web cache deception.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">location ^~ /assets/ &#123;</span><br><span class="line">     try_files $uri =404;</span><br><span class="line">     add_header Cache-Control &quot;public, max-age=31536000, immutable&quot;;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   # Không cache đường dẫn khác</span><br><span class="line">   location / &#123;</span><br><span class="line">     proxy_pass http://app:8080;</span><br><span class="line">     proxy_set_header Host $host;</span><br><span class="line">     proxy_set_header X-Forwarded-For $remote_addr;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Ở đây là cách fix đúng ta sẽ chỉ cache cho mỗi allow list và không cache các đường dẫn khác ngoài nó bên cạnh đó không cache những file tĩnh không tồn tại nếu người dùng trỏ đến thì nên trả hẳn về 403 401 luôn để tránh lỗ hổng này.</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://pzhat.github.io">Phat Mai</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://pzhat.github.io/2025/11/15/2025-10-09-Web-Cache-Deception/">https://pzhat.github.io/2025/11/15/2025-10-09-Web-Cache-Deception/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web/">Web</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/11/15/2025-10-10-PentesterLab-From-Sql-To-Shell/" title="Pentester Lab From Sql Injection to Shell"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">Pentester Lab From Sql Injection to Shell</div></div><div class="info-2"><div class="info-item-1">Pentester Lab From Sql Injection to ShellFingerprinting Sử dụng nmap với cú pháp: 1sudo nmap -sV 192.168.179.132 -T4  Kết quả trả về cho thấy đang có 2 port đang được mở đó là port 22 và 80 như ta đã biết port 22 là SSH còn 80 là Apache httpd thì có nghĩa là nó đang host 1 cái web nào đó.  Tiến hành curl đến xem thử có tồn tại không và để lấy được source code của web được host ở đây nó đưa cho ta thông tin về server và web được code bằng PHP/5.3.3-7+squeeze14.  Truy cập GUI để cho dễ nhìn và ...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-10-06-NoSQL-Injection-Lab/" title="NoSQL Injection Vulnerability Challenge Java"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">NoSQL Injection Vulnerability Challenge Java</div></div><div class="info-2"><div class="info-item-1">NoSQL Injection Vulnerability Challenge JavaTổng quan về NoSQL Injection Tấn công NoSQL injection là một lỗ hổng bảo mật trong các ứng dụng web sử dụng cơ sở dữ liệu NoSQL. NoSQL (viết tắt của “Not Only SQL”) là các hệ thống cơ sở dữ liệu không sử dụng ngôn ngữ truy vấn có cấu trúc SQL, mà thay vào đó dùng các định dạng dữ liệu linh hoạt hơn như cặp khóa-giá trị, tài liệu (document), hoặc đồ thị dữ liệu.  Tương tự như SQL injection, NoSQL injection cho phép kẻ tấn công vượt qua xác thực, đánh...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/15/2025-09-09-CanteenFood-CTF-Challenge-WriteUp/" title="CanteenFood CTF Challenge WriteUp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CanteenFood CTF Challenge WriteUp</div></div><div class="info-2"><div class="info-item-1">CanteenFood CTF Challenge WriteUp by @PhatmhTiến hành phân tích chức năng theo kiểu BlackBox Đây là một trang Web có chức năng cho User tìm kiếm được món ăn phù hợp với túi tiền của mình nhất bằng cách nhập số tiền mình mong muốn nó sẽ trả về món mà mình đủ tiền trả.  Ở đây sau khi viết ra số 300 và tiến hành bấm chức năng thì nó trả về được list các món dưới 300.  Ở ngay bên trên mình phát hiện được một nơi đáng ngờ là chữ admin có thể dẫn ta đi đâu đó vì thể click thử vào.  Nó trả về cho ta...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-FileUpload-Servlet/" title="Java Servlet FileUpload Vulnerability"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet FileUpload Vulnerability</div></div><div class="info-2"><div class="info-item-1">Java Servlet FileUpload Vulnerability by @PhatmhLỗ hổng File UploadBản chất của File Upload: File Upload đối với tôi nó đơn giản chỉ là lợidụng Unsafe Method để truyền một Untrusted Data vào nhằm thay đổi hànhvi của hệ thống trong trường hợp này là Web App, với FileUpload những gìUser Upload lên sẽ chính là Untrusted Data và với Feature Upload Filenhư này sẽ thế nào nếu nó không được Validate một cách cẩn thận ta sẽđến với DEMO bằng Java Servlet. Web App OverviewĐây là một Web App được dựng v...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Cmdi/" title="Java Servlet Command Injection Vulnerability Challenges"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet Command Injection Vulnerability Challenges</div></div><div class="info-2"><div class="info-item-1">Java Servlet Command Injection Vulnerability ChallengesCấu trúc Project Cấu trúc Project   1234567891011121314151617181920212223242526272829303132333435+---.idea+---.mvnª   +---wrapper+---srcª   +---mainª   ª   +---javaª   ª   ª   +---ciª   ª   ª       +---controllerª   ª   ª       +---serviceª   ª   ª       +---utilª   ª   +---resourcesª   ª   ª   +---META-INFª   ª   +---webappª   ª       +---WEB-INFª   +---testª       +---javaª       +---resources+---target    +---classes    ª   +---ci    ª...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Servlet-Sql-Injection/" title="Java Servlet Sql Injection Vulnerability by @Phatmh"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Servlet Sql Injection Vulnerability by @Phatmh</div></div><div class="info-2"><div class="info-item-1">Java Servlet Sql Injection Vulnerability by @PhatmhTổng quan cấu trúc file java123456789101112131415161718192021222324252627282930313233343536373839+---.idea   +---dataSources+---.mvn   +---wrapper+---src   +---main      +---java         +---sql_injection             +---controller             +---dao             +---model             +---util      +---resources         +---META-INF      +---webapp          +---WEB-INF   +---test       +---java       +---resources+---target    +---classes    ...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-16-WebSec.fr-level28/" title="WebSec.fr Level 28 CTF challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">WebSec.fr Level 28 CTF challenge</div></div><div class="info-2"><div class="info-item-1">WebSec.fr Level 28 CTF challengeTổng quan: 1234567891011121314151617181920212223&lt;?phpif(isset($_POST[&#x27;submit&#x27;])) &#123;  if ($_FILES[&#x27;flag_file&#x27;][&#x27;size&#x27;] &gt; 4096) &#123;    die(&#x27;Your file is too heavy.&#x27;);  &#125;  $filename = &#x27;./tmp/&#x27; . md5($_SERVER[&#x27;REMOTE_ADDR&#x27;]) . &#x27;.php&#x27;;  $fp = fopen($_FILES[&#x27;flag_file&#x27;][&#x27;tmp_name&#x27;], &#x27;r&#x27;);  $flagfilecontent = fread($fp, filesize($_FILES[&#x27;flag_file...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-17-SecCon-SafeUpload-Web-Challenge/" title="CyberCon 2025 SafeUpload Web Challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CyberCon 2025 SafeUpload Web Challenge</div></div><div class="info-2"><div class="info-item-1">CyberCon 2025 SafeUpload Web ChallengeTổng quan challenge Mở challenge lên thì ta thấy nó cấp cho ta một giao diện dùng để upload file nên nghi ngờ ban đầu sẽ là web này dính lỗ hổng file upload. Tiến hành thử upload lên file php với nội dung: 123&lt;?phpecho &quot;test&quot;;?&gt;   Có vẻ như đã dính filter của bài có thể thấy nó đã xoá đi file mình upload lên, bây giờ ta thử upload 1 file php nhưng không có nội dung.  Vẫn là file đó nhưng không có nội dung thì hoàn toàn có thể upload bình t...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Phat Mai</div><div class="author-info-description">A blog about cybersecurity, hacking, pentesting, red teaming and more.</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Web-Cache-Deception-Demo-Lab"><span class="toc-number">1.</span> <span class="toc-text">Web Cache Deception Demo Lab</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Tong-quan-Web-Cache-Deception"><span class="toc-number">1.1.</span> <span class="toc-text">Tổng quan Web Cache Deception</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Source-code"><span class="toc-number">1.2.</span> <span class="toc-text">Source code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Phan-tich-va-POC"><span class="toc-number">1.3.</span> <span class="toc-text">Phân tích và POC</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-03-I.redteam-Kerberoasting/" title="Ired.Team Kerberoasting (Credential Access)">Ired.Team Kerberoasting (Credential Access)</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-I.redteam-Kerberos-Golden-Ticket/" title="Ired.Team Kerberos Golden Tickets Lab">Ired.Team Kerberos Golden Tickets Lab</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-04-THM-Basic-Pentesting/" title="Tryhackme Basic Pentesting Challenge">Tryhackme Basic Pentesting Challenge</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-07-Ysoserial-CC5/" title="Ysoserial Commons Collections 5 Analyst">Ysoserial Commons Collections 5 Analyst</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/15/2025-11-14-CSRF-PortSwigger-Challenge/" title="PortSwigger CSRF Challenge WriteUps">PortSwigger CSRF Challenge WriteUps</a><time datetime="2025-11-14T19:34:38.244Z" title="Created 2025-11-15 02:34:38">2025-11-15</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Phat Mai</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><div class="js-pjax"></div><script async data-pjax src="/"></script></div></body></html>
