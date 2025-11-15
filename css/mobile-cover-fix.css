@@ -1,0 +1,27 @@
+/* Đảm bảo ảnh nền trang chủ đẹp trên mobile */
+@media (max-width: 768px) {
+  /* Wallpaper trang chủ */
+  #page-header.full_page {
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    height: 30vh !important; /* Giảm chiều cao trên mobile */
+  }
+
+  /* Nếu bạn dùng index_img → ảnh nằm trong .cover-wrapper */
+  .cover-wrapper {
+    background-size: cover !important;
+    background-position: center !important;
+  }
+
+  /* Tắt hoặc giảm blur mask nếu gây rối */
+  #page-header.full_page::before {
+    background: rgba(0, 0, 0, 0.3) !important; /* làm nền tối nhẹ */
+  }
+
+  /* Đảm bảo tiêu đề không bị che */
+  #site-info {
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+}
